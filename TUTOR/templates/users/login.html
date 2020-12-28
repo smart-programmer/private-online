@@ -1,0 +1,30 @@
+{% extends "template.html" %}
+
+{% block title %} Login {% endblock %}
+
+{% block content %}
+    <center>
+        <h1 style="color: orange;">login</h1>
+    </center>
+    <br><br><br><br>
+
+    <form action="" method="POST">
+        {{ form.hidden_tag() }}
+
+        {{ form.username_or_email.name }}
+        {{ form.username_or_email() }}
+        <br>
+
+        {{ form.password.name }}
+        {{ form.password() }}
+        <br>
+
+        {{ form.submit() }}
+        <br>
+        <br>
+        <br>
+
+        <a href="{{ url_for('users_blueprint.request_reset_password') }}"><button type="button">forgot password?</button></a>
+    </form>
+   
+{% endblock %}

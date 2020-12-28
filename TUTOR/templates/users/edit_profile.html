@@ -1,0 +1,61 @@
+{% extends "template.html" %}
+
+{% block title %} Edit {% endblock %}
+
+{% block content %}
+    <center>
+        <h1 style="color: orange;">Edit Profile</h1>
+    </center>
+    <br><br><br>
+    <form action="" method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+
+        {{ form.first_name.name }}
+        {{ form.first_name() }}
+        <br>
+
+        {{ form.last_name.name }}
+        {{ form.last_name() }}
+        <br>
+        
+        {{ form.email.name }}
+        {{ form.email() }}
+        {% for error in form.email.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+
+        {{ form.username.name }}
+        {{ form.username() }}
+        {% for error in form.username.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+        <br>
+
+        {{ form.date_of_birth.name }}
+        {{ form.date_of_birth() }}
+        <br>
+        <br>
+
+        {{ form.biography.name }}
+        {{ form.biography() }}
+        <br>
+        <br>
+
+        {{ form.profile_image.name }}
+        {{ form.profile_image() }}
+        <br>
+        <br>
+
+        {{ form.submit() }}
+        <br>
+        <br>
+        <br>
+        <a href="{{ url_for('users_blueprint.change_password') }}"><button type="button">change password</button></a>
+
+        {% for error in form.errors %}
+            <h3 style="color: red;">error in field: {{ error }}</h3> 
+        {% endfor %}
+    </form>
+{% endblock %}

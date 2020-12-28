@@ -1,0 +1,21 @@
+{% extends "template.html" %}
+
+{% block title %} email verification {% endblock %}
+
+{% block content %}
+    <center>
+        <h1 style="color: orange;">email verification</h1>
+    </center>
+    <br><br><br><br>
+
+    <form action="" method="POST">
+        {{ form.hidden_tag() }}
+
+        {{ form.code.name }}
+        {{ form.code() }}
+        <br>
+
+        {{ form.submit() }}
+    </form>
+   
+{% endblock %}

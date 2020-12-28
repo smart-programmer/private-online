@@ -1,0 +1,230 @@
+
+body {
+    overflow-x: hidden;
+    font-family: 'Amiri', serif;
+    direction: rtl;
+    text-align: right;
+}
+
+.roles {
+    width: 70%;
+    margin: 0 auto;
+    position: absolute;
+    top: -5%;
+    right: 50%;
+    transform: translate(50%, 50%);
+    -webkit-transform: translate(50%, 50%);
+    -moz-transform: translate(50%, 50%);
+    -ms-transform: translate(50%, 50%);
+    -o-transform: translate(50%, 50%);
+    margin-top: - 20%;
+}
+.header {
+    position: absolute;
+    top: 5%;
+    right: 50%;
+    transform: translate(50%, 50%);
+    -webkit-transform: translate(50%, 50%);
+    -moz-transform: translate(50%, 50%);
+    -ms-transform: translate(50%, 50%);
+    -o-transform: translate(50%, 50%);
+    font-size: 35px;
+    color: rgba(59, 255, 0, 0.87);
+}
+
+.roles ol {
+    counter-reset: li;
+    list-style: none;
+    *list-style: georgian;
+    font-size: 15px;
+    font-family: 'Raleway', sans-serif;
+    padding: 0;
+    margin-bottom: 4em;
+}
+
+.roles ol ol {
+    margin: 0 0 0 2em;
+}
+
+.roles a {
+    position: relative;
+    display: block;
+    padding: .4em .4em .4em 2em;
+    *padding: .4em;
+    margin: .5em 0;
+    background: rgba(46, 160, 12, 0.452);
+
+    color: rgb(231, 222, 222);
+    text-decoration: none;
+    transition: all .2s ease-in-out;
+}
+
+.roles a:hover {
+    background: #332d2d;
+    text-decoration: none;
+    transform: scale(1.1);
+}
+
+.roles a:before {
+    content: counter(li);
+    counter-increment: li;
+    position: absolute;
+    left: -1.3em;
+    top: 50%;
+    margin-top: -1.3em;
+    background: rgba(46, 160, 12, 0.452);
+    height: 2em;
+    width: 2em;
+    line-height: 2em;
+    border: .3em solid #fff;
+    text-align: center;
+    font-weight: bold;
+    color: #FFF;
+}
+
+.button {
+    color: aliceblue;
+    background: transparent;
+    position: absolute;
+    padding-top: 1px;
+    font-size: 35px;
+    bottom: -7%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-family: fantasy;
+    outline: none;
+    transition: all 0.2s ease-in-out;
+    font-family: 'Amiri', serif;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    height: 10%;
+}
+
+.button {
+    width: 200px;
+    height: 40px;
+    background: rgba(46, 160, 12, 0.452);
+}
+
+.button:hover {
+    background: rgba(46, 160, 12, 0.548);
+}
+
+.button:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 20px solid rgba(46, 160, 12, 0.452);
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+}
+
+.button:before {
+    content: "";
+    position: absolute;
+    right: -20px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 20px solid rgba(46, 160, 12, 0.452);
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+}
+
+@media only screen and (max-width: 2560px) {
+    .roles {
+        top: -5%;
+    }
+
+    .button {
+        bottom: -5%;
+    }
+}
+
+@media only screen and (max-width: 2549px) {
+    .roles {
+        top: -3%;
+    }
+
+    .button {
+        bottom: -7%;
+    }
+}
+
+@media only screen and (max-width: 1400px) {
+    .roles {
+        top: -15%;
+    }
+
+    .button {
+        bottom: 5%;
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+    .roles {
+        top: -5%;
+    }
+
+    .button {
+        bottom: -15%;
+    }
+}
+
+
+@media only screen and (max-width: 768px) {
+    .roles {
+        top: -20%;
+    }
+
+    .button {
+        bottom: 3%;
+    }
+}
+
+@media only screen and (max-width: 603px) {
+    .header {
+        top: 1%;
+    }
+
+    .roles {
+        top: -30%;
+    }
+
+    .button {
+        bottom: -3%;
+    }
+}
+
+@media only screen and (max-width: 524px) {
+    .roles {
+        top: -30%;
+    }
+
+    .button {
+        bottom: -7%;
+    }
+}
+
+@media only screen and (max-width: 375px) {
+    .roles {
+        top: -30%;
+    }
+
+    .button {
+        bottom: -60%;
+    }
+}
+
+@media only screen and (max-width: 320px) {
+    .roles {
+        top: -80%;
+    }
+
+    .button {
+        bottom: -70%;
+    }
+}

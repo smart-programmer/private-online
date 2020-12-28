@@ -1,0 +1,60 @@
+{% extends "template.html" %}
+
+{% block title %} Profile {% endblock %}
+
+{% block content %}
+    <center>
+        <h1 style="color: orange;">Profile</h1>
+    </center>
+    <br><br><br>
+
+    <br>
+    <img src="{{ profile_image }}" alt="profile pic" width="200" height="200">
+    <br>
+
+    {% if user in followings %}
+    <a href="{{ url_for('users_blueprint.unfollow_user', user_id=user.id, next=request.path) }}" class="btn btn-secondary">Unfollow</a>
+    {% if user in followers %}
+    <p>this user is a friend</p>
+    {% endif %}
+    {% else %}
+    <a href="{{ url_for('users_blueprint.follow_user', user_id=user.id, next=request.path) }}" class="btn btn-primary">Follow</a>
+    {% if user in followers %}
+    <p>this user followes you</p>
+    {% endif %}
+    {% endif %}
+
+    <br>
+    player username: {{ user.username }}
+    <br>
+
+    player bio: {{ user.biography }}
+    <br><br>
+
+    player full name: {{ user.full_name() }}
+    <br>
+
+    
+    player age: {{ user.age() }}
+    <br>
+
+
+
+    player registration date: {{ user.creation_date }}
+    <br>
+    
+    <div class="card bg-dark mb-3" style="width: 18rem;">
+        <div class="card-header text-light">
+          player physical data
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">speed: {% if user.physical_data_model.speed %} : {{ user.physical_data_model.speed }} {% endif %}</li>
+          <li class="list-group-item">highest jump: {% if user.physical_data_model.highest_jump %} : {{ user.physical_data_model.highest_jump }} {% endif %}</li>
+          <li class="list-group-item">stamina: {% if user.physical_data_model.stamina %} : {{ user.physical_data_model.stamina }} {% endif %}</li>
+          <li class="list-group-item">height: {% if user.physical_data_model.height %} : {{ user.physical_data_model.height }} {% endif %}</li>
+          <li class="list-group-item">weight: {% if user.physical_data_model.weight %} : {{ user.physical_data_model.weight }} {% endif %}</li>
+        </ul>
+      </div>
+
+
+{% endblock %}
