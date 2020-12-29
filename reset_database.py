@@ -1,6 +1,6 @@
 import sys
-from SPORT import create_app, db
-from SPORT.config import Production_Config
+from TUTOR import create_app, db
+from TUTOR.config import Production_Config
 
 if len(sys.argv) != 2:
     print("usage: program.py <1 for production | 2 for local>") 

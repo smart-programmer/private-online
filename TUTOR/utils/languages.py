@@ -2,8 +2,8 @@ import os
 from flask import current_app, url_for, request
 import json
 import datetime
-from SPORT.settings import DEFAULT_LANGUAGE, LANGUAGES
-from SPORT.utils.utils import parse_view_name, reverse_url_for
+from TUTOR.settings import DEFAULT_LANGUAGE, LANGUAGES
+from TUTOR.utils.utils import parse_view_name, reverse_url_for
 
 
 class LngObj():

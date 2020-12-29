@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, make_response, current_app, request, url_for, redirect
-from SPORT.utils.utils import reverse_url_for, parse_view_name
-from SPORT.utils.languages import LngObj
-from SPORT.settings import LANGUAGES
+from TUTOR.utils.utils import reverse_url_for, parse_view_name
+from TUTOR.utils.languages import LngObj
+from TUTOR.settings import LANGUAGES
 import logging
 import os
 

@@ -4,9 +4,9 @@ from wtforms.validators import DataRequired, length, Email, ValidationError, Equ
 from wtforms_components import SelectField
 from flask_wtf.file import FileField, FileAllowed 
 from wtforms.widgets import TextArea
-from SPORT.USERS.models import UserModel
+from TUTOR.USERS.models import UserModel
 from flask_login import current_user
-from SPORT import bcrypt
+from TUTOR import bcrypt
 
 
 

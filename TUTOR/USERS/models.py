@@ -1,5 +1,5 @@
 from flask import current_app
-from SPORT import db, login_manager
+from TUTOR import db, login_manager
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin
 from datetime import datetime
@@ -126,10 +126,10 @@ class FollowersModel(db.Model):
 
     
 
-# class UserSportDataModel(db.Model): # 
+# class UserTUTORDataModel(db.Model): # 
 #     id = db.Column(db.Integer, primary_key=True)
 #     user_model = db.Column(db.String(128), nullable=False)
-#     sport_model = db.Column(db.String(128), nullable=False)
+#     TUTOR_model = db.Column(db.String(128), nullable=False)
 #     level = db.Column(db.Float, nullable=False) # this is a float by design so that so that some one can have a 10.95 level for example which means they're almost 11 just like video games
 #     prestige = db.Column(db.Integer, nullable=False) # eacho number of levels this goes up
 #     number_of_matches = db.Column(db.Integer, unique=True, nullable=False) # this can be pulled from the MatchModel where we query for the matchces that this players played or just increment this field each time he playes a match

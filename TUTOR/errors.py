@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, request, redirect, url_for
-from SPORT import app, db, bcrypt, mail
+from TUTOR import app, db, bcrypt, mail
 
 
 @app.errorhandler(404)

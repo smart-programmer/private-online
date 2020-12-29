@@ -1,4 +1,4 @@
-# from SPORT import db, login_manager, app
+# from TUTOR import db, login_manager, app
 # from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 # from flask_login import UserMixin
 # from datetime import datetime

@@ -1,5 +1,5 @@
-from SPORT import create_app
-from SPORT.config import Production_Config
+from TUTOR import create_app
+from TUTOR.config import Production_Config
 import os 
 import sys
 

@@ -7,7 +7,7 @@ import datetime
 from random import randint
 from flask.globals import _app_ctx_stack, _request_ctx_stack
 from werkzeug.urls import url_parse
-# from SPORT.models import Visitors, db
+# from TUTOR.models import Visitors, db
 
 def save_image_locally(image_file, path):
 	

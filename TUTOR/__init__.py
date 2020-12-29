@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
-from SPORT.config import Config
+from TUTOR.config import Config
 
 
 db = SQLAlchemy()
@@ -22,8 +22,8 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
     mail.init_app(app)
 
-    from SPORT.MAIN.routes import main_blueprint
-    from SPORT.USERS.routes import users_blueprint
+    from TUTOR.MAIN.routes import main_blueprint
+    from TUTOR.USERS.routes import users_blueprint
     app.register_blueprint(main_blueprint)
     app.register_blueprint(users_blueprint)
 

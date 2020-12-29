@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, make_response, flash, current_app
 from flask_login import current_user, login_user, login_required, logout_user
-from SPORT import db, bcrypt
-from SPORT.USERS.forms import RegistrationForm, LoginForm, EditProfileForm, ConfirmationCodeForm, RequestResetPasswordForm, ResetPasswordForm, ChangePasswordForm, UserPhysicalDataForm
-from SPORT.USERS.models import UserModel, UserPhysicalDataModel, FollowingModel, FollowersModel
-from SPORT.utils.mail import send_user_confirmation_email, send_user_reset_password_email, send_user_change_password_email, send_email_change_request_email, send_deny_email_change_email
-from SPORT.utils.utils import  save_image_locally, delete_image, generate_random_digits
+from TUTOR import db, bcrypt
+from TUTOR.USERS.forms import RegistrationForm, LoginForm, EditProfileForm, ConfirmationCodeForm, RequestResetPasswordForm, ResetPasswordForm, ChangePasswordForm, UserPhysicalDataForm
+from TUTOR.USERS.models import UserModel, UserPhysicalDataModel, FollowingModel, FollowersModel
+from TUTOR.utils.mail import send_user_confirmation_email, send_user_reset_password_email, send_user_change_password_email, send_email_change_request_email, send_deny_email_change_email
+from TUTOR.utils.utils import  save_image_locally, delete_image, generate_random_digits
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 import os
 
