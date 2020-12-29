@@ -10,8 +10,6 @@
     <br>
     {% for user in users %}
     <a href="{{ url_for('users_blueprint.user_detailed_view', user_id=user.id) }}">
-    <img src="{{ profile_images_path }}/{{ user.profile_image_name }}" alt="profile pic" width="200" height="200">
-        <br>
         {{ user.username }}
     </a>
         <br>

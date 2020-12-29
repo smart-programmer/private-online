@@ -28,81 +28,16 @@
     username: {{ current_user.username }}
     <br>
 
-    
-    password: {{ current_user.password }}
-    <br>
 
     
     age: {{ current_user.age() }}
     <br>
 
-    
-    bio: {{ current_user.biography }}
-    <br>
-
-    is confirmed: {{ current_user.is_confirmed }}
-    <br>
 
     registration date: {{ current_user.creation_date }}
     <br>
 
-    profile_image
-    {{ profile_image }}
-    <br>
-    <img src="{{ profile_image }}" alt="profile pic" width="200" height="200">
-    <br><br><br>
 
-    <form action="" method="POST">
-        {{ form.hidden_tag() }}
-
-        {{ form.height.name }}
-        {{ form.height(placeholder="cm") }}
-        {% for error in form.height.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
-
-        {{ form.weight.name }}
-        {{ form.weight(placeholder="kg") }}
-        {% for error in form.weight.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
-        
-        {{ form.speed.name }}{% if current_user.physical_data_model.speed %} : {{ current_user.physical_data_model.speed }} {% endif %}
-        {{ form.speed(placeholder="km/hr", max=45, min=1) }} the fastest human speed is 45km/hr
-        {% for error in form.speed.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
-
-        {{ form.highest_jump.name }}{% if current_user.physical_data_model.highest_jump %} : {{ current_user.physical_data_model.highest_jump }} {% endif %}
-        {{ form.highest_jump(placeholder="cm") }}
-        {% for error in form.highest_jump.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
-        {{ form.stamina.name }}{% if current_user.physical_data_model.stamina %} : {{ current_user.physical_data_model.stamina }} {% endif %}
-        {{ form.stamina() }}how many seconds can you jogg before stopping?
-        {% for error in form.stamina.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
-        {{ form.submit() }}
-        
-        <br>
-        {% for error in form.errors %}
-            <h3 style="color: red;">error in field: {{ error }}</h3> 
-        {% endfor %}
-    </form>
-
-
-    {% for follower in followers %}
-        follower: <a href="{{ url_for('users_blueprint.user_detailed_view', user_id=follower.id) }}"><p>{{ follower.username }}</p></a>
-    {% endfor %}
-    {% for following in followings %}
-    following:   <a href="{{ url_for('users_blueprint.user_detailed_view', user_id=following.id) }}"><p>{{ following.username }}</p></a>
-    {% endfor %}
-
+    
     
 {% endblock %}

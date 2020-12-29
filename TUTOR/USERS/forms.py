@@ -9,8 +9,6 @@ from TUTOR.USERS.models import UserModel
 from flask_login import current_user
 from TUTOR import bcrypt
 
-
-
 class RegistrationForm(FlaskForm):
     first_name = wtforms.StringField("first name", validators=[length(max=128), DataRequired()])
     last_name = wtforms.StringField("last name", validators=[length(max=128), DataRequired()])
@@ -18,9 +16,8 @@ class RegistrationForm(FlaskForm):
     email = wtforms.StringField("email", validators=[length(min=3, max=255), DataRequired()])
     password = wtforms.StringField("password", validators=[length(min=3, max=40), DataRequired()])
     confirm_password = wtforms.StringField("confirm password", validators=[length(min=3, max=40), DataRequired(), EqualTo("password")])
+    school_name = wtforms.StringField("School name", validators=[length(max=300)])
     date_of_birth = DateField("age", format="%Y-%m-%d", validators=[DataRequired()])
-    biography = wtforms.StringField("bio", validators=[length(min=3, max=170)], widget=TextArea())
-    profile_image = FileField("upload image", validators=[FileAllowed(["jpg", "png", "jpeg"])])
     submit = wtforms.SubmitField("Register")
 
     def validate_username(self, username):
@@ -50,9 +47,8 @@ class EditProfileForm(FlaskForm):
     last_name = wtforms.StringField("last name", validators=[length(max=128), DataRequired()])
     username = wtforms.StringField("username", validators=[length(max=20), DataRequired()])
     email = wtforms.StringField("email", validators=[length(min=3, max=255), DataRequired()])
+    school_name = wtforms.StringField("School name", validators=[length(max=300)])
     date_of_birth = DateField("age", format="%Y-%m-%d", validators=[DataRequired()])
-    biography = wtforms.StringField("bio", validators=[length(min=3, max=170)])
-    profile_image = FileField("edit image", validators=[FileAllowed(["jpg", "png", "jpeg"])])
     submit = wtforms.SubmitField("Edit")
 
     def validate_username(self, username):
@@ -92,11 +88,3 @@ class ChangePasswordForm(FlaskForm):
             raise ValidationError("incorrecr password")
 
 
-
-class UserPhysicalDataForm(FlaskForm):
-    height = DecimalField("height", render_kw={"min": 60, "max": 300}, validators=[Optional()])
-    speed = DecimalRangeField("speed", render_kw={"min": 1, "max": 45}, validators=[Optional()])
-    highest_jump = IntegerRangeField("highest jump", render_kw={"min": 60, "max": 427}, validators=[Optional()])
-    weight = DecimalField("weight", render_kw={"min": 2.13, "max": 442}, validators=[Optional()]) 
-    stamina = IntegerRangeField("stamina", render_kw={"min": 3, "max": 1000}, validators=[Optional()])
-    submit = wtforms.SubmitField("submit")

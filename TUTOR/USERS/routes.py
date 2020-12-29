@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, make_response, flash, current_app
 from flask_login import current_user, login_user, login_required, logout_user
 from TUTOR import db, bcrypt
-from TUTOR.USERS.forms import RegistrationForm, LoginForm, EditProfileForm, ConfirmationCodeForm, RequestResetPasswordForm, ResetPasswordForm, ChangePasswordForm, UserPhysicalDataForm
-from TUTOR.USERS.models import UserModel, UserPhysicalDataModel, FollowingModel, FollowersModel
+from TUTOR.USERS.forms import RegistrationForm, LoginForm, EditProfileForm, ConfirmationCodeForm, RequestResetPasswordForm, ResetPasswordForm, ChangePasswordForm
+from TUTOR.USERS.models import UserModel
 from TUTOR.utils.mail import send_user_confirmation_email, send_user_reset_password_email, send_user_change_password_email, send_email_change_request_email, send_deny_email_change_email
 from TUTOR.utils.utils import  save_image_locally, delete_image, generate_random_digits
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -25,20 +25,15 @@ def register(): # create an email and add email verification functionality
         email = form.email.data
         password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
         date_of_birth = form.date_of_birth.data
-        biography = form.biography.data
-        if form.profile_image.data:
-            image_name, image_path = save_image_locally(form.profile_image.data, "static/profiles/images")
+        school_name = form.school_name.data
+        user_type = "student"
         
         email_confirmation_code = generate_random_digits(5)
 
         user = UserModel(username=username, first_name=first_name, last_name=last_name, email=email, password=password,
-        date_of_birth=date_of_birth, biography=biography, profile_image_name=image_name, email_confirmation_code=email_confirmation_code) if form.profile_image.data else UserModel(username=username, first_name=first_name, last_name=last_name, email=email, password=password,
-        date_of_birth=date_of_birth, biography=biography, email_confirmation_code=email_confirmation_code)
-
-        physical_model = UserPhysicalDataModel(user=user)
+        date_of_birth=date_of_birth, school_name=school_name, email_confirmation_code=email_confirmation_code, user_type=user_type)
 
         db.session.add(user)
-        db.session.add(physical_model)
         db.session.commit()
 
         send_user_confirmation_email(email, email_confirmation_code)
@@ -177,48 +172,20 @@ def deny_email_change(user_serialized_id_and_email):
 @users_blueprint.route("/users/profile", methods=["GET", "POST"])
 @login_required
 def profile():
-    profiles_images_path = url_for("static", filename="profiles/images")
-    user_profile_image = os.path.join(profiles_images_path, current_user.profile_image_name)
-    physical_model = current_user.physical_data_model
-    form = UserPhysicalDataForm()
-    if form.validate_on_submit():
-        physical_model.height = form.height.data
-        physical_model.weight = form.weight.data
-        physical_model.speed = form.speed.data
-        physical_model.highest_jump = form.highest_jump.data
-        physical_model.stamina = form.stamina.data
-
-        db.session.commit()
-    elif request.method == "GET":
-        form.height.data = physical_model.height
-        form.weight.data = physical_model.weight
-        form.speed.data = physical_model.speed
-        form.highest_jump.data = physical_model.highest_jump
-        form.stamina.data = physical_model.stamina
-
-    followers = current_user.all_followers()
-    following = current_user.all_followed()
-    return render_template("users/user_profile.html", path=profiles_images_path, profile_image=user_profile_image, form=form, followers=followers, followings=following)
+    return render_template("users/user_profile.html")
 
 
 @users_blueprint.route("/users/profile/edit", methods=["GET", "POST"])
 @login_required
 def edit_profile():
     form = EditProfileForm()
-    profiles_images_path = url_for("static", filename="profiles/images")
-    user_profile_image = os.path.join(profiles_images_path, current_user.profile_image_name)
 
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.first_name = form.first_name.data
         current_user.last_name = form.last_name.data
         current_user.date_of_birth = form.date_of_birth.data
-        current_user.biography = form.biography.data
-        if form.profile_image.data:
-            if current_user.profile_image_name != "default.png":
-                delete_image(user_profile_image)
-            image_name, image_path = save_image_locally(form.profile_image.data, "static/profiles/images")
-            current_user.profile_image_name = image_name
+        current_user.school_name = form.school_name.data
 
         db.session.commit()
 
@@ -236,9 +203,9 @@ def edit_profile():
         form.last_name.data = current_user.last_name
         form.email.data = current_user.email
         form.date_of_birth.data = current_user.date_of_birth
-        form.biography.data = current_user.biography
+        form.school_name.data = current_user.school_name
 
-    return render_template('users/edit_profile.html', form=form, profile_image=user_profile_image)  
+    return render_template('users/edit_profile.html', form=form)  
 
 
 
@@ -246,14 +213,14 @@ def edit_profile():
 
 @users_blueprint.route("/users/all_users", methods=["GET", "POST"])
 @login_required
-def users_list_view():
+def users_list_view(): # admin only
     users = UserModel.query.all()
     profiles_images_path = url_for("static", filename="profiles/images")
     return render_template("users/all_users.html", users=users, profile_images_path=profiles_images_path)
 
 @users_blueprint.route("/users/<user_id>", methods=["GET", "POST"])
 @login_required
-def user_detailed_view(user_id):
+def user_detailed_view(user_id): #admin only
     user = UserModel.query.get(int(user_id))
     if user == current_user:
         return redirect(url_for("users_blueprint.profile"))
@@ -265,34 +232,6 @@ def user_detailed_view(user_id):
     following = [UserModel.query.get(following.followed_user_id) for following in current_user.following]
     return render_template("users/user.html", user=user, profile_image=user_profile_image, followers=followers, followings=following)
 
-
-@users_blueprint.route("/users/follow/<user_id>")
-@login_required
-def follow_user(user_id):
-    user = UserModel.query.get(int(user_id))
-    if user == current_user:
-        return redirect(url_for("users_blueprint.profile"))
-
-    if current_user.is_following(user.id) or user.id == current_user.id:
-        return redirect(url_for("main_blueprint.home"))
-        
-    current_user.follow(user)
-    next_page = request.args.get("next")
-    return redirect(next_page) if next_page else redirect(url_for("main_blueprint.home"))
-
-@users_blueprint.route("/users/unfollow/<user_id>")
-@login_required
-def unfollow_user(user_id):
-    user = UserModel.query.get(int(user_id))
-    if user == current_user:
-        return redirect(url_for("users_blueprint.profile"))
-
-    if not current_user.is_following(user.id) or user.id == current_user.id:
-        return redirect(url_for("main_blueprint.home"))
-        
-    current_user.unfollow(user)
-    next_page = request.args.get("next")
-    return redirect(next_page) if next_page else redirect(url_for("main_blueprint.home"))
 
 
 
