@@ -8,7 +8,7 @@ from datetime import datetime
 
 
 @login_manager.user_loader
-def  load_user(user_id):
+def load_user(user_id):
     return UserModel.query.get(int(user_id))
 
 class UserModel(db.Model, UserMixin):
@@ -18,8 +18,6 @@ class UserModel(db.Model, UserMixin):
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(256), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
-    school_name = db.Column(db.String(300), nullable=True)
-    date_of_birth = db.Column(db.DateTime, nullable=False)
     user_type = db.Column(db.String(30), nullable=False)
     email_confirmation_code = db.Column(db.String(5), nullable=True)
     is_confirmed = db.Column(db.Boolean, nullable=False, default=False)
@@ -67,5 +65,6 @@ class UserModel(db.Model, UserMixin):
 
     def __repr__(self):
         return f"{self.full_name()}"
+
 
 

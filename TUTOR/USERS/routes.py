@@ -1,45 +1,16 @@
 from flask import Blueprint, render_template, request, redirect, url_for, make_response, flash, current_app
-from flask_login import current_user, login_user, login_required, logout_user
+from flask_login import current_user, login_user, logout_user
 from TUTOR import db, bcrypt
 from TUTOR.USERS.forms import RegistrationForm, LoginForm, EditProfileForm, ConfirmationCodeForm, RequestResetPasswordForm, ResetPasswordForm, ChangePasswordForm
 from TUTOR.USERS.models import UserModel
 from TUTOR.utils.mail import send_user_confirmation_email, send_user_reset_password_email, send_user_change_password_email, send_email_change_request_email, send_deny_email_change_email
-from TUTOR.utils.utils import  save_image_locally, delete_image, generate_random_digits
+from TUTOR.utils.utils import save_image_locally, delete_image, generate_random_digits, login_required
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 import os
 
 
 users_blueprint = Blueprint("users_blueprint", __name__)
 
-
-@users_blueprint.route("/users/register", methods=["GET", "POST"])
-def register(): # create an email and add email verification functionality
-    if current_user.is_authenticated:
-        return redirect("main_blueprint.home")
-
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        username = form.username.data
-        first_name = form.first_name.data
-        last_name = form.last_name.data
-        email = form.email.data
-        password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
-        date_of_birth = form.date_of_birth.data
-        school_name = form.school_name.data
-        user_type = "student"
-        
-        email_confirmation_code = generate_random_digits(5)
-
-        user = UserModel(username=username, first_name=first_name, last_name=last_name, email=email, password=password,
-        date_of_birth=date_of_birth, school_name=school_name, email_confirmation_code=email_confirmation_code, user_type=user_type)
-
-        db.session.add(user)
-        db.session.commit()
-
-        send_user_confirmation_email(email, email_confirmation_code)
-
-        return redirect(url_for("users_blueprint.email_confirmation"))
-    return render_template('users/register.html', form=form)  
 
 @users_blueprint.route("/users/confirm_email", methods=["GET", "POST"])
 def email_confirmation():
@@ -80,7 +51,8 @@ def login():
                 if user.is_confirmed:
                     login_user(user, remember=True)
                     next_page = request.args.get("next")
-                    return redirect(next_page) if next_page else redirect(url_for("users_blueprint.profile"))
+                    profile_page = url_for("tutors_blueprint.profile") if (current_user.user_type == "tutor") else url_for("tutors_blueprint.profile")
+                    return redirect(next_page) if next_page else redirect(profile_page)
                 else:
                     return redirect(url_for("users_blueprint.login", redirected="not_confirmed"))
             else:
@@ -90,7 +62,7 @@ def login():
     return render_template('users/login.html', form=form)
 
 @users_blueprint.route("/users/logout")
-@login_required
+@login_required([])
 def logout():
     logout_user()
     return redirect(url_for("main_blueprint.home"))
@@ -122,7 +94,7 @@ def reset_password(user_serialized_id):
     return render_template("users/reset_password.html", form=form)
 
 @users_blueprint.route("/users/change_password", methods=["GET", "POST"])
-@login_required
+@login_required([])
 def change_password():
     form = ChangePasswordForm()
     if form.validate_on_submit():
@@ -136,7 +108,7 @@ def change_password():
     return render_template("users/change_password.html", form=form)
 
 @users_blueprint.route("/users/change_email/<user_serialized_id_and_email>", methods=["GET", "POST"])
-@login_required
+@login_required([])
 def change_email(user_serialized_id_and_email):
     user, new_email = UserModel.verify_email_change_token(user_serialized_id_and_email)
     old_email = user.email
@@ -169,68 +141,8 @@ def deny_email_change(user_serialized_id_and_email):
     logout_user()
     return redirect(url_for("users_blueprint.login"))
 
-@users_blueprint.route("/users/profile", methods=["GET", "POST"])
-@login_required
-def profile():
-    return render_template("users/user_profile.html")
 
 
-@users_blueprint.route("/users/profile/edit", methods=["GET", "POST"])
-@login_required
-def edit_profile():
-    form = EditProfileForm()
-
-    if form.validate_on_submit():
-        current_user.username = form.username.data
-        current_user.first_name = form.first_name.data
-        current_user.last_name = form.last_name.data
-        current_user.date_of_birth = form.date_of_birth.data
-        current_user.school_name = form.school_name.data
-
-        db.session.commit()
-
-        # on email change
-        if form.email.data != current_user.email:
-            new_email = form.email.data
-            serialized_id_and_email = current_user.get_email_change_token(new_email=new_email)
-            send_email_change_request_email(new_email, serialized_id_and_email)
-
-        return redirect(url_for("users_blueprint.profile"))
-
-    elif request.method == "GET":
-        form.username.data = current_user.username
-        form.first_name.data = current_user.first_name
-        form.last_name.data = current_user.last_name
-        form.email.data = current_user.email
-        form.date_of_birth.data = current_user.date_of_birth
-        form.school_name.data = current_user.school_name
-
-    return render_template('users/edit_profile.html', form=form)  
-
-
-
-
-
-@users_blueprint.route("/users/all_users", methods=["GET", "POST"])
-@login_required
-def users_list_view(): # admin only
-    users = UserModel.query.all()
-    profiles_images_path = url_for("static", filename="profiles/images")
-    return render_template("users/all_users.html", users=users, profile_images_path=profiles_images_path)
-
-@users_blueprint.route("/users/<user_id>", methods=["GET", "POST"])
-@login_required
-def user_detailed_view(user_id): #admin only
-    user = UserModel.query.get(int(user_id))
-    if user == current_user:
-        return redirect(url_for("users_blueprint.profile"))
-        
-    profiles_images_path = url_for("static", filename="profiles/images")
-    user_profile_image = os.path.join(profiles_images_path, user.profile_image_name)
-
-    followers = [UserModel.query.get(follower.follower_user_id) for follower in current_user.followers]
-    following = [UserModel.query.get(following.followed_user_id) for following in current_user.following]
-    return render_template("users/user.html", user=user, profile_image=user_profile_image, followers=followers, followings=following)
 
 
 

@@ -42,7 +42,7 @@ class LngObj():
     @staticmethod
     def get_current_page_language_list(): # returns current page language list
         current_page, _args_dict = reverse_url_for(request.path)
-        page_language_list = LngObj.get_validated_page_language_list(parse_view_name(current_page)["page_name"], request.cookies.get("language"))
+        page_language_list = LngObj.get_validated_page_language_list(current_page, request.cookies.get("language"))
         return page_language_list
 
     @staticmethod

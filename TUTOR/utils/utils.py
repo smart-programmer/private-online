@@ -7,6 +7,9 @@ import datetime
 from random import randint
 from flask.globals import _app_ctx_stack, _request_ctx_stack
 from werkzeug.urls import url_parse
+from flask_login import current_user
+from flask_login.config import EXEMPT_METHODS
+from functools import wraps
 # from TUTOR.models import Visitors, db
 
 def save_image_locally(image_file, path):
@@ -109,6 +112,23 @@ def parse_view_name(view_name):
 	blueprint_name = view_name_list[0]
 	page_name = view_name_list[1]
 	return {"blueprint_name": blueprint_name, "page_name": page_name}
+
+def login_required(roles=[]):
+	def wrapper(fn):
+		@wraps(fn)
+		def decorated_view(*args, **kwargs):
+			if request.method in EXEMPT_METHODS:
+				return fn(*args, **kwargs)
+			elif current_app.login_manager._login_disabled:
+				return fn(*args, **kwargs)
+			elif not current_user.is_authenticated:
+				return current_app.login_manager.unauthorized()
+			role = current_user.user_type
+			if ( (role not in roles) and (roles != []) ):
+				return current_app.login_manager.unauthorized()      
+			return fn(*args, **kwargs)
+		return decorated_view
+	return wrapper
 
 # def handle_new_visitor(response):
 # 	expire_date = datetime.datetime.now()

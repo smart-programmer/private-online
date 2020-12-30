@@ -1,9 +1,17 @@
 {
-    "home": 
+    "main_blueprint.home": 
     [
         {
             "tag": "test_translation",
             "description": "in allah's name"
+        }
+    ],
+
+    "tutors_blueprint.home": 
+    [
+        {
+            "tag": "test_translation",
+            "description": "thank allah"
         }
     ]
 }

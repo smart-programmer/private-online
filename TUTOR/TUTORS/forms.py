@@ -9,15 +9,13 @@ from TUTOR.USERS.models import UserModel
 from flask_login import current_user
 from TUTOR import bcrypt
 
-class RegistrationForm(FlaskForm):
+class TutorRegistrationForm(FlaskForm):
     first_name = wtforms.StringField("first name", validators=[length(max=128), DataRequired()])
     last_name = wtforms.StringField("last name", validators=[length(max=128), DataRequired()])
     username = wtforms.StringField("username", validators=[length(max=20), DataRequired()])
     email = wtforms.StringField("email", validators=[length(min=3, max=255), DataRequired()])
     password = wtforms.StringField("password", validators=[length(min=3, max=40), DataRequired()])
     confirm_password = wtforms.StringField("confirm password", validators=[length(min=3, max=40), DataRequired(), EqualTo("password")])
-    school_name = wtforms.StringField("School name", validators=[length(max=300)])
-    date_of_birth = DateField("age", format="%Y-%m-%d", validators=[DataRequired()])
     submit = wtforms.SubmitField("Register")
 
     def validate_username(self, username):
@@ -31,24 +29,11 @@ class RegistrationForm(FlaskForm):
             raise ValidationError("this email is already registered, did you forget your password?")
 
 
-class ConfirmationCodeForm(FlaskForm):
-    code = wtforms.StringField("email", validators=[DataRequired()])
-    submit = wtforms.SubmitField("verify")
-
-
-class LoginForm(FlaskForm):
-    username_or_email = wtforms.StringField("username", validators=[length(max=255), DataRequired()])
-    password = wtforms.StringField("password", validators=[DataRequired()])
-    submit = wtforms.SubmitField("Login")
-
-
-class EditProfileForm(FlaskForm):
+class TutorEditProfileForm(FlaskForm):
     first_name = wtforms.StringField("first name", validators=[length(max=128), DataRequired()])
     last_name = wtforms.StringField("last name", validators=[length(max=128), DataRequired()])
     username = wtforms.StringField("username", validators=[length(max=20), DataRequired()])
     email = wtforms.StringField("email", validators=[length(min=3, max=255), DataRequired()])
-    school_name = wtforms.StringField("School name", validators=[length(max=300)])
-    date_of_birth = DateField("age", format="%Y-%m-%d", validators=[DataRequired()])
     submit = wtforms.SubmitField("Edit")
 
     def validate_username(self, username):
@@ -61,30 +46,5 @@ class EditProfileForm(FlaskForm):
         if user and user != current_user:
             raise ValidationError("this other email is already registered, did you forget your password?")
 
-
-class RequestResetPasswordForm(FlaskForm):
-    username_or_email = wtforms.StringField("username or email", validators=[length(min=3, max=255), DataRequired()])
-    submit = wtforms.SubmitField("request reset password")
-
-    def validate_username_or_email(self, username_or_email):
-        user_email = UserModel.query.filter_by(email=username_or_email.data).first()
-        user_username = UserModel.query.filter_by(username=username_or_email.data).first()
-        if not user_username and not user_email:
-            raise ValidationError("no account found with these credentials.")
-
-class ResetPasswordForm(FlaskForm):
-    password = wtforms.StringField("password", validators=[length(min=3, max=40), DataRequired()])
-    confirm_password = wtforms.StringField("confirm password", validators=[length(min=3, max=40), DataRequired(), EqualTo("password")])
-    submit = wtforms.SubmitField("reset password")
-
-class ChangePasswordForm(FlaskForm):
-    old_password = wtforms.StringField("password", validators=[length(min=3, max=40), DataRequired()])
-    new_password = wtforms.StringField("new password", validators=[length(min=3, max=40), DataRequired()])
-    confirm_password = wtforms.StringField("confirm password", validators=[length(min=3, max=40), DataRequired(), EqualTo("new_password")])
-    submit = wtforms.SubmitField("change password")
-
-    def validate_old_password(self, old_password):
-        if not bcrypt.check_password_hash(current_user.password, old_password.data):
-            raise ValidationError("incorrecr password")
 
 

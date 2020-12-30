@@ -14,10 +14,11 @@
         <ul>
         {% if current_user.is_authenticated %}
             {% if current_user.user_type == "tutor" %}
+                <li><a href="{{ url_for('tutors_blueprint.profile') }}">profile</a></li>
                 <li><a href="{{ url_for('users_blueprint.logout') }}">logout</a></li>
             {% endif %}
         {% else %}
-        <li><a href="{{ url_for('tutors_blueprint.register') }}">سجل كمعلم</a> / <a href="{{ url_for('tutors_blueprint.register') }}">سجل كطالب</a></li>
+        <li><a href="{{ url_for('tutors_blueprint.register') }}">سجل كمعلم</a> / <a href="{{ url_for('users_blueprint.register') }}">سجل كطالب</a></li>
         <li><a href="{{ url_for('users_blueprint.login') }}">login</a></li>
         {% endif %}
     </ul>
