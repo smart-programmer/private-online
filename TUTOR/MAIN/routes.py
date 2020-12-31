@@ -20,6 +20,8 @@ def home():
     if current_user.is_authenticated:
         if current_user.user_type == "tutor":
             return redirect(url_for("tutors_blueprint.home"))
+        elif current_user.user_type == "student":
+            return redirect(url_for("students_blueprint.home"))
 
     return render_template("index2.html")
 

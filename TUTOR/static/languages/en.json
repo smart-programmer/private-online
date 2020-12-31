@@ -3,7 +3,7 @@
     [
         {
             "tag": "test_translation",
-            "description": "in allah's name"
+            "description": "online tutoring"
         }
     ],
 
@@ -11,7 +11,15 @@
     [
         {
             "tag": "test_translation",
-            "description": "thank allah"
+            "description": "online tutoring"
+        }
+    ],
+
+    "students_blueprint.home": 
+    [
+        {
+            "tag": "test_translation",
+            "description": "online tutoring"
         }
     ]
 }

@@ -17,16 +17,5 @@
                 <li><a href="{{ url_for('tutors_blueprint.profile') }}">profile</a></li>
                 <li><a href="{{ url_for('users_blueprint.logout') }}">logout</a></li>
             {% endif %}
-        {% else %}
-        <li><a href="{{ url_for('tutors_blueprint.register') }}">سجل كمعلم</a> / <a href="{{ url_for('users_blueprint.register') }}">سجل كطالب</a></li>
-        <li><a href="{{ url_for('users_blueprint.login') }}">login</a></li>
         {% endif %}
-    </ul>
-    <br>
-    <br>
-    <br>
-    <h1>{{ current_page }}</h1>
-    <h1>{{ c }}</h1>
-    <h1>{{ b }}</h1>
-    <h1>{{ d }}</h1>
 {% endblock %}

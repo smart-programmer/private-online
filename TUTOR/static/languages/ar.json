@@ -3,7 +3,7 @@
     [
         {
             "tag": "test_translation",
-            "description": "بسم الله"
+            "description": "رابطة المدرسين الخصوصين"
         }
     ],
 
@@ -11,7 +11,15 @@
     [
         {
             "tag": "test_translation",
-            "description": "الحمد لله"
+            "description": "رابطة المدرسين الخصوصين"
+        }
+    ],
+
+    "students_blueprint.home": 
+    [
+        {
+            "tag": "test_translation",
+            "description": "رابطة المدرسين الخصوصين"
         }
     ]
 }

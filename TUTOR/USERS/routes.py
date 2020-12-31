@@ -51,7 +51,7 @@ def login():
                 if user.is_confirmed:
                     login_user(user, remember=True)
                     next_page = request.args.get("next")
-                    profile_page = url_for("tutors_blueprint.profile") if (current_user.user_type == "tutor") else url_for("tutors_blueprint.profile")
+                    profile_page = url_for("tutors_blueprint.profile") if (current_user.user_type == "tutor") else url_for("students_blueprint.profile")
                     return redirect(next_page) if next_page else redirect(profile_page)
                 else:
                     return redirect(url_for("users_blueprint.login", redirected="not_confirmed"))

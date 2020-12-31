@@ -1,6 +1,6 @@
 {% extends "template.html" %}
 
-{% block title %} Home {% endblock %}
+{% block title %} Home fo Students {% endblock %}
 {% block content %}
     <center>
         <h1 style="color: orange;">{{ get_language_text('test_translation', get_current_page_language_list()) }}</h1>
@@ -13,19 +13,9 @@
         <br><br><br><br><br><br>
         <ul>
         {% if current_user.is_authenticated %}
-            {% if current_user.user_type == "tutor" %}
+            {% if current_user.user_type == "student" %}
+                <li><a href="{{ url_for('students_blueprint.profile') }}">profile</a></li>
                 <li><a href="{{ url_for('users_blueprint.logout') }}">logout</a></li>
             {% endif %}
-        {% else %}
-        <li><a href="{{ url_for('tutors_blueprint.register') }}">سجل كمعلم</a> / <a href="{{ url_for('students_blueprint.register') }}">سجل كطالب</a></li>
-        <li><a href="{{ url_for('users_blueprint.login') }}">login</a></li>
         {% endif %}
-    </ul>
-    <br>
-    <br>
-    <br>
-    <h1>{{ current_page }}</h1>
-    <h1>{{ c }}</h1>
-    <h1>{{ b }}</h1>
-    <h1>{{ d }}</h1>
 {% endblock %}

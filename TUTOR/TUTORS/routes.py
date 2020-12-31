@@ -91,7 +91,7 @@ def edit_profile():
         form.last_name.data = current_user.last_name
         form.email.data = current_user.email
 
-    return render_template('tutors/edit_tutor_profile.html', form=form, tutor_data_model=tutor_data_model)  
+    return render_template('tutors/edit_tutor_profile.html', form=form)  
 
 
 

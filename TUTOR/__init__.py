@@ -25,8 +25,10 @@ def create_app(config_class=Config):
     from TUTOR.MAIN.routes import main_blueprint
     from TUTOR.USERS.routes import users_blueprint
     from TUTOR.TUTORS.routes import tutors_blueprint
+    from TUTOR.STUDENTS.routes import students_blueprint
     app.register_blueprint(main_blueprint)
     app.register_blueprint(users_blueprint)
     app.register_blueprint(tutors_blueprint)
+    app.register_blueprint(students_blueprint)
 
     return app
