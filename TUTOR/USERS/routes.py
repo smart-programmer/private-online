@@ -5,6 +5,7 @@ from TUTOR.USERS.forms import RegistrationForm, LoginForm, EditProfileForm, Conf
 from TUTOR.USERS.models import UserModel
 from TUTOR.utils.mail import send_user_confirmation_email, send_user_reset_password_email, send_user_change_password_email, send_email_change_request_email, send_deny_email_change_email
 from TUTOR.utils.utils import save_image_locally, delete_image, generate_random_digits, login_required
+from TUTOR.settings import ADMIN_TYPES
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 import os
 
@@ -51,8 +52,13 @@ def login():
                 if user.is_confirmed:
                     login_user(user, remember=True)
                     next_page = request.args.get("next")
-                    profile_page = url_for("tutors_blueprint.profile") if (current_user.user_type == "tutor") else url_for("students_blueprint.profile")
-                    return redirect(next_page) if next_page else redirect(profile_page)
+                    if (current_user.user_type == "tutor"):
+                        default_page = url_for("tutors_blueprint.profile")
+                    elif (current_user.user_type == "student"):
+                        default_page = url_for("students_blueprint.profile")
+                    elif (current_user.user_type in ADMIN_TYPES):
+                        default_page = url_for("admins_blueprint.control_panel")
+                    return redirect(next_page) if next_page else redirect(default_page)
                 else:
                     return redirect(url_for("users_blueprint.login", redirected="not_confirmed"))
             else:
