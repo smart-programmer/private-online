@@ -6,7 +6,7 @@ from wtforms_components import SelectField
 from flask_wtf.file import FileField, FileAllowed 
 from wtforms.widgets import TextArea
 from flask_login import current_user
-from TUTOR.USERS.models import UserModel
+from TUTOR.models import UserModel
 
 
 class StudentRegistrationForm(FlaskForm):

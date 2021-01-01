@@ -7,6 +7,7 @@ from datetime import datetime
 
 
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return UserModel.query.get(int(user_id))
@@ -22,9 +23,9 @@ class UserModel(db.Model, UserMixin):
     email_confirmation_code = db.Column(db.String(5), nullable=True)
     is_confirmed = db.Column(db.Boolean, nullable=False, default=False)
     creation_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    admin_data_model = db.relationship('AdminDatamodel', backref='user', lazy=True)
-    tutor_data_model = db.relationship('TutorDatamodel', backref='user', lazy=True)
-    student_data_model = db.relationship('StudentDatamodel', backref='user', lazy=True)
+    admin_data_model = db.relationship('AdminDataModel', backref='user', uselist=False)
+    tutor_data_model = db.relationship('TutorDataModel', backref='user', uselist=False)
+    student_data_model = db.relationship('StudentDataModel', backref='user', uselist=False)
 
     # The Default Expire Time is Equal to 30 Mins
 
@@ -68,6 +69,50 @@ class UserModel(db.Model, UserMixin):
 
     def __repr__(self):
         return f"{self.full_name()}"
+
+
+
+courses = db.Table('courses',
+    db.Column('course_model_id', db.Integer, db.ForeignKey('course_model.id'), primary_key=True),
+    db.Column('student_data_model_id', db.Integer, db.ForeignKey('student_data_model.id'), primary_key=True)
+)
+
+
+
+class AdminDataModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'))
+
+
+
+class CourseModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.String(255), nullable=False)
+    creation_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    tutor_id = db.Column(db.Integer, db.ForeignKey('tutor_data_model.id'),
+        nullable=False)
+
+
+class TutorDataModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    is_accepted = db.Column(db.Boolean, nullable=False, default=False)
+    courses = db.relationship('CourseModel', backref='tutor', lazy=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'))
+
+
+class StudentDataModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    school_name = db.Column(db.String(300), nullable=False)
+    date_of_birth = db.Column(db.DateTime, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'))
+    courses = db.relationship('CourseModel', secondary=courses, lazy='subquery',
+        backref=db.backref('students', lazy=True))
+
+
+
+    def age(self):
+        return int((datetime.date(datetime.utcnow()) - datetime.date(self.date_of_birth)).days / 365)
 
 
 

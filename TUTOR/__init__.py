@@ -23,14 +23,14 @@ def create_app(config_class=Config):
     mail.init_app(app)
 
     from TUTOR.MAIN.routes import main_blueprint
-    from TUTOR.USERS.routes import users_blueprint
     from TUTOR.TUTORS.routes import tutors_blueprint
     from TUTOR.STUDENTS.routes import students_blueprint
     from TUTOR.ADMINISTRATION.routes import admins_blueprint
+    from TUTOR.USERS.routes import users_blueprint
     app.register_blueprint(main_blueprint)
-    app.register_blueprint(users_blueprint)
     app.register_blueprint(tutors_blueprint)
     app.register_blueprint(students_blueprint)
     app.register_blueprint(admins_blueprint)
+    app.register_blueprint(users_blueprint)
 
     return app

@@ -4,7 +4,7 @@
 
 {% block content %}
     <center>
-        <h1 style="color: orange;">Tutor Profile</h1>
+        <h1 style="color: orange;">Student Profile</h1>
     </center>
     <br><br><br>
     <a href="{{ url_for('students_blueprint.home') }}">Home</a>
@@ -28,10 +28,10 @@
     username: {{ current_user.username }}
     <br>
 
-    school name: {{ current_user.tutor_data_model.school_name }}
+    school name: {{ current_user.student_data_model.school_name }}
     <br>
 
-    age: {{ current_user.tutor_data_model.age() }}
+    age: {{ current_user.student_data_model.age() }}
     <br>
 
 

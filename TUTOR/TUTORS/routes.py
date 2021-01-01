@@ -2,8 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, make_r
 from flask_login import current_user, login_user, logout_user
 from TUTOR import db, bcrypt
 from TUTOR.TUTORS.forms import TutorRegistrationForm, TutorEditProfileForm
-from TUTOR.USERS.models import UserModel
-from TUTOR.TUTORS.models import TutorDataModel
+from TUTOR.models import UserModel, TutorDataModel
 from TUTOR.utils.mail import send_user_confirmation_email
 from TUTOR.utils.utils import generate_random_digits, login_required
 from TUTOR.utils.languages import LngObj
