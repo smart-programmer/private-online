@@ -22,9 +22,9 @@ class UserModel(db.Model, UserMixin):
     email_confirmation_code = db.Column(db.String(5), nullable=True)
     is_confirmed = db.Column(db.Boolean, nullable=False, default=False)
     creation_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    admin_data_model = db.relationship('AdminDatamodel', backref='user', lazy=True, nullable=True)
-    tutor_data_model = db.relationship('TutorDatamodel', backref='user', lazy=True, nullable=True)
-    student_data_model = db.relationship('StudentDatamodel', backref='user', lazy=True, nullable=True)
+    admin_data_model = db.relationship('AdminDatamodel', backref='user', lazy=True)
+    tutor_data_model = db.relationship('TutorDatamodel', backref='user', lazy=True)
+    student_data_model = db.relationship('StudentDatamodel', backref='user', lazy=True)
 
     # The Default Expire Time is Equal to 30 Mins
 
