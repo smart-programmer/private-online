@@ -1,0 +1,8 @@
+{% extends "template.html" %}
+
+{% block title %} Home admins{% endblock %}
+{% block content %}
+    {% for user in users %}
+        <p>{{ user.username }}</p>
+    {% endfor %}
+{% endblock %}

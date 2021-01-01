@@ -6,7 +6,8 @@ from TUTOR.USERS.models import UserModel
 from TUTOR.ADMINISTRATION.models import AdminDataModel
 from TUTOR.utils.mail import send_user_confirmation_email, send_user_reset_password_email, send_user_change_password_email, send_email_change_request_email, send_deny_email_change_email
 from TUTOR.utils.utils import save_image_locally, delete_image, generate_random_digits, login_required
-from TUTOR.settings import ADMIN_TYPES
+from TUTOR.settings import ADMIN_TYPES, LANGUAGES
+from TUTOR.utils.languages import LngObj
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 import os
 
@@ -19,22 +20,27 @@ def utility_processor():
 
 
 @admins_blueprint.route('/admins')
-@login_required([i for i in ADMIN_TYPES])
+@login_required(ADMIN_TYPES)
 def home():
     return render_template("admins/index.html")
 
 @admins_blueprint.route("/admins/control-panel", methods=["GET", "POST"])
-@login_required([i for i in ADMIN_TYPES])
+@login_required(ADMIN_TYPES)
 def control_panel(): 
-    # add course 
-    # delete course 
-    # delete student
-    # delete tutor 
-    # delete course
-    # delete student from course
-    # replace teacher from course 
-    # change course data like image/name/period/max or min students....
-    return render_template('admins/control_panel.html')  
+    # add course *
+    # delete course **
+    # delete student ***
+    # delete tutor ***
+    # delete student from course **
+    # replace teacher from course  **
+    # accept tutor *
+    # change course data like image/name/period/max or min students.... *
+    # if admin1 *
+        # register admins 
+        # delete admins
+        # change admins info
+    return render_template('admins/control_panel.html', admin_types=ADMIN_TYPES)
+
 
 
 @admins_blueprint.route("/admins/register", methods=["GET", "POST"])
@@ -57,7 +63,7 @@ def register(): # create an email and add email verification functionality
 
         db.session.add(user)
         db.session.commit()
-        admin_date_model = AdminDataModel(user_id=user.id)
+        admin_date_model = AdminDataModel(user=user)
         db.session.add(admin_date_model)
         db.session.commit()
 
@@ -69,13 +75,23 @@ def register(): # create an email and add email verification functionality
 
 
 
+@admins_blueprint.route("/admins/courses", methods=["GET"])
+@login_required(ADMIN_TYPES)
+def courses():
+    return render_template("admins/admin_courses.html")
 
 
+@admins_blueprint.route("/users/all_users", methods=["GET", "POST"])
+@login_required(ADMIN_TYPES)
+def users_list_view(): # admin only
+    users = UserModel.query.all()
+    return render_template("admins/users.html", users=users)
 
-@admins_blueprint.route("/admins/profile", methods=["GET"])
-@login_required([i for i in ADMIN_TYPES])
-def profile():
-    return render_template("admins/admin_profile.html")
+
+# @admins_blueprint.route("/admins/profile", methods=["GET"])
+# @login_required([i for i in ADMIN_TYPES])
+# def profile():
+#     return render_template("admins/admin_profile.html")
 
 
 # @users_blueprint.route("/users/profile/edit", methods=["GET", "POST"])

@@ -5,8 +5,8 @@ class Config:
     SQLALCHEMY_DATABASE_URI = "sqlite:///../sqlite.db" # NOTE: the flask migration moudle/package database url must be relative to the file that will be run when migrating of
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
-    MAIL_USERNAME = 'webdevcompany123@gmail.com'
-    MAIL_PASSWORD = "oddirclaonixpurg"
+    MAIL_USERNAME = 'horizonlighttrainingcentre@gmail.com'
+    MAIL_PASSWORD = "ofzwnsduwbjwylea"
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
 

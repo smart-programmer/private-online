@@ -48,7 +48,7 @@ def register(): # create an email and add email verification functionality
 
         db.session.add(user)
         db.session.commit()
-        student_data_model = StudentDataModel(user_id=user.id, school_name=school_name, date_of_birth=date_of_birth)
+        student_data_model = StudentDataModel(user=user, school_name=school_name, date_of_birth=date_of_birth)
         db.session.add(student_data_model)
         db.session.commit()
 
@@ -61,14 +61,13 @@ def register(): # create an email and add email verification functionality
 @students_blueprint.route("/students/profile", methods=["GET", "POST"])
 @login_required(["student"])
 def profile():
-    student_data_model = StudentDataModel.query.get(current_user.id)
-    return render_template("students/student_profile.html", student_data_model=student_data_model)
+    return render_template("students/student_profile.html")
 
 
 @students_blueprint.route("/students/profile/edit", methods=["GET", "POST"])
 @login_required(["student"])
 def edit_profile():
-    student_data_model = StudentDataModel.query.get(current_user.id)
+    student_data_model = current_app.student_data_model
 
     form = StudentEditProfileForm()
 

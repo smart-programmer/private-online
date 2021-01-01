@@ -10,13 +10,15 @@
        {% include "snippets/language_select.html" %}
 
 
-        <br><br><br><br><br><br>
+        <br><br><br>
+        name: {{ current_user.full_name() }}
+        <br>
+        username: {{ current_user.username }}
+        <br>
+        email: {{ current_user.email }}
+        <br><br><br>
         <ul>
-        {% if current_user.is_authenticated %}
-            {% if current_user.user_type == "admin1" or current_user.user_type == "admin2" %}
-                <li><a href="{{ url_for('admins_blueprint.control_panel') }}">control_panel</a></li>
-                <li><a href="{{ url_for('admins_blueprint.profile') }}">profile</a></li>
-                <li><a href="{{ url_for('users_blueprint.logout') }}">logout</a></li>
-            {% endif %}
-        {% endif %}
+            <li><a href="{{ url_for('admins_blueprint.courses') }}">Courses</a></li>
+            <li><a href="{{ url_for('admins_blueprint.users_list_view') }}">Users</a></li>
+        </ul>
 {% endblock %}

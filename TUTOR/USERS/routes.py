@@ -52,6 +52,7 @@ def login():
                 if user.is_confirmed:
                     login_user(user, remember=True)
                     next_page = request.args.get("next")
+                    default_page = None
                     if (current_user.user_type == "tutor"):
                         default_page = url_for("tutors_blueprint.profile")
                     elif (current_user.user_type == "student"):

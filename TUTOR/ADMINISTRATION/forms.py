@@ -20,7 +20,7 @@ class AdminRegistrationForm(FlaskForm):
     last_name = wtforms.StringField("last name", validators=[length(max=128), DataRequired()])
     username = wtforms.StringField("username", validators=[length(max=20), DataRequired()])
     email = wtforms.StringField("email", validators=[length(min=3, max=255), DataRequired()])
-    admin_type = wtforms.SelectField("admin type", choices=damin_types, validators=[length(min=3, max=255), DataRequired()])
+    admin_type = wtforms.SelectField("admin type", choices=admin_types, validators=[length(min=3, max=255), DataRequired()])
     password = wtforms.StringField("password", validators=[length(min=3, max=40), DataRequired()])
     confirm_password = wtforms.StringField("confirm password", validators=[length(min=3, max=40), DataRequired(), EqualTo("password")])
     submit = wtforms.SubmitField("Register")

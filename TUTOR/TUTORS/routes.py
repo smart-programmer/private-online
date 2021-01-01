@@ -46,7 +46,7 @@ def register(): # create an email and add email verification functionality
 
         db.session.add(user)
         db.session.commit()
-        tutor_data_model = TutorDataModel(user_id=user.id)
+        tutor_data_model = TutorDataModel(user=user)
         db.session.add(tutor_data_model)
         db.session.commit()
 
@@ -59,14 +59,13 @@ def register(): # create an email and add email verification functionality
 @tutors_blueprint.route("/tutors/profile", methods=["GET", "POST"])
 @login_required(["tutor"])
 def profile():
-    tutor_data_model = TutorDataModel.query.get(current_user.id)
-    return render_template("tutors/tutor_profile.html", tutor_data_model=tutor_data_model)
+    return render_template("tutors/tutor_profile.html")
 
 
 @tutors_blueprint.route("/tutors/profile/edit", methods=["GET", "POST"])
 @login_required(["tutor"])
 def edit_profile():
-    tutor_data_model = TutorDataModel.query.get(current_user.id)
+    tutor_data_model = current_user.tutor_data_model
 
     form = TutorEditProfileForm()
 
