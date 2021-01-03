@@ -95,7 +95,7 @@ def edit_profile():
 
 
 
-@tutors_blueprint.route("/courses/create-course", methods=["GET", "POST"])
+@tutors_blueprint.route("/tutors/create-course", methods=["GET", "POST"])
 @login_required(["tutor"])
 def add_course():
     form = CourseCreationForm()

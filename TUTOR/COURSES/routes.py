@@ -18,8 +18,8 @@ def utility_processor():
 
 @courses_blueprint.route("/courses")
 def courses():
-    courses = CourseModel.query.all()
-    return render_template("courses.html", courses=courses)
+    all_courses = CourseModel.query.all()
+    return render_template("courses.html", all_courses=all_courses)
 
 @courses_blueprint.route("/courses/<course_id>")
 def course(course_id):
@@ -27,19 +27,6 @@ def course(course_id):
     return render_template("course.html", course=course)
 
 
-@courses_blueprint.route("/courses/create-course")
-@login_required(["tutor"])
-def add_course():
-    form = CourseCreationForm()
-
-    if form.validate_on_submit():
-        course_name = form.name.data
-        course_description = form.description.data
-        course = CourseModel(name=course_name, descricption=course_description, created_by_admin=False)
-        db.session.add(courses)
-        db.session.commit()
-        return redirect(url_for("courses_blueprint.courses"))
-    return render_template("course.html", course=course)
 
 
 
