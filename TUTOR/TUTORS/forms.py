@@ -51,5 +51,5 @@ class TutorEditProfileForm(FlaskForm):
 
 class CourseCreationForm(FlaskForm):
     name = wtforms.StringField("course name", validators=[length(max=130), DataRequired()])
-    description = wtforms.StringField("description", validators=[length(max=1000), DataRequired()])
+    description = wtforms.StringField("description", validators=[length(max=1000), DataRequired()], widget=TextArea())
     submit = wtforms.SubmitField("create course")

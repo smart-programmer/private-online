@@ -16,9 +16,10 @@
             <h3 style="color: red;"> {{ error }}</h3> 
         {% endfor %}
         <br>
+        <br>
 
         {{ form.description.name }}
-        {{ form.description() }}
+        {{ form.description(cols="50", rows="4") }}
         {% for error in form.description.errors %}
             <h3 style="color: red;"> {{ error }}</h3> 
         {% endfor %}
