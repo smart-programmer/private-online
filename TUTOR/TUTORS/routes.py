@@ -103,7 +103,7 @@ def add_course():
     if form.validate_on_submit():
         course_name = form.name.data
         course_description = form.description.data
-        course = CourseModel(name=course_name, description=course_description, created_by_admin=False, tutor=current_user)
+        course = CourseModel(name=course_name, description=course_description, created_by_admin=False, tutor=current_user.tutor_data_model)
         db.session.add(course)
         db.session.commit()
         return redirect(url_for("courses_blueprint.courses"))

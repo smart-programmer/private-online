@@ -91,7 +91,7 @@ class CourseModel(db.Model):
     description = db.Column(db.String(1000), nullable=False)
     created_by_admin = db.Column(db.Boolean, nullable=False)
     creation_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    tutor_id = db.Column(db.Integer, db.ForeignKey('tutor_data_model.id'),
+    tutor_data_model_id = db.Column(db.Integer, db.ForeignKey('tutor_data_model.id'),
         nullable=False)
 
     def number_of_participants(self):

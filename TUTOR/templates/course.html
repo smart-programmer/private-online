@@ -5,9 +5,12 @@
    
     
     <h1>{{course.name}}</h1>
-    <h1>{{course.description}}</h1>
-    <h1>{{course.number_of_participants()}}</h1>
-    <h1>{{course.tutor}}</h1>
+    <br>
+    <h3>الوصف: {{course.description}}</h1>
+    <br>
+    <h3>عدد الطلاب: {{course.number_of_participants()}}</h1>
+    <br>
+    <h3>المدرس: {{course.tutor.user.full_name()}}</h1>
     
     
     

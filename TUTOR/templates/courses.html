@@ -4,7 +4,7 @@
 {% block content %}
    
     {% for course in all_courses %}
-        <h1>{{course.name}}</h1>234234
+        <a href="{{ url_for('courses_blueprint.course', course_id=course.id) }}"><h1>{{course.name}}</h1></a>
     {% endfor %}
     
 {% endblock %}
