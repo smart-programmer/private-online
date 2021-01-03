@@ -2,11 +2,11 @@ from flask import Blueprint, render_template, make_response, current_app, reques
 from flask_login import current_user
 from TUTOR.utils.utils import reverse_url_for, parse_view_name
 from TUTOR.utils.languages import LngObj
-from TUTOR.settings import LANGUAGES
+from TUTOR.settings import LANGUAGES, ADMIN_TYPES
 import logging
 import os
 
-# a blueprint for unauthorised users 
+# a blueprint for unauthorised users or views for all types of users
 
 main_blueprint = Blueprint("main_blueprint", __name__)
 
@@ -17,13 +17,17 @@ def utility_processor():
 
 @main_blueprint.route('/')
 def home():
-    if current_user.is_authenticated:
-        if current_user.user_type == "tutor":
-            return redirect(url_for("tutors_blueprint.home"))
-        elif current_user.user_type == "student":
-            return redirect(url_for("students_blueprint.home"))
+    return render_template("index2.html", admin_types=ADMIN_TYPES)
 
-    return render_template("index2.html")
+
+@main_blueprint.route('/register')
+def register():
+    return render_template("register.html")
+
+
+
+
+
 
 
 @main_blueprint.route("/change_language")

@@ -66,7 +66,7 @@ def profile():
 @students_blueprint.route("/students/profile/edit", methods=["GET", "POST"])
 @login_required(["student"])
 def edit_profile():
-    student_data_model = current_app.student_data_model
+    student_data_model = current_user.student_data_model
 
     form = StudentEditProfileForm()
 

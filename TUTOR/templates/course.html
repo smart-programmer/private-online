@@ -1,0 +1,14 @@
+{% extends "template.html" %}
+
+{% block title %} COurses {% endblock %}
+{% block content %}
+   
+    
+    <h1>{{course.name}}</h1>
+    <h1>{{course.description}}</h1>
+    <h1>{{course.number_of_participants()}}</h1>
+    <h1>{{course.tutor}}</h1>
+    
+    
+    
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "template.html" %}
+
+{% block title %} Edit {% endblock %}
+
+{% block content %}
+    <center>
+        <h1 style="color: orange;">Create Course</h1>
+    </center>
+    <br><br><br>
+    <form action="" method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+
+        {{ form.name.name }}
+        {{ form.name() }}
+        {% for error in form.name.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+
+        {{ form.description.name }}
+        {{ form.description() }}
+        {% for error in form.description.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+        
+
+        {{ form.submit() }}
+        {% for error in form.errors %}
+            <h3 style="color: red;">error in field: {{ error }}</h3> 
+        {% endfor %}
+    </form>
+{% endblock %}

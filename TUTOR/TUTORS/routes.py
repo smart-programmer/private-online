@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, make_response, flash, current_app
 from flask_login import current_user, login_user, logout_user
 from TUTOR import db, bcrypt
-from TUTOR.TUTORS.forms import TutorRegistrationForm, TutorEditProfileForm
-from TUTOR.models import UserModel, TutorDataModel
+from TUTOR.TUTORS.forms import TutorRegistrationForm, TutorEditProfileForm, CourseCreationForm
+from TUTOR.models import UserModel, TutorDataModel, CourseModel
 from TUTOR.utils.mail import send_user_confirmation_email
 from TUTOR.utils.utils import generate_random_digits, login_required
 from TUTOR.utils.languages import LngObj
@@ -95,7 +95,16 @@ def edit_profile():
 
 
 
+@tutors_blueprint.route("/courses/create-course", methods=["GET", "POST"])
+@login_required(["tutor"])
+def add_course():
+    form = CourseCreationForm()
 
-
-
-
+    if form.validate_on_submit():
+        course_name = form.name.data
+        course_description = form.description.data
+        course = CourseModel(name=course_name, description=course_description, created_by_admin=False, tutor=current_user)
+        db.session.add(course)
+        db.session.commit()
+        return redirect(url_for("courses_blueprint.courses"))
+    return render_template("tutors/create_course.html", form=form)

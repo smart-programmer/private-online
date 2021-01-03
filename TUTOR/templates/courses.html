@@ -1,0 +1,10 @@
+{% extends "template.html" %}
+
+{% block title %} COurses {% endblock %}
+{% block content %}
+   
+    {% for course in courses %}
+        <h1>{{course.name}}</h1>
+    {% endfor %}
+    
+{% endblock %}

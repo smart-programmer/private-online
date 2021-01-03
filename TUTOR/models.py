@@ -87,17 +87,21 @@ class AdminDataModel(db.Model):
 
 class CourseModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(130), nullable=False)
+    description = db.Column(db.String(1000), nullable=False)
+    created_by_admin = db.Column(db.Boolean, nullable=False)
     creation_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     tutor_id = db.Column(db.Integer, db.ForeignKey('tutor_data_model.id'),
         nullable=False)
+
+    def number_of_participants(self):
+        return len(self.students)
 
 
 class TutorDataModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     is_accepted = db.Column(db.Boolean, nullable=False, default=False)
-    courses = db.relationship('CourseModel', backref='tutor', lazy=True)
+    courses = db.relationship('CourseModel', backref='tutor')
     user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'))
 
 

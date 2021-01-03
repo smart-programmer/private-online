@@ -3,23 +3,7 @@
     [
         {
             "tag": "test_translation",
-            "description": "رابطة المدرسين الخصوصين"
-        }
-    ],
-
-    "tutors_blueprint.home": 
-    [
-        {
-            "tag": "test_translation",
-            "description": "رابطة المدرسين الخصوصين"
-        }
-    ],
-
-    "students_blueprint.home": 
-    [
-        {
-            "tag": "test_translation",
-            "description": "رابطة المدرسين الخصوصين"
+            "description": "مركز تدريب افق الضوء"
         }
     ]
 }
