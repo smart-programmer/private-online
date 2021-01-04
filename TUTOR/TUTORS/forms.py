@@ -8,12 +8,20 @@ from wtforms.widgets import TextArea
 from TUTOR.models import UserModel
 from flask_login import current_user
 from TUTOR import bcrypt
+from TUTOR.utils.utils import list_to_select_compatable_tuple
+
+
+genders = (
+    ("1", "male"),
+    ("0", "female")
+)
 
 class TutorRegistrationForm(FlaskForm):
     first_name = wtforms.StringField("first name", validators=[length(max=128), DataRequired()])
     last_name = wtforms.StringField("last name", validators=[length(max=128), DataRequired()])
     username = wtforms.StringField("username", validators=[length(max=20), DataRequired()])
     email = wtforms.StringField("email", validators=[length(min=3, max=255), DataRequired()])
+    gender = wtforms.SelectField("gender", choices=genders, validators=[DataRequired()])
     password = wtforms.StringField("password", validators=[length(min=3, max=40), DataRequired()])
     confirm_password = wtforms.StringField("confirm password", validators=[length(min=3, max=40), DataRequired(), EqualTo("password")])
     submit = wtforms.SubmitField("Register")
@@ -52,4 +60,5 @@ class TutorEditProfileForm(FlaskForm):
 class CourseCreationForm(FlaskForm):
     name = wtforms.StringField("course name", validators=[length(max=130), DataRequired()])
     description = wtforms.StringField("description", validators=[length(max=1000), DataRequired()], widget=TextArea())
+    price = IntegerField("price", validators=[DataRequired()])
     submit = wtforms.SubmitField("create course")

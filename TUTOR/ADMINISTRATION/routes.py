@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, make_response, flash, current_app
 from flask_login import current_user, login_user, logout_user
 from TUTOR import db, bcrypt
-from TUTOR.ADMINISTRATION.forms import AdminRegistrationForm
-from TUTOR.models import UserModel, AdminDataModel
+from TUTOR.ADMINISTRATION.forms import AdminRegistrationForm, AdminCourseCreationForm
+from TUTOR.models import UserModel, AdminDataModel, CourseModel
 from TUTOR.utils.mail import send_user_confirmation_email, send_user_reset_password_email, send_user_change_password_email, send_email_change_request_email, send_deny_email_change_email
-from TUTOR.utils.utils import save_image_locally, delete_image, generate_random_digits, login_required
+from TUTOR.utils.utils import save_image_locally, delete_image, generate_random_digits, login_required, list_to_select_compatable_tuple
 from TUTOR.settings import ADMIN_TYPES, LANGUAGES
 from TUTOR.utils.languages import LngObj
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -15,7 +15,7 @@ admins_blueprint = Blueprint("admins_blueprint", __name__)
 
 @admins_blueprint.context_processor
 def utility_processor():
-    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES)
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES)
 
 
 @admins_blueprint.route('/admins')
@@ -38,7 +38,7 @@ def control_panel():
         # register admins 
         # delete admins
         # change admins info
-    return render_template('admins/control_panel.html', admin_types=ADMIN_TYPES)
+    return render_template('admins/control_panel.html')
 
 
 
@@ -77,10 +77,29 @@ def register(): # create an email and add email verification functionality
 @admins_blueprint.route("/admins/courses", methods=["GET"])
 @login_required(ADMIN_TYPES)
 def courses():
-    return render_template("admins/admin_courses.html")
+    return render_template("admins/courses.html")
+
+@admins_blueprint.route("/admins/courses/create-course", methods=["GET", "POST"])
+@login_required(ADMIN_TYPES)
+def add_course():
+    form = AdminCourseCreationForm()
+    tutors = UserModel.query.filter_by(user_type="tutor").all()
+    tutors_select_tuple = list_to_select_compatable_tuple(tutors, "id", "full_name")
+    form.tutors.choices = tutors_select_tuple
+
+    if form.validate_on_submit():
+        course_name = form.name.data
+        course_description = form.description.data
+        price = form.price.data
+        tutor_data_model = UserModel.query.get(int(form.tutors.data)).tutor_data_model
+        course = CourseModel(name=course_name, description=course_description, created_by_admin=True, tutor=tutor_data_model, price=price)
+        db.session.add(course)
+        db.session.commit()
+        return redirect(url_for("courses_blueprint.courses"))
+    return render_template("admins/create_course.html", form=form)
 
 
-@admins_blueprint.route("/users/all_users", methods=["GET", "POST"])
+@admins_blueprint.route("/admins/all_users", methods=["GET", "POST"])
 @login_required(ADMIN_TYPES)
 def users_list_view(): # admin only
     users = UserModel.query.all()

@@ -130,6 +130,13 @@ def login_required(roles=[]):
 		return decorated_view
 	return wrapper
 
+def list_to_select_compatable_tuple(ls, identifier, front):
+	base_list = []
+	for obj in ls:
+		base_list.append(tuple([str(getattr(obj, identifier)), str(getattr(obj, front))]))
+	return tuple(base_list)
+
+
 # def handle_new_visitor(response):
 # 	expire_date = datetime.datetime.now()
 # 	expire_date = expire_date + datetime.timedelta(days=100000)

@@ -1,8 +1,41 @@
 {% extends "template.html" %}
-
-{% block title %} Home admins{% endblock %}
+{% block head %}<link rel="stylesheet" href="{{ url_for('static', filename='css/filtered_table.css') }}" >{% endblock %}
+{% block title %}admin users{% endblock %}
 {% block content %}
-    {% for user in users %}
-        <p>{{ user.username }}</p>
-    {% endfor %}
+<div class="filtered_table">
+    <table class="table table-striped table-bordered table-hover table-dark">
+        <thead>
+          <tr>
+            <th scope="col">id</th>
+            <th scope="col">الاسم الاول</th>
+            <th scope="col">الاسم الأخير</th>
+            <th scope="col">اسم المستخدم</th>
+            <th scope="col">الايميل</th>
+            <th scope="col">الجنس</th>
+            <th scope="col">النوع</th>
+            <th scope="col">actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+          <tr>
+            <a href="#">
+            <th scope="row">{{ user.id }}</th></a>
+            <td>{{ user.first_name }}</td>
+            <td>{{ user.last_name }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.gender }}</td>
+            <td>{{ user.user_type }}</td>
+            <td><a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-bar-up" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M3.646 11.854a.5.5 0 0 0 .708 0L8 8.207l3.646 3.647a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 0 0 0 .708zM2.4 5.2c0 .22.18.4.4.4h10.4a.4.4 0 0 0 0-.8H2.8a.4.4 0 0 0-.4.4z"/>
+              </svg></a> / <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
+              </svg></a></td>
+        
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
 {% endblock %}

@@ -6,7 +6,7 @@ from TUTOR.models import UserModel, StudentDataModel
 from TUTOR.utils.mail import send_user_confirmation_email
 from TUTOR.utils.utils import generate_random_digits, login_required
 from TUTOR.utils.languages import LngObj
-from TUTOR.settings import LANGUAGES
+from TUTOR.settings import LANGUAGES, ADMIN_TYPES
 
 
 students_blueprint = Blueprint("students_blueprint", __name__)
@@ -14,7 +14,7 @@ students_blueprint = Blueprint("students_blueprint", __name__)
 
 @students_blueprint.context_processor
 def utility_processor():
-    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES)
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES)
 
 
 @students_blueprint.route('/students')
@@ -35,6 +35,7 @@ def register(): # create an email and add email verification functionality
         last_name = form.last_name.data
         email = form.email.data
         school_name = form.school_name.data
+        gender = bool(int(form.gender.data))
         date_of_birth = form.date_of_birth.data
         password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
         user_type = "student"
@@ -42,7 +43,7 @@ def register(): # create an email and add email verification functionality
         email_confirmation_code = generate_random_digits(5)
 
         user = UserModel(username=username, first_name=first_name, last_name=last_name, email=email, password=password,
-        email_confirmation_code=email_confirmation_code, user_type=user_type)
+        email_confirmation_code=email_confirmation_code, user_type=user_type, _gender=gender)
 
 
         db.session.add(user)

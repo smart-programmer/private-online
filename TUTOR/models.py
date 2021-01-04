@@ -20,6 +20,7 @@ class UserModel(db.Model, UserMixin):
     email = db.Column(db.String(256), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     user_type = db.Column(db.String(30), nullable=False)
+    _gender = db.Column(db.Boolean, nullable=False, default=True)
     email_confirmation_code = db.Column(db.String(5), nullable=True)
     is_confirmed = db.Column(db.Boolean, nullable=False, default=False)
     creation_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -29,11 +30,9 @@ class UserModel(db.Model, UserMixin):
 
     # The Default Expire Time is Equal to 30 Mins
 
+    @property
     def full_name(self):
         return self.first_name + " " + self.last_name
-
-    def age(self):
-        return int((datetime.date(datetime.utcnow()) - datetime.date(self.date_of_birth)).days / 365)
 
     def get_reset_token(self, expire_seconds=1800):
         s = Serializer(current_app.config["SECRET_KEY"], expire_seconds)
@@ -66,9 +65,13 @@ class UserModel(db.Model, UserMixin):
         
         return UserModel.query.get(user_id), user_email
 
+    @property
+    def gender(self):
+        return "male" if self._gender else "female"
+
 
     def __repr__(self):
-        return f"{self.full_name()}"
+        return f"{self.full_name}"
 
 
 
@@ -89,11 +92,13 @@ class CourseModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(130), nullable=False)
     description = db.Column(db.String(1000), nullable=False)
+    price = db.Column(db.Integer, nullable=False)
     created_by_admin = db.Column(db.Boolean, nullable=False)
     creation_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     tutor_data_model_id = db.Column(db.Integer, db.ForeignKey('tutor_data_model.id'),
         nullable=False)
 
+    @property
     def number_of_participants(self):
         return len(self.students)
 
@@ -105,6 +110,7 @@ class TutorDataModel(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'))
 
 
+
 class StudentDataModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     school_name = db.Column(db.String(300), nullable=False)
@@ -114,7 +120,7 @@ class StudentDataModel(db.Model):
         backref=db.backref('students', lazy=True))
 
 
-
+    @property
     def age(self):
         return int((datetime.date(datetime.utcnow()) - datetime.date(self.date_of_birth)).days / 365)
 

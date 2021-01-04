@@ -32,6 +32,13 @@
         {% endfor %}
         <br>
 
+        {{ form.gender.name }}
+        {{ form.gender() }}
+        {% for error in form.gender.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+
 
         {{ form.password.name }}
         {{ form.password() }}

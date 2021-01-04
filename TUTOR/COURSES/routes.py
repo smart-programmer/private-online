@@ -13,7 +13,7 @@ courses_blueprint = Blueprint("courses_blueprint", __name__)
 
 @courses_blueprint.context_processor
 def utility_processor():
-    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES)
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES)
 
 
 @courses_blueprint.route("/courses")

@@ -1,6 +1,6 @@
 {% extends "template.html" %}
 
-{% block title %} COurses {% endblock %}
+{% block title %} Course {% endblock %}
 {% block content %}
    
     
@@ -8,9 +8,9 @@
     <br>
     <h3>الوصف: {{course.description}}</h1>
     <br>
-    <h3>عدد الطلاب: {{course.number_of_participants()}}</h1>
+    <h3>عدد الطلاب: {{course.number_of_participants}}</h1>
     <br>
-    <h3>المدرس: {{course.tutor.user.full_name()}}</h1>
+    <h3>المدرس: {{course.tutor.user.full_name}}</h1>
     
     
     

@@ -5,12 +5,17 @@ from TUTOR.USERS.forms import RegistrationForm, LoginForm, EditProfileForm, Conf
 from TUTOR.models import UserModel
 from TUTOR.utils.mail import send_user_confirmation_email, send_user_reset_password_email, send_user_change_password_email, send_email_change_request_email, send_deny_email_change_email
 from TUTOR.utils.utils import save_image_locally, delete_image, generate_random_digits, login_required
-from TUTOR.settings import ADMIN_TYPES
+from TUTOR.utils.languages import LngObj
+from TUTOR.settings import ADMIN_TYPES, LANGUAGES
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 import os
 
 
 users_blueprint = Blueprint("users_blueprint", __name__)
+
+@users_blueprint.context_processor
+def utility_processor():
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES)
 
 
 @users_blueprint.route("/users/confirm_email", methods=["GET", "POST"])

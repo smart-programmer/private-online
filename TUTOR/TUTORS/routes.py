@@ -6,7 +6,7 @@ from TUTOR.models import UserModel, TutorDataModel, CourseModel
 from TUTOR.utils.mail import send_user_confirmation_email
 from TUTOR.utils.utils import generate_random_digits, login_required
 from TUTOR.utils.languages import LngObj
-from TUTOR.settings import LANGUAGES
+from TUTOR.settings import LANGUAGES, ADMIN_TYPES
 
 
 tutors_blueprint = Blueprint("tutors_blueprint", __name__)
@@ -14,7 +14,7 @@ tutors_blueprint = Blueprint("tutors_blueprint", __name__)
 
 @tutors_blueprint.context_processor
 def utility_processor():
-    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES)
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES)
 
 
 @tutors_blueprint.route('/tutors')
@@ -34,13 +34,14 @@ def register(): # create an email and add email verification functionality
         first_name = form.first_name.data
         last_name = form.last_name.data
         email = form.email.data
+        gender = bool(int(form.gender.data))
         password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
         user_type = "tutor"
         
         email_confirmation_code = generate_random_digits(5)
 
         user = UserModel(username=username, first_name=first_name, last_name=last_name, email=email, password=password,
-        email_confirmation_code=email_confirmation_code, user_type=user_type)
+        email_confirmation_code=email_confirmation_code, user_type=user_type, _gender=gender)
 
 
         db.session.add(user)
@@ -103,7 +104,8 @@ def add_course():
     if form.validate_on_submit():
         course_name = form.name.data
         course_description = form.description.data
-        course = CourseModel(name=course_name, description=course_description, created_by_admin=False, tutor=current_user.tutor_data_model)
+        price = form.price.data
+        course = CourseModel(name=course_name, description=course_description, created_by_admin=False, tutor=current_user.tutor_data_model, price=price)
         db.session.add(course)
         db.session.commit()
         return redirect(url_for("courses_blueprint.courses"))

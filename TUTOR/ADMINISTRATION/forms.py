@@ -8,11 +8,19 @@ from wtforms.widgets import TextArea
 from TUTOR.models import UserModel
 from flask_login import current_user
 from TUTOR import bcrypt
+from TUTOR.models import UserModel
+import os 
+
+
 
 admin_types = (
     ("admin1", "highest privilege"),
     ("admin2", "normal admin")
 )
+
+
+
+
 
 
 class AdminRegistrationForm(FlaskForm):
@@ -55,3 +63,11 @@ class AdminEditProfileForm(FlaskForm):
 
 
 
+
+
+class AdminCourseCreationForm(FlaskForm):
+    name = wtforms.StringField("course name", validators=[length(max=130), DataRequired()])
+    description = wtforms.StringField("description", validators=[length(max=1000), DataRequired()], widget=TextArea())
+    price = IntegerField("price", validators=[DataRequired()])
+    tutors = wtforms.SelectField("tutor", choices=(()), validators=[DataRequired()])
+    submit = wtforms.SubmitField("create course")

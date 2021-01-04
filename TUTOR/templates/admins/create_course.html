@@ -31,6 +31,13 @@
             <h3 style="color: red;"> {{ error }}</h3> 
         {% endfor %}
         <br>
+
+        {{ form.tutors.name }}
+        {{ form.tutors() }}
+        {% for error in form.tutors.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
         
 
         {{ form.submit() }}
