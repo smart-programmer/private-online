@@ -3,7 +3,7 @@
 
 
 LANGUAGES = {
-    "arabic": "ar",
+    "عربي": "ar",
     "english": "en"
     }
     

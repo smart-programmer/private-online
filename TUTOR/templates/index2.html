@@ -2,7 +2,6 @@
 
 {% block title %} Home {% endblock %}
 {% block content %}
-    {% include "snippets/language_select.html" %}
     <center>
         <h1 style="color: orange;">{{ get_language_text('test_translation', get_current_page_language_list()) }}</h1>
     </center>
