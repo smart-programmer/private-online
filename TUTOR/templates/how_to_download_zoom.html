@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="ar">
+{% extends "template.html" %}
 
-<head>
-<title>download page</title>
-<meta charset="UTF-8">
-
-</head>
+{% block title %} how to download zoom {% endblock %}
+{% block content %}
 <body style="background-color:lightgrey; color:blue">
 <p style="font-size:150%"></p>
 <body dir="rtl">
@@ -17,37 +13,37 @@
 <center><h2>الخطوة الاولى: نقوم بفتح متصفح الانترنت ونبحث عن تحميل زووم</h2></center>
 <br>
 <br>
-<center><img src="pic1.png"></center>
+<center><img src="{{ url_for('static', filename='images/pic1.png') }}"></center>
 <br>
 <br>
 <br>
 <center><h2>الخطوة الثانية: نقوم بالضغط على زر تنزيل الموضح في الصورة</h2></center>
 <br>
 <br>
-<center><img src="pic22.png"</center>
+<center><img src="{{ url_for('static', filename='images/pic22.png') }}"</center>
 <br>
 <br>
 <br>
 <center><h2>الخطوة الثالثة: نقوم بتنصيب البرنامج كما هو موضح في الصورة</h2></center>
 <br>
 <br>
-<center><img src="pic3.png"</center>
+<center><img src="{{ url_for('static', filename='images/pic3.png') }}"</center>
 <br>
 <br>
 <br>
 <center><h2>الخطوة الرابعة: نقوم بالتسجيل في البرنامج </h2></center>
 <br>
 <br>
-<center><img src="pic4.png"</center>
+<center><img src="{{ url_for('static', filename='images/pic4.png') }}"</center>
 <br>
 <br>
 <br>
 <center><h2>الخطوة الخامسة: ندخل على الحصص عن طريق زر الانضمام وحضور الحصص</h2></center>
 
-<center><img src="pic5.png"</center>
+<center><img src="{{ url_for('static', filename='images/pic5.png') }}"</center>
 
 
-
+{% endblock %}
 
 
 

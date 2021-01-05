@@ -48,4 +48,6 @@ def change_language():
 
 
 
-
+@main_blueprint.route('/how_to_download_zoom')
+def how_to_download_zoom():
+    return render_template("how_to_download_zoom.html")
