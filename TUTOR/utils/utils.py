@@ -143,6 +143,7 @@ def dict_to_select_compatable_tuple(info_dict):
 	return tuple(base_list)
 
 
+
 # def handle_new_visitor(response):
 # 	expire_date = datetime.datetime.now()
 # 	expire_date = expire_date + datetime.timedelta(days=100000)

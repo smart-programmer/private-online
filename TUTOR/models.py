@@ -155,7 +155,7 @@ class StudentDataModel(db.Model):
 
 
 
-# class SiteSettingsModel(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     allowe_tutors_to_edit_courses = db.Column(db.Boolean, nullable=False, default=False)
-#     allowe_tutors_to_create_courses = db.Column(db.Boolean, nullable=False, default=False)
+class SiteSettingsModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    allowe_tutors_to_edit_courses = db.Column(db.Boolean, nullable=False, default=False)
+    allowe_tutors_to_create_courses = db.Column(db.Boolean, nullable=False, default=False)

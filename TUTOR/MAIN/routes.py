@@ -3,6 +3,7 @@ from flask_login import current_user
 from TUTOR.utils.utils import reverse_url_for, parse_view_name
 from TUTOR.utils.languages import LngObj
 from TUTOR.settings import LANGUAGES, ADMIN_TYPES
+from TUTOR.models import SiteSettingsModel
 import logging
 import os
 
@@ -12,7 +13,7 @@ main_blueprint = Blueprint("main_blueprint", __name__)
 
 @main_blueprint.context_processor
 def utility_processor():
-    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES)
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.query.get(1))
 
 
 @main_blueprint.route('/')

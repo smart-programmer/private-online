@@ -3,7 +3,7 @@ from flask_login import current_user
 from TUTOR.utils.utils import reverse_url_for, parse_view_name, login_required
 from TUTOR.utils.languages import LngObj
 from TUTOR.settings import LANGUAGES, ADMIN_TYPES
-from TUTOR.models import CourseModel
+from TUTOR.models import CourseModel, SiteSettingsModel
 from TUTOR.COURSES.forms import CourseCreationForm
 
 
@@ -13,7 +13,7 @@ courses_blueprint = Blueprint("courses_blueprint", __name__)
 
 @courses_blueprint.context_processor
 def utility_processor():
-    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES)
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.query.get(1))
 
 
 @courses_blueprint.route("/courses")
@@ -31,6 +31,9 @@ def course(course_id):
 @courses_blueprint.route("/courses/control-course/<course_id>")
 @login_required(ADMIN_TYPES + ["tutor"]) # check if admin allowes tutors to edit
 def control_course(course_id):
+    if current_user.user_type == "tutor":
+        if not SiteSettingsModel.query.get(1).allowe_tutors_to_edit_courses:
+            return current_app.login_manager.unauthorized()    
     # here one can edit course data or delete course or begin or end it
     course = CourseModel.query.get(course_id)
     # if user.user_type is tutor make a can edit variable
@@ -42,6 +45,9 @@ def control_course(course_id):
 @courses_blueprint.route("/courses/control-course/<course_id>/end")
 @login_required(ADMIN_TYPES + ["tutor"]) # check if admin allowes tutors to edit
 def end_course(course_id):
+    if current_user.user_type == "tutor":
+        if not SiteSettingsModel.query.get(1).allowe_tutors_to_edit_courses:
+            return current_app.login_manager.unauthorized()    
     # check if course has already ended or if it hasen't started
     course = CourseModel.query.get(course_id)
     course.ended = True
