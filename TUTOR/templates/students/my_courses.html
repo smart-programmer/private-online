@@ -1,0 +1,10 @@
+{% extends "template.html" %}
+
+{% block title %} Courses {% endblock %}
+{% block content %}
+   
+    {% for course in courses %}
+        <a href="{{ url_for('courses_blueprint.course', course_id=course.id) }}"><h1>{{course.name}}</h1></a>
+    {% endfor %}
+    
+{% endblock %}

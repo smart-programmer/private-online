@@ -136,6 +136,12 @@ def list_to_select_compatable_tuple(ls, identifier, front):
 		base_list.append(tuple([str(getattr(obj, identifier)), str(getattr(obj, front))]))
 	return tuple(base_list)
 
+def dict_to_select_compatable_tuple(info_dict):
+	base_list = []
+	for key, value in info_dict.items():
+		base_list.append((str(key), str(value)))
+	return tuple(base_list)
+
 
 # def handle_new_visitor(response):
 # 	expire_date = datetime.datetime.now()

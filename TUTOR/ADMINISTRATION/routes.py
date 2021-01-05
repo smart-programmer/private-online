@@ -91,8 +91,12 @@ def add_course():
         course_name = form.name.data
         course_description = form.description.data
         price = form.price.data
+        currency = form.currency.data
+        min_students = form.min_students.data
+        max_students = form.max_students.data
         tutor_data_model = UserModel.query.get(int(form.tutors.data)).tutor_data_model
-        course = CourseModel(name=course_name, description=course_description, created_by_admin=True, tutor=tutor_data_model, price=price)
+        course = CourseModel(name=course_name, description=course_description, created_by_admin=True,
+         tutor=tutor_data_model, price=price, min_students=min_students, max_students=max_students, currency=currency)
         db.session.add(course)
         db.session.commit()
         return redirect(url_for("courses_blueprint.courses"))

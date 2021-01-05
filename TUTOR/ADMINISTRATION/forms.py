@@ -9,6 +9,8 @@ from TUTOR.models import UserModel
 from flask_login import current_user
 from TUTOR import bcrypt
 from TUTOR.models import UserModel
+from TUTOR.utils.utils import dict_to_select_compatable_tuple
+from TUTOR.settings import CURRENCIES
 import os 
 
 
@@ -63,11 +65,15 @@ class AdminEditProfileForm(FlaskForm):
 
 
 
-
+currencies = dict_to_select_compatable_tuple(CURRENCIES)
 
 class AdminCourseCreationForm(FlaskForm):
     name = wtforms.StringField("course name", validators=[length(max=130), DataRequired()])
     description = wtforms.StringField("description", validators=[length(max=1000), DataRequired()], widget=TextArea())
     price = IntegerField("price", validators=[DataRequired()])
+    currency = wtforms.SelectField("currency", choices=currencies, validators=[DataRequired()])
+    min_students = IntegerField("minimum number of students", validators=[DataRequired()])
+    max_students = IntegerField("maximum number of students", validators=[DataRequired()])
     tutors = wtforms.SelectField("tutor", choices=(()), validators=[DataRequired()])
     submit = wtforms.SubmitField("create course")
+

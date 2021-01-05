@@ -3,11 +3,12 @@
 {% block title %} Register {% endblock %}
 
 {% block content %}
+<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
     <center>
         <h1 style="color: orange;">سجل كمعلم</h1>
     </center>
     <br><br><br>
-    <form action="" method="POST" enctype="multipart/form-data">
+    <form action="" method="POST" enctype="multipart/form-data" id="form" onsubmit="DoSubmit()">
         {{ form.hidden_tag() }}
 
         {{ form.first_name.name }}
@@ -39,7 +40,68 @@
         {% endfor %}
         <br>
 
+        {{ form.date_of_birth.name }}
+        {{ form.date_of_birth() }}
+        {% for error in form.date_of_birth.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
 
+        {{ form.nationality.name }}
+        {{ form.nationality() }}
+        {% for error in form.nationality.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+
+        {{ form.qualification.name }}
+        {{ form.qualification() }}
+        {% for error in form.qualification.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+
+        {{ form.major.name }}
+        {{ form.major() }}
+        {% for error in form.major.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+
+        {{ form.current_job.name }}
+        {{ form.current_job() }}
+        {% for error in form.current_job.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+
+        <ul id="subs"> 
+            
+        </ul>
+        {{ form.subjects.name }}
+        {{ form.subjects(id="subjects") }} <input type="button" value="add subject" onclick="populate_list_with_text('subjects', 'subs')">
+        {% for error in form.subjects.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+
+        {{ form.years_of_experience.name }}
+        {{ form.years_of_experience() }}
+        {% for error in form.years_of_experience.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+
+        <ul id="tools_ul"> 
+            
+        </ul>
+        {{ form.tools_used_for_online_tutoring.name }}
+        {{ form.tools_used_for_online_tutoring(id="tools") }} <input type="button" value="add tool" onclick="populate_list_with_text('tools', 'tools_ul')">
+        {% for error in form.tools_used_for_online_tutoring.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+      
         {{ form.password.name }}
         {{ form.password() }}
         <br>
@@ -58,4 +120,23 @@
             <h3 style="color: red;">error in field: {{ error }}</h3> 
         {% endfor %}
     </form>
+    <br><br><br><br><br>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}">
+    </script>
+    <script>
+        function DoSubmit(){
+            form = document.getElementById("form")
+
+            subjects_array = []
+            Array.from(document.querySelectorAll('#subs>li'), li => subjects_array.push(li.textContent))
+            form.subjects.value = subjects_array
+
+            tools_array = []
+            Array.from(document.querySelectorAll('#tools_ul>li'), li => tools_array.push(li.textContent))
+            form.tools_used_for_online_tutoring.value = tools_array
+
+            return true
+    }
+    </script>
+       
 {% endblock %}

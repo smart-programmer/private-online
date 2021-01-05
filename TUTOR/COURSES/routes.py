@@ -17,16 +17,36 @@ def utility_processor():
 
 
 @courses_blueprint.route("/courses")
+@login_required([])
 def courses():
     all_courses = CourseModel.query.all()
     return render_template("courses.html", all_courses=all_courses)
 
 @courses_blueprint.route("/courses/<course_id>")
+@login_required([])
 def course(course_id):
     course = CourseModel.query.get(course_id)
     return render_template("course.html", course=course)
 
+@courses_blueprint.route("/courses/control-course/<course_id>")
+@login_required(ADMIN_TYPES + ["tutor"]) # check if admin allowes tutors to edit
+def control_course(course_id):
+    # here one can edit course data or delete course or begin or end it
+    course = CourseModel.query.get(course_id)
+    # if user.user_type is tutor make a can edit variable
+    return render_template("control_course.html", course=course)
 
+
+
+
+@courses_blueprint.route("/courses/control-course/<course_id>/end")
+@login_required(ADMIN_TYPES + ["tutor"]) # check if admin allowes tutors to edit
+def end_course(course_id):
+    # check if course has already ended or if it hasen't started
+    course = CourseModel.query.get(course_id)
+    course.ended = True
+    db.session.commit()
+    return render_template("control_course.html", course=course)
 
 
 

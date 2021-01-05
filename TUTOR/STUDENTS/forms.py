@@ -22,7 +22,7 @@ class StudentRegistrationForm(FlaskForm):
     password = wtforms.StringField("password", validators=[length(min=3, max=40), DataRequired()])
     confirm_password = wtforms.StringField("confirm password", validators=[length(min=3, max=40), DataRequired(), EqualTo("password")])
     school_name = wtforms.StringField("School name", validators=[length(max=300)])
-    gender = wtforms.SelectField("gender", choices=genders, validators=[length(min=3, max=255), DataRequired()])
+    gender = wtforms.SelectField("gender", choices=genders, validators=[DataRequired()])
     date_of_birth = DateField("age", format="%Y-%m-%d", validators=[DataRequired()])
     submit = wtforms.SubmitField("Register")
 

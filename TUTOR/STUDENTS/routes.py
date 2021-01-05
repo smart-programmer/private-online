@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, make_r
 from flask_login import current_user, login_user, logout_user
 from TUTOR import db, bcrypt
 from TUTOR.STUDENTS.forms import StudentRegistrationForm, StudentEditProfileForm
-from TUTOR.models import UserModel, StudentDataModel
-from TUTOR.utils.mail import send_user_confirmation_email
+from TUTOR.models import UserModel, StudentDataModel, CourseModel
+from TUTOR.utils.mail import send_user_confirmation_email, send_student_course_join_email, send_student_leave_course_email, send_student_pay_for_course_email, send_tutor_course_start_email
 from TUTOR.utils.utils import generate_random_digits, login_required
 from TUTOR.utils.languages import LngObj
 from TUTOR.settings import LANGUAGES, ADMIN_TYPES
@@ -100,10 +100,47 @@ def edit_profile():
     return render_template('students/edit_student_profile.html', form=form)  
 
 
+@students_blueprint.route("/students/courses/my-courses", methods=["GET"])
+@login_required(["student"])
+def my_courses():
+    courses = current_user.student_data_model.courses
+    return render_template('students/my_courses.html', courses=courses)
+
+
+@students_blueprint.route("/students/courses/join-course/<course_id>", methods=["GET"])
+@login_required(["student"])
+def join_course(course_id):
+    # if course has began or has ended or has reached max user then don't allow for new students
+    student_data_model = current_user.student_data_model
+    course = CourseModel.query.get(course_id)
+    student_data_model.courses.append(course)
+    db.session.commit()
+    #pay 
+
+    if len(course.students) >= course.min_students:
+        for sdm in course.students:
+            send_student_pay_for_course_email(sdm.user, course)
+        send_tutor_course_start_email(course.tutor.user, course)
+        course.began = True
+        db.session.commit()
+    else:
+        send_student_course_join_email(current_user, course)
+
+    return redirect(url_for("courses_blueprint.course", course_id=course_id))
+
+@students_blueprint.route("/students/courses/leave-course/<course_id>", methods=["GET"])
+@login_required(["student"])
+def leave_course(course_id):
+    student_data_model = current_user.student_data_model
+    course = CourseModel.query.get(course_id)
+    student_data_model.courses.remove(course)
+    db.session.commit()
+    send_student_leave_course_email(current_user, course)
+    #send email with
+    return redirect(url_for("students_blueprint.my_courses"))
 
 
 
-
-
+    
 
 

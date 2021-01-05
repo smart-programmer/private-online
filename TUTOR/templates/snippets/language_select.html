@@ -2,6 +2,6 @@
 
 
 {% for key, value in languages.items() %}
-<a href="{{ url_for('main_blueprint.change_language', language=value, next=request.path) }}">{{ key }}</a> 
+<a href="{{ url_for('main_blueprint.change_language', language=key, next=request.path) }}">{{ value }}</a> 
 <br>
 {% endfor %}

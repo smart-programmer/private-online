@@ -93,6 +93,11 @@ class CourseModel(db.Model):
     name = db.Column(db.String(130), nullable=False)
     description = db.Column(db.String(1000), nullable=False)
     price = db.Column(db.Integer, nullable=False)
+    min_students = db.Column(db.Integer, nullable=False)
+    max_students = db.Column(db.Integer, nullable=False)
+    currency = db.Column(db.String(3), nullable=False)
+    began = db.Column(db.Boolean, nullable=False, default=False)
+    ended = db.Column(db.Boolean, nullable=False, default=False)
     created_by_admin = db.Column(db.Boolean, nullable=False)
     creation_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     tutor_data_model_id = db.Column(db.Integer, db.ForeignKey('tutor_data_model.id'),
@@ -105,9 +110,31 @@ class CourseModel(db.Model):
 
 class TutorDataModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    date_of_birth = db.Column(db.DateTime, nullable=False)
+    nationality = db.Column(db.String(30), nullable=False)
+    qualification = db.Column(db.String(35), nullable=False)
+    major = db.Column(db.String(35), nullable=False)
+    current_job = db.Column(db.String(50), nullable=False)
+    _subjects = db.Column(db.String(255), nullable=False)
+    years_of_experience = db.Column(db.Integer, nullable=False)
+    _tools_used_for_online_tutoring = db.Column(db.String(600), nullable=False)
     is_accepted = db.Column(db.Boolean, nullable=False, default=False)
     courses = db.relationship('CourseModel', backref='tutor')
     user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'))
+
+    @property
+    def age(self):
+        return int((datetime.date(datetime.utcnow()) - datetime.date(self.date_of_birth)).days / 365)
+
+    @property
+    def subjects(self):
+        return self._subjects.split(",")
+        
+    @property
+    def tools_used_for_online_tutoring(self):
+        return self._tools_used_for_online_tutoring.split(",")
+    
+
 
 
 
@@ -126,3 +153,9 @@ class StudentDataModel(db.Model):
 
 
 
+
+
+# class SiteSettingsModel(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     allowe_tutors_to_edit_courses = db.Column(db.Boolean, nullable=False, default=False)
+#     allowe_tutors_to_create_courses = db.Column(db.Boolean, nullable=False, default=False)

@@ -2,6 +2,7 @@ from flask import url_for, current_app, request
 import datetime
 from flask_mail import Message as MailMessage
 from TUTOR import mail
+from TUTOR.models import UserModel
 
 
 
@@ -60,4 +61,56 @@ def send_deny_email_change_email(email, user_serialized_id_and_email):
 	{request.host_url}{url_for('users_blueprint.deny_email_change', user_serialized_id_and_email=user_serialized_id_and_email)}
 	'''
 	mail.send(msg)
+
+def send_student_course_join_email(user, course):
+	#send mail
+
+	string = """HLTC course"""
+	msg = MailMessage(string, sender=current_app.config.get("MAIL_USERNAME"), 
+	recipients=[user.email])
+	msg.body = f'''Congratulations {user.full_name} you have joined the course {course.name}. 
+	we will notify you for payment when the course reaches the requested number of students to start which is {course.min_students}
+	it's currently at {len(course.students)}
+
+	'''
+	mail.send(msg)
+
+def send_student_leave_course_email(user, course):
+	#send mail
+
+	string = """HLTC course"""
+	msg = MailMessage(string, sender=current_app.config.get("MAIL_USERNAME"), 
+	recipients=[user.email])
+	msg.body = f'''dear {user.full_name} you have left the que for the course {course.name}. 
+	you no longer will be notified when the course is started
+
+	'''
+	mail.send(msg)
+
+def send_student_pay_for_course_email(user, course):
+	#send mail
+
+	string = """HLTC course"""
+	msg = MailMessage(string, sender=current_app.config.get("MAIL_USERNAME"), 
+	recipients=[user.email])
+	msg.body = f'''Hello {user.full_name} the course {course.name} has reached the requested
+	number of students to start. please click this link to pay (LINK)
+	and wait for the course tutor to email you the course arrangements
+
+	'''
+	mail.send(msg)
+
+def send_tutor_course_start_email(user, course):
+	#send mail
+
+	string = """HLTC course"""
+	msg = MailMessage(string, sender=current_app.config.get("MAIL_USERNAME"), 
+	recipients=[user.email])
+	msg.body = f'''Hello {user.full_name} the course {course.name} has reached the requested
+	number of students to start. please contact the students to set up the course arrangements
+
+	'''
+	mail.send(msg)
+
+
 

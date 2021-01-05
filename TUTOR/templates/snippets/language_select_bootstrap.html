@@ -7,7 +7,7 @@
     </a>
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
     {% for key, value in languages.items() %}
-      <a class="dropdown-item" href="{{ url_for('main_blueprint.change_language', language=value, next=request.path) }}">{{ key }}</a>
+      <a class="dropdown-item" href="{{ url_for('main_blueprint.change_language', language=key, next=request.path) }}">{{ value }}</a>
       <div class="dropdown-divider"></div>
     {% endfor %}
     </div>

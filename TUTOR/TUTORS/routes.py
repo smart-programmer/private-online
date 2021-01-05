@@ -28,6 +28,7 @@ def register(): # create an email and add email verification functionality
     if current_user.is_authenticated:
         return redirect("main_blueprint.home")
 
+
     form = TutorRegistrationForm()
     if form.validate_on_submit():
         username = form.username.data
@@ -35,6 +36,14 @@ def register(): # create an email and add email verification functionality
         last_name = form.last_name.data
         email = form.email.data
         gender = bool(int(form.gender.data))
+        date_of_birth = form.date_of_birth.data
+        nationality = form.nationality.data
+        qualification = form.qualification.data
+        major = form.major.data
+        current_job = form.current_job.data
+        subjects = form.subjects.data
+        years_of_experience = form.years_of_experience.data
+        tools_used_for_online_tutoring = form.tools_used_for_online_tutoring.data
         password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
         user_type = "tutor"
         
@@ -46,7 +55,9 @@ def register(): # create an email and add email verification functionality
 
         db.session.add(user)
         db.session.commit()
-        tutor_data_model = TutorDataModel(user=user)
+        tutor_data_model = TutorDataModel(user=user, date_of_birth=date_of_birth, nationality=nationality, qualification=qualification, major=major,
+        current_job=current_job, _subjects=subjects, years_of_experience=years_of_experience,
+        _tools_used_for_online_tutoring=tools_used_for_online_tutoring)
         db.session.add(tutor_data_model)
         db.session.commit()
 
@@ -100,12 +111,17 @@ def edit_profile():
 @login_required(["tutor"])
 def add_course():
     form = CourseCreationForm()
+    
 
     if form.validate_on_submit():
         course_name = form.name.data
         course_description = form.description.data
         price = form.price.data
-        course = CourseModel(name=course_name, description=course_description, created_by_admin=False, tutor=current_user.tutor_data_model, price=price)
+        currency = form.currency.data
+        min_students = form.min_students.data
+        max_students = form.max_students.data
+        course = CourseModel(name=course_name, description=course_description, created_by_admin=False,
+         tutor=current_user.tutor_data_model, price=price, min_students=min_students, max_students=max_students, currency=currency)
         db.session.add(course)
         db.session.commit()
         return redirect(url_for("courses_blueprint.courses"))

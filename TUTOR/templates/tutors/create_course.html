@@ -31,6 +31,27 @@
             <h3 style="color: red;"> {{ error }}</h3> 
         {% endfor %}
         <br>
+
+        {{ form.currency.name }}
+        {{ form.currency() }}
+        {% for error in form.currency.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+
+        {{ form.min_students.name }}
+        {{ form.min_students() }}
+        {% for error in form.min_students.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+
+        {{ form.max_students.name }}
+        {{ form.max_students() }}
+        {% for error in form.max_students.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
         
 
         {{ form.submit() }}

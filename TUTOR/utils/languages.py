@@ -33,7 +33,7 @@ class LngObj():
     
     @staticmethod
     def get_validated_page_language_list(view, language_cookie): # returns specific language page with extra validation
-        if not language_cookie or language_cookie not in list(LANGUAGES.values()):
+        if not language_cookie or language_cookie not in list(LANGUAGES.keys()):
             page_language_list = LngObj.translate(view)
         else:
             page_language_list = LngObj.translate(view, language_cookie)

@@ -8,7 +8,8 @@ from wtforms.widgets import TextArea
 from TUTOR.models import UserModel
 from flask_login import current_user
 from TUTOR import bcrypt
-from TUTOR.utils.utils import list_to_select_compatable_tuple
+from TUTOR.utils.utils import dict_to_select_compatable_tuple
+from TUTOR.settings import CURRENCIES
 
 
 genders = (
@@ -22,6 +23,14 @@ class TutorRegistrationForm(FlaskForm):
     username = wtforms.StringField("username", validators=[length(max=20), DataRequired()])
     email = wtforms.StringField("email", validators=[length(min=3, max=255), DataRequired()])
     gender = wtforms.SelectField("gender", choices=genders, validators=[DataRequired()])
+    date_of_birth = DateField("age", format="%Y-%m-%d", validators=[DataRequired()])
+    nationality = wtforms.StringField("nationality", validators=[length(max=30), DataRequired()])
+    qualification = wtforms.StringField("qualification", validators=[length(max=35), DataRequired()])
+    major = wtforms.StringField("major", validators=[length(max=35), DataRequired()])
+    current_job = wtforms.StringField("current job", validators=[length(max=50), DataRequired()])
+    subjects = wtforms.StringField("subject you want to teach", validators=[length(min=0, max=30)])
+    years_of_experience = IntegerField("years of experience", validators=[DataRequired()])
+    tools_used_for_online_tutoring = wtforms.StringField("tools used for online tutoring", validators=[length(min=0, max=60)])
     password = wtforms.StringField("password", validators=[length(min=3, max=40), DataRequired()])
     confirm_password = wtforms.StringField("confirm password", validators=[length(min=3, max=40), DataRequired(), EqualTo("password")])
     submit = wtforms.SubmitField("Register")
@@ -55,10 +64,13 @@ class TutorEditProfileForm(FlaskForm):
             raise ValidationError("this other email is already registered, did you forget your password?")
 
 
-
+currencies = dict_to_select_compatable_tuple(CURRENCIES)
 
 class CourseCreationForm(FlaskForm):
     name = wtforms.StringField("course name", validators=[length(max=130), DataRequired()])
     description = wtforms.StringField("description", validators=[length(max=1000), DataRequired()], widget=TextArea())
     price = IntegerField("price", validators=[DataRequired()])
+    currency = wtforms.SelectField("currency", choices=currencies, validators=[DataRequired()])
+    min_students = IntegerField("minimum number of students", validators=[DataRequired()])
+    max_students = IntegerField("maximum number of students", validators=[DataRequired()])
     submit = wtforms.SubmitField("create course")
