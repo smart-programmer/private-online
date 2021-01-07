@@ -11,3 +11,22 @@ function populate_list_with_text(input_id, ul_id){
         subject_text.value = ""
     }
 }
+
+function change_site_setting(setting, Url){
+    $(document).ready(function(){
+        $("#button").click(function(){
+            $.ajax({
+                url: Url,
+                type: "GET",
+                success: function(result){
+                    document.getElementById(setting).innerHTML = result
+                    console.log(result)
+                },
+                error: function(error){
+                    console.log("didn't work")
+                }
+            })
+        })
+    })
+    return true
+}

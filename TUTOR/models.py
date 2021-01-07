@@ -157,5 +157,31 @@ class StudentDataModel(db.Model):
 
 class SiteSettingsModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    allowe_tutors_to_edit_courses = db.Column(db.Boolean, nullable=False, default=False)
-    allowe_tutors_to_create_courses = db.Column(db.Boolean, nullable=False, default=False)
+    name = db.Column(db.String(50), nullable=False)
+    value = db.Column(db.String(50), nullable=False)
+    # allowe_tutors_to_edit_courses = db.Column(db.Boolean, nullable=False, default=False)
+    # allow_tutors_to_create_courses = db.Column(db.Boolean, nullable=False, default=False)
+
+    def is_bool(self):
+        return True if self.value in ("True", "true", "False", "false") else False
+
+    def reverse_bool_setting(self):
+        self.value = str(not SiteSettingsModel.get_str_bool(self.value))
+        db.session.commit()
+
+    @staticmethod
+    def get_str_bool(string):
+        return True if string in ("True", "true") else False
+
+    @classmethod
+    def get_settings_dict(cls):
+        all_settings = cls.query.all()
+        settings = {}
+        for setting in all_settings:
+            if setting.is_bool():
+                settings[setting.name] = SiteSettingsModel.get_str_bool(setting.value)
+            else: 
+                settings[setting.name] = setting.value
+        return settings
+
+

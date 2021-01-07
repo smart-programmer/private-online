@@ -13,7 +13,7 @@ courses_blueprint = Blueprint("courses_blueprint", __name__)
 
 @courses_blueprint.context_processor
 def utility_processor():
-    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.query.get(1))
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.get_settings_dict())
 
 
 @courses_blueprint.route("/courses")
@@ -32,7 +32,7 @@ def course(course_id):
 @login_required(ADMIN_TYPES + ["tutor"]) # check if admin allowes tutors to edit
 def control_course(course_id):
     if current_user.user_type == "tutor":
-        if not SiteSettingsModel.query.get(1).allowe_tutors_to_edit_courses:
+        if not SiteSettingsModel.get_str_bool(SiteSettingsModel.query.filter_by(name="allow_tutors_to_edit_courses").first().value):
             return current_app.login_manager.unauthorized()    
     # here one can edit course data or delete course or begin or end it
     course = CourseModel.query.get(course_id)
@@ -46,7 +46,7 @@ def control_course(course_id):
 @login_required(ADMIN_TYPES + ["tutor"]) # check if admin allowes tutors to edit
 def end_course(course_id):
     if current_user.user_type == "tutor":
-        if not SiteSettingsModel.query.get(1).allowe_tutors_to_edit_courses:
+        if not SiteSettingsModel.get_str_bool(SiteSettingsModel.query.filter_by(name="allow_tutors_to_edit_courses").first().value):
             return current_app.login_manager.unauthorized()    
     # check if course has already ended or if it hasen't started
     course = CourseModel.query.get(course_id)

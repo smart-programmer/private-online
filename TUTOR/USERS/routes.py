@@ -15,7 +15,7 @@ users_blueprint = Blueprint("users_blueprint", __name__)
 
 @users_blueprint.context_processor
 def utility_processor():
-    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.query.get(1))
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.get_settings_dict())
 
 
 @users_blueprint.route("/users/confirm_email", methods=["GET", "POST"])

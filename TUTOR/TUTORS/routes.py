@@ -14,7 +14,7 @@ tutors_blueprint = Blueprint("tutors_blueprint", __name__)
 
 @tutors_blueprint.context_processor
 def utility_processor():
-    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.query.get(1))
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.get_settings_dict())
 
 
 @tutors_blueprint.route('/tutors')
@@ -111,7 +111,7 @@ def edit_profile():
 @login_required(["tutor"])
 def add_course():
     if current_user.user_type == "tutor":
-        if not SiteSettingsModel.query.get(1).allowe_tutors_to_create_courses:
+        if not SiteSettingsModel.get_settings_dict()["allow_tutors_to_create_courses"]:
             return current_app.login_manager.unauthorized()    
     form = CourseCreationForm()
     

@@ -21,4 +21,13 @@
             <li><a href="{{ url_for('admins_blueprint.courses') }}">Courses</a></li>
             <li><a href="{{ url_for('admins_blueprint.users_list_view') }}">Users</a></li>
         </ul>
+
+        <p id="change"></p>
+
+        <ul>
+            <li><a href="{{ url_for('admins_blueprint.change_site_settings', setting='allow_tutors_to_create_courses') }}"><button><p>allow tutors to create courses</p></button></a>: {{settings.get("allow_tutors_to_create_courses")}}</li>
+            <li><a href="{{ url_for('admins_blueprint.change_site_settings', setting='allow_tutors_to_edit_courses') }}"><button><p>allow tutors to edit courses</p></button></a>: {{settings.get("allow_tutors_to_edit_courses")}}</li>
+        </ul>
+
+
 {% endblock %}

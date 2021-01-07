@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, make_r
 from flask_login import current_user, login_user, logout_user
 from TUTOR import db, bcrypt
 from TUTOR.ADMINISTRATION.forms import AdminRegistrationForm, AdminCourseCreationForm
-from TUTOR.models import UserModel, AdminDataModel, CourseModel
+from TUTOR.models import UserModel, AdminDataModel, CourseModel, SiteSettingsModel
 from TUTOR.utils.mail import send_user_confirmation_email, send_user_reset_password_email, send_user_change_password_email, send_email_change_request_email, send_deny_email_change_email
 from TUTOR.utils.utils import save_image_locally, delete_image, generate_random_digits, login_required, list_to_select_compatable_tuple
 from TUTOR.settings import ADMIN_TYPES, LANGUAGES
@@ -15,7 +15,7 @@ admins_blueprint = Blueprint("admins_blueprint", __name__)
 
 @admins_blueprint.context_processor
 def utility_processor():
-    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES)
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.get_settings_dict())
 
 
 @admins_blueprint.route('/admins')
@@ -108,6 +108,22 @@ def add_course():
 def users_list_view(): # admin only
     users = UserModel.query.all()
     return render_template("admins/users.html", users=users)
+
+
+@admins_blueprint.route("/admins/change-site-settings")
+@login_required(ADMIN_TYPES)
+def change_site_settings():
+    _setting = str(request.args.get("setting"))
+    
+    setting = SiteSettingsModel.query.filter_by(name=_setting).first()
+    if setting.is_bool():
+        setting.reverse_bool_setting()
+    else:
+        value = str(request.args.get("value"))
+        setting.value = value
+        db.session.commit()
+
+    return redirect(url_for("admins_blueprint.control_panel"))
 
 
 # @admins_blueprint.route("/admins/profile", methods=["GET"])

@@ -29,7 +29,7 @@ class TutorRegistrationForm(FlaskForm):
     major = wtforms.StringField("major", validators=[length(max=35), DataRequired()])
     current_job = wtforms.StringField("current job", validators=[length(max=50), DataRequired()])
     subjects = wtforms.StringField("subject you want to teach", validators=[length(min=0, max=30)])
-    years_of_experience = IntegerField("years of experience", validators=[DataRequired()])
+    years_of_experience = IntegerField("years of experience", validators=[DataRequired()], render_kw={"min": 0, "max": 100})
     tools_used_for_online_tutoring = wtforms.StringField("tools used for online tutoring", validators=[length(min=0, max=60)])
     password = wtforms.StringField("password", validators=[length(min=3, max=40), DataRequired()])
     confirm_password = wtforms.StringField("confirm password", validators=[length(min=3, max=40), DataRequired(), EqualTo("password")])
