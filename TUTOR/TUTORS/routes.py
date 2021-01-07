@@ -84,6 +84,17 @@ def edit_profile():
         current_user.username = form.username.data
         current_user.first_name = form.first_name.data
         current_user.last_name = form.last_name.data
+        current_user._gender = bool(int(form.gender.data))
+        current_user.tutor_data_model.date_of_birth = form.date_of_birth.data
+        current_user.tutor_data_model.nationality = form.nationality.data
+        current_user.tutor_data_model.qualification = form.qualification.data
+        current_user.tutor_data_model.major = form.major.data
+        current_user.tutor_data_model.current_job = form.current_job.data
+        if form.subjects.data.strip():
+            current_user.tutor_data_model._subjects =  TutorDataModel.list_to_comma_seperated_string(current_user.tutor_data_model.subjects + form.subjects.data.split(","))
+        current_user.tutor_data_model.years_of_experience = form.years_of_experience.data
+        if form.tools_used_for_online_tutoring.data.strip():
+            current_user.tutor_data_model._tools_used_for_online_tutoring = TutorDataModel.list_to_comma_seperated_string(current_user.tutor_data_model.tools_used_for_online_tutoring + form.tools_used_for_online_tutoring.data.split(","))
 
         db.session.commit()
 
@@ -100,6 +111,13 @@ def edit_profile():
         form.first_name.data = current_user.first_name
         form.last_name.data = current_user.last_name
         form.email.data = current_user.email
+        form.date_of_birth.data = current_user.tutor_data_model.date_of_birth
+        form.nationality.data = current_user.tutor_data_model.nationality
+        form.major.data = current_user.tutor_data_model.major
+        form.qualification.data = current_user.tutor_data_model.qualification
+        form.current_job.data = current_user.tutor_data_model.current_job
+        form.years_of_experience.data = current_user.tutor_data_model.years_of_experience
+        form.gender.data = current_user.gender
 
     return render_template('tutors/edit_tutor_profile.html', form=form)  
 

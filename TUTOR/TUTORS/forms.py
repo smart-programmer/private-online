@@ -51,6 +51,15 @@ class TutorEditProfileForm(FlaskForm):
     last_name = wtforms.StringField("last name", validators=[length(max=128), DataRequired()])
     username = wtforms.StringField("username", validators=[length(max=20), DataRequired()])
     email = wtforms.StringField("email", validators=[length(min=3, max=255), DataRequired()])
+    gender = wtforms.SelectField("gender", choices=genders, validators=[DataRequired()])
+    date_of_birth = DateField("age", format="%Y-%m-%d", validators=[DataRequired()])
+    nationality = wtforms.StringField("nationality", validators=[length(max=30), DataRequired()])
+    qualification = wtforms.StringField("qualification", validators=[length(max=35), DataRequired()])
+    major = wtforms.StringField("major", validators=[length(max=35), DataRequired()])
+    current_job = wtforms.StringField("current job", validators=[length(max=50), DataRequired()])
+    subjects = wtforms.StringField("subject you want to teach", validators=[length(min=0, max=30)])
+    years_of_experience = IntegerField("years of experience", validators=[DataRequired()], render_kw={"min": 0, "max": 100})
+    tools_used_for_online_tutoring = wtforms.StringField("tools used for online tutoring", validators=[length(min=0, max=60)])
     submit = wtforms.SubmitField("Edit")
 
     def validate_username(self, username):

@@ -133,6 +133,19 @@ class TutorDataModel(db.Model):
     @property
     def tools_used_for_online_tutoring(self):
         return self._tools_used_for_online_tutoring.split(",")
+
+    @staticmethod
+    def list_to_comma_seperated_string(ls):
+        str_ls = str(ls)
+        str_ls = str_ls.replace(str_ls[0], " ")
+        str_ls = str_ls.replace(str_ls[-1], " ")
+        new_ls = str_ls.strip().split(",")
+        n = None
+        for item in new_ls:
+            n = item.strip()
+            n = str_ls.replace(str_ls[1], "")
+            n = str_ls.replace(str_ls[-2], "")
+        return n.strip()
     
 
 
