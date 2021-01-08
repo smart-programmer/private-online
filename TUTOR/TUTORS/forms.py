@@ -12,10 +12,10 @@ from TUTOR.utils.utils import dict_to_select_compatable_tuple
 from TUTOR.settings import CURRENCIES
 
 
-genders = (
+genders = [
     ("1", "male"),
     ("0", "female")
-)
+]
 
 class TutorRegistrationForm(FlaskForm):
     first_name = wtforms.StringField("first name", validators=[length(max=128), DataRequired()])

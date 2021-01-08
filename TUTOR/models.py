@@ -1,12 +1,8 @@
 from flask import current_app
-from TUTOR import db, login_manager
+from TUTOR import db, login_manager, create_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin
 from datetime import datetime
-
-
-
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -196,5 +192,6 @@ class SiteSettingsModel(db.Model):
             else: 
                 settings[setting.name] = setting.value
         return settings
+
 
 

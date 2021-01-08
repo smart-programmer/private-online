@@ -4,7 +4,7 @@ from TUTOR import db, bcrypt
 from TUTOR.TUTORS.forms import TutorRegistrationForm, TutorEditProfileForm, CourseCreationForm
 from TUTOR.models import UserModel, TutorDataModel, CourseModel, SiteSettingsModel
 from TUTOR.utils.mail import send_user_confirmation_email
-from TUTOR.utils.utils import generate_random_digits, login_required
+from TUTOR.utils.utils import generate_random_digits, login_required, put_current_choice_first
 from TUTOR.utils.languages import LngObj
 from TUTOR.settings import LANGUAGES, ADMIN_TYPES
 
@@ -117,7 +117,7 @@ def edit_profile():
         form.qualification.data = current_user.tutor_data_model.qualification
         form.current_job.data = current_user.tutor_data_model.current_job
         form.years_of_experience.data = current_user.tutor_data_model.years_of_experience
-        form.gender.data = current_user.gender
+        form.gender.choices = put_current_choice_first(form.gender.choices, str(int(current_user._gender)))
 
     return render_template('tutors/edit_tutor_profile.html', form=form)  
 

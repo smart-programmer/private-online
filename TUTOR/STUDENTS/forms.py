@@ -9,10 +9,10 @@ from flask_login import current_user
 from TUTOR.models import UserModel
 
 
-genders = (
+genders = [
     ("1", "male"),
     ("0", "female")
-)
+]
 
 class StudentRegistrationForm(FlaskForm):
     first_name = wtforms.StringField("first name", validators=[length(max=128), DataRequired()])
@@ -45,6 +45,7 @@ class StudentEditProfileForm(FlaskForm):
     email = wtforms.StringField("email", validators=[length(min=3, max=255), DataRequired()])
     school_name = wtforms.StringField("School name", validators=[length(max=300)])
     date_of_birth = DateField("age", format="%Y-%m-%d", validators=[DataRequired()])
+    gender = wtforms.SelectField("gender", choices=genders, validators=[DataRequired()])
     submit = wtforms.SubmitField("Edit")
 
     def validate_username(self, username):

@@ -4,6 +4,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
 from TUTOR.config import Config
+from flask_migrate import Migrate
 
 
 db = SQLAlchemy()
@@ -12,6 +13,7 @@ login_manager = LoginManager()
 login_manager.login_view = 'users_blueprint.login'
 login_manager.login_message_category = "info"
 mail = Mail()
+migrate = Migrate()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -21,6 +23,8 @@ def create_app(config_class=Config):
     bcrypt.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
+    migrate.init_app(app, db)
+
 
     from TUTOR.MAIN.routes import main_blueprint
     from TUTOR.TUTORS.routes import tutors_blueprint

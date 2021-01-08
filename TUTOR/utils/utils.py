@@ -134,13 +134,26 @@ def list_to_select_compatable_tuple(ls, identifier, front):
 	base_list = []
 	for obj in ls:
 		base_list.append(tuple([str(getattr(obj, identifier)), str(getattr(obj, front))]))
-	return tuple(base_list)
+	return base_list
 
 def dict_to_select_compatable_tuple(info_dict):
 	base_list = []
 	for key, value in info_dict.items():
 		base_list.append((str(key), str(value)))
-	return tuple(base_list)
+	return base_list
+
+def put_current_choice_first(select_list, current_choice):
+	tuple_index = None
+	for index, value in enumerate(select_list):
+		if value[0] == current_choice:
+			tuple_index = index
+			break
+	if tuple_index != 0 or not tuple_index:
+		preserve_first = select_list[0]
+		select_list[0] = select_list[tuple_index]
+		select_list[tuple_index] = preserve_first
+		
+	return select_list
 
 
 

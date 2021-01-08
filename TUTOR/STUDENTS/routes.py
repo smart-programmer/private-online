@@ -2,9 +2,9 @@ from flask import Blueprint, render_template, request, redirect, url_for, make_r
 from flask_login import current_user, login_user, logout_user
 from TUTOR import db, bcrypt
 from TUTOR.STUDENTS.forms import StudentRegistrationForm, StudentEditProfileForm
-from TUTOR.models import UserModel, StudentDataModel, CourseModel
+from TUTOR.models import UserModel, StudentDataModel, CourseModel, SiteSettingsModel
 from TUTOR.utils.mail import send_user_confirmation_email, send_student_course_join_email, send_student_leave_course_email, send_student_pay_for_course_email, send_tutor_course_start_email
-from TUTOR.utils.utils import generate_random_digits, login_required
+from TUTOR.utils.utils import generate_random_digits, login_required, put_current_choice_first
 from TUTOR.utils.languages import LngObj
 from TUTOR.settings import LANGUAGES, ADMIN_TYPES
 
@@ -77,6 +77,7 @@ def edit_profile():
         current_user.last_name = form.last_name.data
         student_data_model.school_name = form.school_name.data
         student_data_model.date_of_birth = form.date_of_birth.data
+        current_user._gender = bool(int(form.gender.data))
         
 
         db.session.commit()
@@ -96,8 +97,9 @@ def edit_profile():
         form.email.data = current_user.email
         form.school_name.data = student_data_model.school_name
         form.date_of_birth.data = student_data_model.date_of_birth
+        form.gender.choices = put_current_choice_first(form.gender.choices, str(int(current_user._gender)))
 
-    return render_template('students/edit_student_profile.html', form=form)  
+    return render_template('students/edit_student_profile.html', form=form, gender_choices=form.gender.choices)  
 
 
 @students_blueprint.route("/students/courses/my-courses", methods=["GET"])
