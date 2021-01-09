@@ -4,14 +4,14 @@ from TUTOR.config import Production_Config
 from TUTOR.models import SiteSettingsModel
 
 if len(sys.argv) != 2:
-    print("usage: program.py <1 for production | 2 for local>") 
+    print("usage: create_site.py <1 for production | 2 for local>") 
     sys.exit()
     
 server_version = int(sys.argv[1])
 print(server_version)
 
 if server_version != 2 and server_version != 1:
-    print("usage: program.py <1 for production | 2 for local>") 
+    print("usage: create_site.py <1 for production | 2 for local>") 
     sys.exit()
 
 
