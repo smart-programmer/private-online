@@ -2,7 +2,22 @@
 
 {% block title %} Home {% endblock %}
 {% block content %}
-    <center>
-        <a href="{{ url_for('tutors_blueprint.register') }}">سجل كمعلم</a> / <a href="{{ url_for('students_blueprint.register') }}">سجل كطالب</a>
-    </center>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    <div class="main">
+    <div class="container my-cont">
+        <div class="row justify-content-around my-row">
+            <a href="{{ url_for('tutors_blueprint.register') }}" class="col-sm-5  my-col hvr-float hvr-bounce-to-top">
+     
+                        <h1 class="card-text">سجل كمعلم</h1>
+            </a>
+
+            <a href="{{ url_for('students_blueprint.register') }}" class="col-sm-5  my-col hvr-float hvr-bounce-to-top">
+     
+                <h1 class="card-text">سجل كطالب</h1>
+            </a>
+
+        </div>
+    </div>
+
+</div>
 {% endblock %}
