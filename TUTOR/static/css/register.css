@@ -28,7 +28,9 @@ background: linear-gradient(to right, #38ef7d, #11998e); /* W3C, IE 10+/ Edge, F
 }
 
 .card-text {
-    margin-top: 41%;
+    padding-bottom: 50%;
+    padding-top: 50%;
+    
 }
 
 
@@ -103,3 +105,10 @@ background: linear-gradient(to right, #38ef7d, #11998e); /* W3C, IE 10+/ Edge, F
   }
 
   
+  @media (max-width: 768px) { 
+
+    [class*="col-"] {
+        margin-bottom: 15px; /* this is so that when elements stack upove eacher other there is padding */
+    }
+  
+  }
