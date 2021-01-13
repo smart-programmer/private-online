@@ -8,29 +8,45 @@ background: linear-gradient(to right, #8f94fb, #4e54c8); /* W3C, IE 10+/ Edge, F
 }
 
 .my-cont {
-    /* border: 3PX solid red; */
+}
+
+.my-text-cont {
+    height:100%;
+    width:100%;
+    overflow:hidden; /* or overflow:auto; if you want scrollbars */
 }
 
 .my-row {
     height: 450px;
     text-align: center;
-    /* border: 3PX solid blue; */
+}
+
+.my-text-row {
+    height: 100%;
+    width:100%;
+    text-align: center;
 }
 
 .my-col {
     
     border-radius: 20px;
-    /* border: 3PX solid black; */
     background: #11998e;  /* fallback for old browsers */
 background: -webkit-linear-gradient(to right, #38ef7d, #11998e);  /* Chrome 10-25, Safari 5.1-6 */
 background: linear-gradient(to right, #38ef7d, #11998e); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
 }
 
-.card-text {
-    padding-bottom: 50%;
-    padding-top: 50%;
+.my-text-col {
     
+}
+
+
+.card-text {
+    /* padding-bottom: 50%;
+    padding-top: 50%; */
+    /* margin-top: 50%;
+    margin-bottom: 50%; */
+
 }
 
 
@@ -46,14 +62,17 @@ background: linear-gradient(to right, #38ef7d, #11998e); /* W3C, IE 10+/ Edge, F
     transition-property: transform;
     -webkit-transition-timing-function: ease-out;
     transition-timing-function: ease-out;
+
   }
   .hvr-float:hover, .hvr-float:focus, .hvr-float:active {
     -webkit-transform: translateY(-8px);
     transform: translateY(-8px);
+
   }
   
 
   .hvr-bounce-to-top {
+  
     display: inline-block;
     vertical-align: middle;
     -webkit-transform: perspective(1px) translateZ(0);
@@ -70,6 +89,7 @@ background: linear-gradient(to right, #38ef7d, #11998e); /* W3C, IE 10+/ Edge, F
     color: linear-gradient(to right, #0cebeb, #20e3b2, #29ffc6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   }
   .hvr-bounce-to-top:before {
+
     content: "";
     position: absolute;
     z-index: -1;
@@ -95,13 +115,13 @@ background: linear-gradient(to right, #38ef7d, #11998e); /* W3C, IE 10+/ Edge, F
   .hvr-bounce-to-top:hover, .hvr-bounce-to-top:focus, .hvr-bounce-to-top:active {
     color: white;
     text-decoration: none;
+
   }
   .hvr-bounce-to-top:hover:before, .hvr-bounce-to-top:focus:before, .hvr-bounce-to-top:active:before {
     -webkit-transform: scaleY(1);
     transform: scaleY(1);
     -webkit-transition-timing-function: cubic-bezier(0.52, 1.64, 0.37, 0.66);
     transition-timing-function: cubic-bezier(0.52, 1.64, 0.37, 0.66);
-
   }
 
   

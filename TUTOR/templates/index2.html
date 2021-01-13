@@ -2,8 +2,15 @@
 
 {% block title %} Home {% endblock %}
 {% block content %}
-    <center>
-        <h1 style="color: orange;">{{ get_language_text('test_translation', get_current_page_language_list()) }}</h1>
-    </center>
+    <link rel="stylesheet" href="url_for('static', filename='css/index.css')">
 
+    <h1 style="color: orange;">{{ get_language_text('test_translation', get_current_page_language_list()) }}</h1>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 {% endblock %}
