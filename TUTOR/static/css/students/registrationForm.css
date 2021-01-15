@@ -1,0 +1,61 @@
+
+
+body {
+    background: #aa4b6b;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #3b8d99, #6b6b83, #aa4b6b);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #3b8d99, #6b6b83, #aa4b6b); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+/* border: 3px solid red; */
+}
+
+.parent-cont {
+    /* border: 3px solid red; */
+
+}
+.parent-row {
+    /* border: 3px solid blue; */
+}
+.parent-col {
+    width: 100%;
+    /* border: 3px solid black; */
+    padding: 0;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.my-cont {
+    border-radius: 15px;
+    background-color: white;
+    /* border: 3px solid red; */
+    -webkit-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+    width: 100%;
+}
+
+.form-fields-wrapper {
+    margin: 20px;
+    margin-bottom: 40px;
+    /* border: 3px solid yellow; */
+}
+
+.my-row {
+    /* border: 3px solid blue; */
+}
+
+
+.my-col {
+    /* border: 3px solid black; */
+}
+
+.submit {
+    width: 190px;
+    margin-bottom: 40px;
+    overflow: hidden;
+}
+
+#title{
+    margin-top: 40px;
+    margin-bottom: 40px;
+    overflow: hidden;
+}
+

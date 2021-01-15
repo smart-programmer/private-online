@@ -3,22 +3,82 @@
 {% block title %} Register {% endblock %}
 
 {% block content %}
-    <center>
-        <h1 style="color: orange;">سجل كمعلم</h1>
-    </center>
-    <br><br><br>
-    <form action="" method="POST" enctype="multipart/form-data">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/students/registrationForm.css') }}">
+<div class="container parent-cont">
+    <div class="row justify-content-center parent-row">
+
+    <div class="col-sm-8 parent-col">
+
+    
+    <form action="" method="POST" enctype="multipart/form-data" class="container my-cont">
+
         {{ form.hidden_tag() }}
+        <div class="form-fields-wrapper">
 
-        {{ form.first_name.name }}
-        {{ form.first_name() }}
-        <br>
+        <div class="form-row my-row">
+            <div class='col-12'>
+                <h1 id="title">
+                    سجل كطالب
+                </h1>
+            </div>
+        </div>
 
-        {{ form.last_name.name }}
-        {{ form.last_name() }}
-        <br>
+        <div class="form-row my-row">
+            <div class="form-group col-sm-6">
+                <label for="{{ form.first_name.id }}">الاسم الأول</label>
+                {{ form.first_name(class="form-control") }}
+            </div>
+            
+            <div class="form-group col-sm-6">
+                <label for="{{ form.last_name.id }}">الاسم الاخير</label>
+                {{ form.last_name(class="form-control") }}
+            </div>
+        </div>
 
-        {{ form.username.name }}
+        <div class="form-row my-row">
+            <div class="form-group col-sm-6">
+                <label for="{{ form.username.id }}">اسم المستخدم</label>
+                {{ form.username(class="form-control") }}
+            </div>
+            
+            <div class="form-group col-sm-6">
+                <label for="{{ form.email.id }}">الايميل</label>
+                {{ form.email(class="form-control") }}
+            </div>
+        </div>
+
+        <div class="form-row my-row">
+            <div class="form-group col-sm-6">
+                <label for="{{ form.date_of_birth.id }}">تاريخ الميلاد</label>
+                {{ form.date_of_birth(class="form-control") }}
+            </div>
+            
+            <div class="form-group col-sm-6">
+                <label for="{{ form.gender.id }}">الجنس</label>
+                {{ form.gender(class="form-control") }}
+            </div>
+        </div>
+
+        <div class="form-row my-row">
+            <div class="form-group col-sm-8">
+                <label for="{{ form.school_name.id }}">اسم المدرسة</label>
+                {{ form.school_name(class="form-control") }}
+            </div>
+        </div>
+
+        <div class="form-row my-row">
+            <div class="form-group col-sm-6">
+                <label for="{{ form.password.id }}">الرقم السري</label>
+                {{ form.password(class="form-control") }}
+            </div>
+            
+            <div class="form-group col-sm-6">
+                <label for="{{ form.confirm_password.id }}">تأكيد الرقم السري</label>
+                {{ form.confirm_password(class="form-control") }}
+            </div>
+        </div>
+
+        <!-- {{ form.username.name }}
         {{ form.username() }}
         {% for error in form.username.errors %}
             <h3 style="color: red;"> {{ error }}</h3> 
@@ -30,46 +90,26 @@
         {% for error in form.email.errors %}
             <h3 style="color: red;"> {{ error }}</h3> 
         {% endfor %}
-        <br>
+        <br> -->
 
-        {{ form.school_name.name }}
-        {{ form.school_name() }}
-        {% for error in form.school_name.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
+        <div class="form-row my-row">
+            <div class='col-12'>
+                {{ form.submit(class="btn btn-primary submit", value="سجل الآن") }}
+            </div>
+        </div>
 
-        {{ form.date_of_birth.name }}
-        {{ form.date_of_birth() }}
-        {% for error in form.date_of_birth.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
-
-        {{ form.gender.name }}
-        {{ form.gender() }}
-        {% for error in form.gender.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
-
-
-        {{ form.password.name }}
-        {{ form.password() }}
-        <br>
-
-        {{ form.confirm_password.name }}
-        {{ form.confirm_password() }}
-        {% for error in form.confirm_password.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
-        
-        {{ form.submit() }}
-        
+        <div class="form-row my-row">
+            <div class='col-12'>
+            </div>
+        </div>
+    </div>
+<!-- 
         <br>
         {% for error in form.errors %}
             <h3 style="color: red;">error in field: {{ error }}</h3> 
-        {% endfor %}
+        {% endfor %} -->
     </form>
+</div>
+</div>
+</div>
 {% endblock %}

@@ -9,7 +9,7 @@ class Config:
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
     MAIL_USERNAME = 'horizonlighttrainingcentre@gmail.com'
-    MAIL_PASSWORD = "ofzwnsduwbjwylea"
+    MAIL_PASSWORD = "oupzxslsrgyrtsvt"
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
 

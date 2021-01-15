@@ -9,7 +9,7 @@ from TUTOR.models import UserModel
 def send_user_confirmation_email(email, confirmation_code):
 	#send mail
 	string = """TUTOR email verification"""
-	msg = MailMessage(string, sender=current_app.config.get("MAIL_USERNAME"), 
+	msg = MailMessage(string, sender="Horizon Light Training Centre", 
 	recipients=[email])
 	msg.body = f'''your confirmation code is {confirmation_code},
 	{request.host_url}{url_for('users_blueprint.email_confirmation')}
@@ -104,7 +104,7 @@ def send_tutor_course_start_email(user, course):
 	#send mail
 
 	string = """HLTC course"""
-	msg = MailMessage(string, sender=current_app.config.get("MAIL_USERNAME"), 
+	msg = MailMessage(string, sender="Horizon Light Training Centre", 
 	recipients=[user.email])
 	msg.body = f'''Hello {user.full_name} the course {course.name} has reached the requested
 	number of students to start. please contact the students to set up the course arrangements

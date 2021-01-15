@@ -4,7 +4,7 @@ from TUTOR import db, bcrypt
 from TUTOR.TUTORS.forms import TutorRegistrationForm, TutorEditProfileForm, CourseCreationForm
 from TUTOR.models import UserModel, TutorDataModel, CourseModel, SiteSettingsModel
 from TUTOR.utils.mail import send_user_confirmation_email
-from TUTOR.utils.utils import generate_random_digits, login_required, put_current_choice_first
+from TUTOR.utils.utils import generate_random_digits, login_required, put_current_choice_first, list_to_select_compatable_tuple
 from TUTOR.utils.languages import LngObj
 from TUTOR.settings import LANGUAGES, ADMIN_TYPES
 
@@ -132,18 +132,20 @@ def add_course():
         if not SiteSettingsModel.get_settings_dict()["allow_tutors_to_create_courses"]:
             return current_app.login_manager.unauthorized()    
     form = CourseCreationForm()
-    
+    form.subject.choices = list_to_select_compatable_tuple(SiteSettingsModel.query.filter_by(name="allowed_subject").all(), "id", "value")
 
     if form.validate_on_submit():
         course_name = form.name.data
         course_description = form.description.data
+        subject = int(form.subject.data)
         price = form.price.data
         currency = form.currency.data
         min_students = form.min_students.data
         max_students = form.max_students.data
         course = CourseModel(name=course_name, description=course_description, created_by_admin=False,
-         tutor=current_user.tutor_data_model, price=price, min_students=min_students, max_students=max_students, currency=currency)
+         tutor=current_user.tutor_data_model, price=price, min_students=min_students, max_students=max_students, currency=currency, subject_id=subject)
         db.session.add(course)
         db.session.commit()
         return redirect(url_for("courses_blueprint.courses"))
+
     return render_template("tutors/create_course.html", form=form)

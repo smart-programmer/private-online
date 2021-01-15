@@ -74,10 +74,12 @@ class TutorEditProfileForm(FlaskForm):
 
 
 currencies = dict_to_select_compatable_tuple(CURRENCIES)
+subjects = (())
 
 class CourseCreationForm(FlaskForm):
     name = wtforms.StringField("course name", validators=[length(max=130), DataRequired()])
     description = wtforms.StringField("description", validators=[length(max=1000), DataRequired()], widget=TextArea())
+    subject = wtforms.SelectField("course subject", choices=subjects, validators=[DataRequired()])
     price = IntegerField("price", validators=[DataRequired()])
     currency = wtforms.SelectField("currency", choices=currencies, validators=[DataRequired()])
     min_students = IntegerField("minimum number of students", validators=[DataRequired()])

@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, make_response, current_app, request, url_for, redirect
 from flask_login import current_user
+from TUTOR import db
 from TUTOR.utils.utils import reverse_url_for, parse_view_name, login_required
 from TUTOR.utils.languages import LngObj
 from TUTOR.settings import LANGUAGES, ADMIN_TYPES

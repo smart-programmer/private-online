@@ -25,6 +25,13 @@
         {% endfor %}
         <br>
 
+        {{ form.subject.name }}
+        {{ form.subject() }}
+        {% for error in form.subject.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+
         {{ form.price.name }}
         {{ form.price() }}
         {% for error in form.price.errors %}

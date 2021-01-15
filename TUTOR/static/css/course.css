@@ -1,0 +1,60 @@
+
+
+.parent-cont {
+    /* border-radius: 10px; */
+    /* background-color: white;  */
+    /* border: 3px solid red; */
+    /* -webkit-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15); */
+}
+
+
+
+.parent-row {
+    /* border: 3px solid blue; */
+}
+
+
+.parent-col {
+    /* border: 3px solid black; */
+    /* text-align: center; */
+}
+
+
+.my-cont {
+    border-radius: 10px;
+    /* background-color: white;  */
+    /* border: 3px solid red; */
+    -webkit-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+    background: #D1913C;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #FFD194, #D1913C);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #FFD194, #D1913C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    color: white;
+}
+
+
+
+.my-row {
+    /* border: 3px solid blue; */
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+
+.my-col {
+    /* border: 3px solid black; */
+    text-align: center;
+
+}
+
+#heights-elemnt {
+    margin-top: 100px;
+}
+
+.settings-button {
+    margin-bottom: 100px;
+}
+

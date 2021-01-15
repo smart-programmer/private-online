@@ -2,9 +2,65 @@
 
 {% block title %} Courses {% endblock %}
 {% block content %}
-   
-    {% for course in all_courses %}
-        <a href="{{ url_for('courses_blueprint.course', course_id=course.id) }}"><h1>{{course.name}}</h1></a>
-    {% endfor %}
     
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/courses.css') }}">
+
+    <div class="container my-cont">
+        <div class="row justify-content-center my-row filter-row">
+            <nav class="navbar navbar-expand-lg my-courses-nav">
+                <a class="navbar-brand"><h4>Courses</h4></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
+
+                  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                      <li class="nav-item active">
+                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                      </li>
+                      <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Dropdown
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <a class="dropdown-item" href="#">Action</a>
+                          <a class="dropdown-item" href="#">Another action</a>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link disabled" href="#">Disabled</a>
+                      </li>
+                    </ul>
+                    <form class="form-inline my-2 my-lg-0">
+                      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                  </div>
+            </nav>
+        </div>
+        
+        <div class="row my-row">
+            {% for course in all_courses %}
+                <div class="col-sm-4 my-col content-col">
+                    <div class="card text-white bg-dark mb-3 my-card" style="max-width: 18rem;">
+                        <div class="card-header">{{ course.subject }}</div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ course.name }}</h5>
+                                <h5 class="card-title"><i class='fas fa-chalkboard-teacher' style='font-size:24px'></i> {{ course.tutor.user.full_name }}</h5>
+                                <p class="card-text"><i class="bi bi-person-dash"></i> {{ course.empty_seats }}</p>
+                                  <p class="card-text"><i class="bi bi-cash"></i> ${{ course.price }} {{ course.currency }}</p>
+                                  <a href="{{ url_for('courses_blueprint.course', course_id=course.id) }}" class="btn btn-primary">شاهد التفاصيل</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
 {% endblock %}
+

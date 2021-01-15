@@ -22,12 +22,16 @@ else:
 
 app.app_context().push()
 
-setting1 = SiteSettingsModel(name="allow_tutors_to_create_courses", value="false")
-setting2 = SiteSettingsModel(name="allow_tutors_to_edit_courses", value="false")
+setting1 = SiteSettingsModel(name="allow_tutors_to_create_courses", value="True")
+setting2 = SiteSettingsModel(name="allow_tutors_to_edit_courses", value="True")
+setting3 = SiteSettingsModel(name="allowed_subject", value="Math")
+setting4 = SiteSettingsModel(name="allowed_subject", value="Physics")
 
 
 db.session.add(setting1)
 db.session.add(setting2)
+db.session.add(setting3)
+db.session.add(setting4)
 db.session.commit()
 
 print("Done")

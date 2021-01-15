@@ -2,24 +2,65 @@
 
 {% block title %} Course {% endblock %}
 {% block content %}
-   
     
-    <h1>{{course.name}}</h1>
-    <br>
-    <h3>الوصف: {{course.description}}</h1>
-    <br>
-    <h3>عدد الطلاب: {{course.number_of_participants}}</h1>
-    <br>
-    <h3>المدرس: {{course.tutor.user.full_name}}</h1>
-    
-    {% if current_user.user_type == "student" %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/course.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+
+    <div class="container parent-cont">
+
+
+    <div class="row justify-content-center parent-row">
+
+
+    <div class="col-sm-10 parent-col">
+
+    <div class="container my-cont">
+        <div class="row justify-content-center my-row">
+            <div class="col my-col">
+                <p id="heights-elemnt">{{course.subject}}</p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center my-row">
+            <div class="col my-col">
+                <h1>{{course.name}}</h1>
+            </div>
+        </div>
+
+        <div class="row justify-content-center my-row">
+            <div class="col my-col">
+                <p>{{ course.description }}</p>
+            </div>
+        </div>
+
+        <div class="row justify-content-center my-row">
+            <div class="col-4 my-col">
+                <h5><i class="bi bi-cash"></i> ${{ course.price }} {{ course.currency }}</h5>
+            </div>
+            <div class="col-4 my-col">
+                <h5>عدد الكراسي الشاغرة: {{ course.empty_seats }}</h5>
+            </div>
+            <div class="col-4 my-col">
+                <h5>عدد الطلاب المتسجلين: {{ course.number_of_participants }}</h5>
+            </div>
+        </div>
+
+        <div class="row justify-content-center my-row">
+            <div class="col my-col">
+                <h5>الحالة: {{ course.state }}</h5>
+            </div>
+        </div>
+
+        <div class="row justify-content-center my-row">
+            <div class="col my-col">
+                {% if current_user.user_type == "student" %}
         {% if course not in current_user.student_data_model.courses %}
-            <a href="{{ url_for('students_blueprint.join_course', course_id=course.id) }}"><button type="button" class="btn btn-dark">join course que <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bag-plus" viewBox="0 0 16 16">
+            <a href="{{ url_for('students_blueprint.join_course', course_id=course.id) }}"><button type="button" class="btn btn-dark settings-button">انظم الى الكورس <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bag-plus" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z"/>
             <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
             </svg></button></a>
         {% else %}
-            <a href="{{ url_for('students_blueprint.leave_course', course_id=course.id) }}"><button type="button" class="btn btn-dark">leave course que <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bag-plus" viewBox="0 0 16 16">
+            <a href="{{ url_for('students_blueprint.leave_course', course_id=course.id) }}"><button type="button" class="btn btn-dark settings-button">غادر الكورس <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bag-plus" viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z"/>
             <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
             </svg></button></a>
@@ -28,15 +69,20 @@
         {% if not settings.get("allow_tutors_to_edit_courses") %}
             {% if current_user.user_type == "tutor" %}
             {% else %}
-            <a href="{{ url_for('courses_blueprint.control_course', course_id=course.id) }}"><button type="button" class="btn btn-dark">course control <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
+            <a href="{{ url_for('courses_blueprint.control_course', course_id=course.id) }}"><button type="button" class="btn btn-dark settings-button">ابدأ الكورس <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
                 <path d="M.102 2.223A3.004 3.004 0 0 0 3.78 5.897l6.341 6.252A3.003 3.003 0 0 0 13 16a3 3 0 1 0-.851-5.878L5.897 3.781A3.004 3.004 0 0 0 2.223.1l2.141 2.142L4 4l-1.757.364L.102 2.223zm13.37 9.019l.528.026.287.445.445.287.026.529L15 13l-.242.471-.026.529-.445.287-.287.445-.529.026L13 15l-.471-.242-.529-.026-.287-.445-.445-.287-.026-.529L11 13l.242-.471.026-.529.445-.287.287-.445.529-.026L13 11l.471.242z"/>
               </svg></button></a>
               {% endif %}
         {% else %}
-        <a href="{{ url_for('courses_blueprint.control_course', course_id=course.id) }}"><button type="button" class="btn btn-dark">course control <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
+        <a href="{{ url_for('courses_blueprint.control_course', course_id=course.id) }}"><button type="button" class="btn btn-dark settings-button">ابدأ الكورس <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
             <path d="M.102 2.223A3.004 3.004 0 0 0 3.78 5.897l6.341 6.252A3.003 3.003 0 0 0 13 16a3 3 0 1 0-.851-5.878L5.897 3.781A3.004 3.004 0 0 0 2.223.1l2.141 2.142L4 4l-1.757.364L.102 2.223zm13.37 9.019l.528.026.287.445.445.287.026.529L15 13l-.242.471-.026.529-.445.287-.287.445-.529.026L13 15l-.471-.242-.529-.026-.287-.445-.445-.287-.026-.529L11 13l.242-.471.026-.529.445-.287.287-.445.529-.026L13 11l.471.242z"/>
           </svg></button></a>
         {% endif %}
     {% endif %}
-
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
 {% endblock %}

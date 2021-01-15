@@ -88,6 +88,7 @@ class CourseModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(130), nullable=False)
     description = db.Column(db.String(1000), nullable=False)
+    subject_id = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     min_students = db.Column(db.Integer, nullable=False)
     max_students = db.Column(db.Integer, nullable=False)
@@ -102,6 +103,23 @@ class CourseModel(db.Model):
     @property
     def number_of_participants(self):
         return len(self.students)
+    
+    @property
+    def empty_seats(self):
+        return self.max_students - self.number_of_participants
+
+    @property
+    def subject(self):
+        return SiteSettingsModel.query.get(self.subject_id).value
+
+    @property
+    def state(self):
+        if not self.began:
+            return "pending"
+        elif not sel.ended:
+            return "active"
+        else:
+            return "ended"
 
 
 class TutorDataModel(db.Model):

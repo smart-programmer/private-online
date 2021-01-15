@@ -6,9 +6,13 @@ footer {
   bottom: 0;
   left: 0;
   right: 0;
-  background: #16222A;
+  /* background: #16222A;
   background: -webkit-linear-gradient(59deg, #3A6073, #16222A);
-  background: linear-gradient(59deg, #3A6073, #16222A);
+  background: linear-gradient(59deg, #3A6073, #16222A); */
+  background: #FFA17F;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #00223E, #FFA17F);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #00223E, #FFA17F); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
   color: white;
   margin-top:100px;
   clear: both;
