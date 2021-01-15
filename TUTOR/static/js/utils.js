@@ -3,6 +3,7 @@
 
 function populate_list_with_text(input_id, ul_id){
     let node = document.createElement("LI");
+    node.id = "js-propery"
     let subject_text = document.getElementById(input_id)
     if (subject_text.value.length > 0){
         let textnode = document.createTextNode(subject_text.value);         // Create a text node

@@ -35,6 +35,7 @@
 
 .my-row {
     /* border: 3px solid blue; */
+    
 }
 
 
@@ -54,3 +55,16 @@
     overflow: hidden;
 }
 
+/* ul {
+    margin: 0;
+} */
+
+/* .common-ul li {
+    display: inline;
+} */
+
+#js-propery {
+    display: inline;
+    color: khaki;
+    margin-right: 20px;
+}

@@ -3,28 +3,57 @@
 {% block title %} Login {% endblock %}
 
 {% block content %}
-    <center>
-        <h1 style="color: orange;">login</h1>
-    </center>
-    <br><br><br><br>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/users/login.css') }}">
 
-    <form action="" method="POST">
+<div class="container parent-cont">
+    <div class="row justify-content-center parent-row">
+
+    <div class="col-sm-5 parent-col">
+
+    <form action="" method="POST" enctype="multipart/form-data" id="form" class="container my-cont" onsubmit="DoSubmit()">
         {{ form.hidden_tag() }}
 
-        {{ form.username_or_email.name }}
-        {{ form.username_or_email() }}
-        <br>
+        <div class="form-fields-wrapper">
 
-        {{ form.password.name }}
-        {{ form.password() }}
-        <br>
+            <div class="form-row my-row">
+                <div class='col-12 my-col'>
+                    <h1 id="title">
+                        سجل دخول
+                    </h1>
+                </div>
+            </div>
 
-        {{ form.submit() }}
-        <br>
-        <br>
-        <br>
+            <div class="form-row my-row">
+                <div class="form-group col-sm-12 my-col">
+                    <label for="{{ form.username_or_email.id }}">اسم المستخدم او الايميل</label>
+                    {{ form.username_or_email(class="form-control") }}
+                </div>
+            </div>
+    
+            <div class="form-row my-row">
+                <div class="form-group col-sm-12 my-col">
+                    <label for="{{ form.password.id }}">الرمز السري</label>
+                    {{ form.password(class="form-control") }}
+                </div>
+            </div>
 
-        <a href="{{ url_for('users_blueprint.request_reset_password') }}"><button type="button">forgot password?</button></a>
+            <div class="form-row my-row">
+                <div class='col-12 my-col'>
+                    {{ form.submit(class="btn btn-primary submit", value="سجل دخول") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6 my-col">
+                    <a href="{{ url_for('users_blueprint.request_reset_password') }}">نسيت كلمة المرور ؟</a>
+                </div>
+            </div>
+
+    </div>
     </form>
-   
+</div>
+</div>
+</div>
+
+
 {% endblock %}

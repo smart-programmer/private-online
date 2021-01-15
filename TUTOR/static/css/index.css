@@ -1,0 +1,46 @@
+
+
+.parent-container {
+    /* background: #D1913C;  
+    background: -webkit-linear-gradient(to right, #FFD194, #D1913C); 
+    background: linear-gradient(to right, #FFD194, #D1913C);  */
+    background-image: url("/static/images/index-background.jpg");
+    background-repeat: no-repeat;
+    /* background-size: cover; */
+    background-size: 100% 100%;
+    background-position: center;
+    /* border: 3px solid red; */
+    /* max-width:100%; */
+    /* max-height:100%;  */
+}
+
+.parent-row{
+    /* border: 3px solid blue; */
+}
+
+.parent-col{
+    /* border: 3px solid black; */
+}
+
+.my-container {
+    /* border: 3px solid red; */
+}
+
+.my-row{
+    /* border: 3px solid blue; */
+}
+
+.my-col{
+    /* border: 3px solid black; */
+    /* text-align: center; */
+    color: white;
+    margin-bottom: 20px;
+}
+
+.heights-elemnts {
+    margin-top: 200px;
+}
+
+.lowest-elemnts {
+    margin-bottom: 200px;
+}

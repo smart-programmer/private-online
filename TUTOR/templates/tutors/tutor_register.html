@@ -1,126 +1,165 @@
 {% extends "template.html" %}
 
-{% block title %} Register {% endblock %}
+{% block title %} Register Tutor{% endblock %}
 
 {% block content %}
 <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
-    <center>
-        <h1 style="color: orange;">سجل كمعلم</h1>
-    </center>
-    <br><br><br>
-    <form action="" method="POST" enctype="multipart/form-data" id="form" onsubmit="DoSubmit()">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tutors/registrationForm.css') }}">
+
+<div class="container parent-cont">
+    <div class="row justify-content-center parent-row">
+
+    <div class="col-sm-8 parent-col">
+
+    <form action="" method="POST" enctype="multipart/form-data" id="form" class="container my-cont" onsubmit="DoSubmit()">
         {{ form.hidden_tag() }}
 
-        {{ form.first_name.name }}
-        {{ form.first_name() }}
-        <br>
+        <div class="form-fields-wrapper">
 
-        {{ form.last_name.name }}
-        {{ form.last_name() }}
-        <br>
+            <div class="form-row my-row">
+                <div class='col-12'>
+                    <h1 id="title">
+                        سجل كمعلم
+                    </h1>
+                </div>
+            </div>
 
-        {{ form.username.name }}
-        {{ form.username() }}
-        {% for error in form.username.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
-        
-        {{ form.email.name }}
-        {{ form.email() }}
-        {% for error in form.email.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6 my-col">
+                    <label for="{{ form.first_name.id }}">الاسم الأول</label>
+                    {{ form.first_name(class="form-control") }}
+                </div>
+                
+                <div class="form-group col-sm-6 my-col">
+                    <label for="{{ form.last_name.id }}">الاسم الاخير</label>
+                    {{ form.last_name(class="form-control") }}
+                </div>
+            </div>
+    
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6 my-col">
+                    <label for="{{ form.username.id }}">اسم المستخدم</label>
+                    {{ form.username(class="form-control") }}
+                </div>
+                
+                <div class="form-group col-sm-6 my-col">
+                    <label for="{{ form.email.id }}">الايميل</label>
+                    {{ form.email(class="form-control") }}
+                </div>
+            </div>
+    
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6 my-col">
+                    <label for="{{ form.date_of_birth.id }}">تاريخ الميلاد</label>
+                    {{ form.date_of_birth(class="form-control") }}
+                </div>
+                
+                <div class="form-group col-sm-6 my-col">
+                    <label for="{{ form.gender.id }}">الجنس</label>
+                    {{ form.gender(class="form-control") }}
+                </div>
+            </div>
 
-        {{ form.gender.name }}
-        {{ form.gender() }}
-        {% for error in form.gender.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.nationality.id }}">الجنسية</label>
+                    {{ form.nationality(class="form-control") }}
+                </div>
+                
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.qualification.id }}">المؤهل</label>
+                    {{ form.qualification(class="form-control") }}
+                </div>
+            </div>
 
-        {{ form.date_of_birth.name }}
-        {{ form.date_of_birth() }}
-        {% for error in form.date_of_birth.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.major.id }}">التخصص</label>
+                    {{ form.major(class="form-control") }}
+                </div>
+                
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.current_job.id }}">الوظيفة الحالية</label>
+                    {{ form.current_job(class="form-control") }}
+                </div>
+            </div>
 
-        {{ form.nationality.name }}
-        {{ form.nationality() }}
-        {% for error in form.nationality.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.years_of_experience.id }}">سنوات الخبرة</label>
+                    {{ form.years_of_experience(class="form-control") }}
+                </div>
+            </div>
 
-        {{ form.qualification.name }}
-        {{ form.qualification() }}
-        {% for error in form.qualification.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
-
-        {{ form.major.name }}
-        {{ form.major() }}
-        {% for error in form.major.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
-
-        {{ form.current_job.name }}
-        {{ form.current_job() }}
-        {% for error in form.current_job.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
-
-        <ul id="subs"> 
+            <div class="form-row my-row">
+               
+                <div class="form-group col-sm-3 my-col">
+                    <ul id="subs"> 
             
-        </ul>
-        {{ form.subjects.name }}
-        {{ form.subjects(id="subjects") }} <input type="button" value="add subject" onclick="populate_list_with_text('subjects', 'subs')">
-        {% for error in form.subjects.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
+                    </ul>
+                </div>
+              
+            </div>
 
-        {{ form.years_of_experience.name }}
-        {{ form.years_of_experience() }}
-        {% for error in form.years_of_experience.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
+            <div class="form-row my-row">
+                <label for="{{ form.subjects.id }}" class="col my-col">المواد التي ترغب بتدريسها</label>
+                <div class="form-group col-sm-6 my-col">
+                    {{ form.subjects(id="subjects", class="form-control") }} 
+                </div>
+                
+                <div class="form-group col-sm-3 my-col">
+                    <input type="button" value="أضف مادة" class="btn btn-dark" onclick="populate_list_with_text('subjects', 'subs')">
+                </div>
+            </div>
 
-        <ul id="tools_ul"> 
+            <div class="form-row my-row">
+               
+                <div class="form-group col-sm-3 my-col">
+                    <ul id="tools_ul"> 
             
-        </ul>
-        {{ form.tools_used_for_online_tutoring.name }}
-        {{ form.tools_used_for_online_tutoring(id="tools") }} <input type="button" value="add tool" onclick="populate_list_with_text('tools', 'tools_ul')">
-        {% for error in form.tools_used_for_online_tutoring.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
-      
-        {{ form.password.name }}
-        {{ form.password() }}
-        <br>
+                    </ul>
+                </div>
+              
+            </div>
 
-        {{ form.confirm_password.name }}
-        {{ form.confirm_password() }}
-        {% for error in form.confirm_password.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
+            <div class="form-row my-row">
+                <label for="{{ form.tools_used_for_online_tutoring.id }}" class="col my-col">الادوات المستخدمة في التدريس</label>
+                <div class="form-group col-sm-6 my-col">
+                    {{ form.tools_used_for_online_tutoring(id="tools", class="form-control") }} 
+                </div>
+                
+                <div class="form-group col-sm-3 my-col">
+                    <input type="button" value="أضف اداة" class="btn btn-dark" onclick="populate_list_with_text('tools', 'tools_ul')">
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.password.id }}">الرقم السري</label>
+                    {{ form.password(class="form-control") }}
+                </div>
+                
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.confirm_password.id }}">تأكيد الرقم السري</label>
+                    {{ form.confirm_password(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class='col-12'>
+                    {{ form.submit(class="btn btn-primary submit", value="سجل الآن") }}
+                </div>
+            </div>
         
-        {{ form.submit() }}
-        
-        <br>
         {% for error in form.errors %}
             <h3 style="color: red;">error in field: {{ error }}</h3> 
         {% endfor %}
+    </div>
     </form>
-    <br><br><br><br><br>
+</div>
+</div>
+</div>
+
     <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}">
     </script>
     <script>

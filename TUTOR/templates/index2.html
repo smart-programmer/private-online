@@ -2,15 +2,76 @@
 
 {% block title %} Home {% endblock %}
 {% block content %}
-    <link rel="stylesheet" href="url_for('static', filename='css/index.css')">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 
-    <h1 style="color: orange;">{{ get_language_text('test_translation', get_current_page_language_list()) }}</h1>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+    <div class="container-fluid parent-container">
+        <div class="row justify-content-center parent-row">
+            <div class="col parent-col">
+                <div class="container">
+                    <div class="row justify-content-center my-row">
+                        <div class="col-sm-7 my-col heights-elemnts"> 
+                            <h1>أهلا بك في مركز أفق الضوء للتدريب</h1>
+                            <h1 style="color: orange;">{{ get_language_text('test_translation', get_current_page_language_list()) }}</h1>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center my-row">
+                        <div class="col-sm-7 my-col">
+                            <h3>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum viverra enim in metus aliquam, in placerat purus tristique. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet porttitor magna, at vestibulum tellus fringilla a. Sed efficitur ante risus, aliquet convallis nisl vulputate eu.</h3>
+                        </div>
+                    </div>
+
+                    <div class="row justify-content-center my-row">
+                        <div class="col-sm-7 my-col lowest-elemnts">
+                            <a href="{{ url_for('students_blueprint.register') }}" class="btn btn-outline-dark">سجل كطالب الآن</a>
+                            <a href="{{ url_for('tutors_blueprint.register') }}" class="btn btn-outline-dark">سجل كمدرس الآن</a>
+                        </div>
+                        <!-- <div class="col my-col lowest-elemnts">
+                            <button class="btn btn-primary">سجل كمدرس الآن</button>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+        <ol class="carousel-indicators">
+          <li data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"></li>
+          <li data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"></li>
+          <li data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="{{ url_for('static', filename='images/index-background.jpg') }}" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>First slide label</h5>
+              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="{{ url_for('static', filename='images/index-background.jpg') }}" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Second slide label</h5>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img src="{{ url_for('static', filename='images/index-background2.jpg') }}" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Third slide label</h5>
+              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+            </div>
+          </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </a>
+      </div> -->
+
 {% endblock %}

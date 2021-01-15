@@ -14,7 +14,6 @@ background: -webkit-linear-gradient(to right, #00223E, #FFA17F);  /* Chrome 10-2
 background: linear-gradient(to right, #00223E, #FFA17F); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
   color: white;
-  margin-top:100px;
   clear: both;
 }
 
