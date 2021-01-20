@@ -4,18 +4,19 @@ from TUTOR import db, bcrypt
 from TUTOR.ADMINISTRATION.forms import AdminRegistrationForm, AdminCourseCreationForm
 from TUTOR.models import UserModel, AdminDataModel, CourseModel, SiteSettingsModel
 from TUTOR.utils.mail import send_user_confirmation_email, send_user_reset_password_email, send_user_change_password_email, send_email_change_request_email, send_deny_email_change_email
-from TUTOR.utils.utils import save_image_locally, delete_image, generate_random_digits, login_required, list_to_select_compatable_tuple
+from TUTOR.utils.utils import save_image_locally, delete_image, generate_random_digits, login_required, list_to_select_compatable_tuple, json_list_to_select_compatable_tuple
 from TUTOR.settings import ADMIN_TYPES, LANGUAGES
 from TUTOR.utils.languages import LngObj
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 import os
+import json
 
 
 admins_blueprint = Blueprint("admins_blueprint", __name__)
 
 @admins_blueprint.context_processor
 def utility_processor():
-    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.get_settings_dict())
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.instance())
 
 
 @admins_blueprint.route('/admins')
@@ -38,7 +39,7 @@ def control_panel():
         # register admins 
         # delete admins
         # change admins info
-    return render_template('admins/control_panel.html')
+    return render_template('admins/control_panel.html', value=request.args.get("value"))
 
 
 
@@ -86,17 +87,37 @@ def add_course():
     tutors = UserModel.query.filter_by(user_type="tutor").all()
     tutors_select_tuple = list_to_select_compatable_tuple(tutors, "id", "full_name")
     form.tutors.choices = tutors_select_tuple
+    form.subject.choices = json_list_to_select_compatable_tuple(SiteSettingsModel.instance().subjects["setting_value"])
 
     if form.validate_on_submit():
         course_name = form.name.data
         course_description = form.description.data
+        course_type = int(form.course_type.data)
         price = form.price.data
+        subject = int(form.subject.data)
+        period = int(form.period.data) if form.period.data else None
         currency = form.currency.data
-        min_students = form.min_students.data
-        max_students = form.max_students.data
+        min_students = form.min_students.data if form.min_students.data else None
+        max_students = form.max_students.data if form.max_students.data else None
+        start_date = form.start_date.data
+        end_date = form.end_date.data
+        link = form.zoom_link.data
+        table = {
+            "saturday": {"from": str(form.saturday_start.data), "to": str(form.saturday_end.data)},
+            "sunday": {"from": str(form.sunday_start.data), "to": str(form.sunday_end.data)},
+            "monday": {"from": str(form.monday_start.data), "to": str(form.monday_end.data)},
+            "tuesday": {"from": str(form.tuesday_start.data), "to": str(form.tuesday_end.data)},
+            "wednesday": {"from": str(form.wednesday_start.data), "to": str(form.wednesday_end.data)},
+            "tuesday": {"from": str(form.tuesday_start.data), "to": str(form.tuesday_end.data)},
+            "friday": {"from": str(form.friday_start.data), "to": str(form.friday_end.data)}
+        }
+        weekly_time_table_json = json.dumps(table)
+       
         tutor_data_model = UserModel.query.get(int(form.tutors.data)).tutor_data_model
         course = CourseModel(name=course_name, description=course_description, created_by_admin=True,
-         tutor=tutor_data_model, price=price, min_students=min_students, max_students=max_students, currency=currency)
+         tutor=tutor_data_model, price=price, min_students=min_students, max_students=max_students, currency=currency, 
+         _period=period, course_type=course_type, subject_id=subject, _start_date=start_date, _end_date=end_date, 
+         weekly_time_table_json=weekly_time_table_json, links=link)
         db.session.add(course)
         db.session.commit()
         return redirect(url_for("courses_blueprint.courses"))
@@ -113,17 +134,22 @@ def users_list_view(): # admin only
 @admins_blueprint.route("/admins/change-site-settings")
 @login_required(ADMIN_TYPES)
 def change_site_settings():
-    _setting = str(request.args.get("setting"))
+    setting_name = str(request.args.get("setting"))
     
-    setting = SiteSettingsModel.query.filter_by(name=_setting).first()
-    if setting.is_bool():
-        setting.reverse_bool_setting()
-    else:
+    settings = SiteSettingsModel.instance()
+    setting = getattr(settings, setting_name)
+    setting_type = setting["setting_type"]
+    if setting_type == bool.__name__:
+        settings.reverse_bool_setting(setting_name)
+    elif setting_type == list.__name__:
         value = str(request.args.get("value"))
-        setting.value = value
-        db.session.commit()
+        settings.add_to_list_type_setting(setting_name, value)
+    elif setting_type == dict.__name__:
+        key = str(request.args.get("key"))
+        value = str(request.args.get("value"))
+        settings.add_or_change_to_dict_type_setting(setting_name, key, value)
 
-    return redirect(url_for("admins_blueprint.control_panel"))
+    return redirect(url_for("admins_blueprint.control_panel", vlaue=value))
 
 
 # @admins_blueprint.route("/admins/profile", methods=["GET"])

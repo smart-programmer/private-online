@@ -102,10 +102,27 @@
             </div>
 
             <div class="form-row my-row">
+                <div class="form-group col-sm-6 my-col">
+            <div id="list1" class="dropdown-check-list" tabindex="100">
+                <span class="anchor">Select Fruits</span>
+                <ul class="items">
+                    {% for subject in settings.subjects.setting_value %}
+                        <li><input type="checkbox" name="{{subject}}" value="{{subject}}" id="checkbox-subject"/> {{subject}} </li>
+                    {% endfor %}
+                </ul>
+              </div>
+            </div>
+            </div>
+
+            <div class="form-row my-row">
                 <label for="{{ form.subjects.id }}" class="col my-col">المواد التي ترغب بتدريسها</label>
                 <div class="form-group col-sm-6 my-col">
                     {{ form.subjects(id="subjects", class="form-control") }} 
                 </div>
+
+                {% for error in form.subjects.errors %}
+                    <h3 style="color: red;">error in field: {{ error }}</h3> 
+                 {% endfor %}
                 
                 <div class="form-group col-sm-3 my-col">
                     <input type="button" value="أضف مادة" class="btn btn-dark" onclick="populate_list_with_text('subjects', 'subs')">
@@ -127,6 +144,9 @@
                 <div class="form-group col-sm-6 my-col">
                     {{ form.tools_used_for_online_tutoring(id="tools", class="form-control") }} 
                 </div>
+                {% for error in form.tools_used_for_online_tutoring.errors %}
+                    <h3 style="color: red;">error in field: {{ error }}</h3> 
+                 {% endfor %}
                 
                 <div class="form-group col-sm-3 my-col">
                     <input type="button" value="أضف اداة" class="btn btn-dark" onclick="populate_list_with_text('tools', 'tools_ul')">
@@ -166,16 +186,33 @@
         function DoSubmit(){
             form = document.getElementById("form")
 
-            subjects_array = []
-            Array.from(document.querySelectorAll('#subs>li'), li => subjects_array.push(li.textContent))
-            form.subjects.value = subjects_array
+            subjects_array_from_database = "{% for i in settings.subjects.setting_value%}{{ i }} {% endfor %}".split(" ")
+            subjects_node_list = document.querySelectorAll('.items>li>input');
+            subjects_checked_list = []
+            for (subject of subjects_node_list){
+                if (subject.checked){
+                    subjects_checked_list.push(subject.value)
+                }
+            }
+            form.subjects.value = JSON.stringify(subjects_checked_list)
+            // subjects_array = []
+            // Array.from(document.querySelectorAll('#subs>li'), li => subjects_array.push(li.textContent))
+            // JSON.stringify(subjects_array)
 
             tools_array = []
             Array.from(document.querySelectorAll('#tools_ul>li'), li => tools_array.push(li.textContent))
-            form.tools_used_for_online_tutoring.value = tools_array
+            form.tools_used_for_online_tutoring.value = JSON.stringify(tools_array)
 
             return true
     }
+
+        var checkList = document.getElementById('list1');
+        checkList.getElementsByClassName('anchor')[0].onclick = function(evt) {
+        if (checkList.classList.contains('visible'))
+            checkList.classList.remove('visible');
+        else
+            checkList.classList.add('visible');
+        }
     </script>
        
 {% endblock %}

@@ -3,12 +3,47 @@
 {% block title %} email verification {% endblock %}
 
 {% block content %}
-    <center>
-        <h1 style="color: orange;">email verification</h1>
-    </center>
-    <br><br><br><br>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/users/login.css') }}">
 
-    <form action="" method="POST">
+<div class="container parent-cont">
+    <div class="row justify-content-center parent-row">
+
+    <div class="col-sm-5 parent-col">
+
+    <form action="" method="POST" enctype="multipart/form-data" id="form" class="container my-cont" onsubmit="DoSubmit()">
+        {{ form.hidden_tag() }}
+
+        <div class="form-fields-wrapper">
+
+            <div class="form-row my-row">
+                <div class='col-12 my-col'>
+                    <h1 id="title">
+                        أكد ايميلك
+                    </h1>
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-12 my-col">
+                    <label for="{{ form.code.id }}">الرمز المرسل على الايميل</label>
+                    {{ form.code(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class='col-12 my-col'>
+                    {{ form.submit(class="btn btn-primary submit", value="سجل دخول") }}
+                </div>
+            </div>
+
+
+    </div>
+    </form>
+</div>
+</div>
+</div>
+
+    <!-- <form action="" method="POST">
         {{ form.hidden_tag() }}
 
         {{ form.code.name }}
@@ -17,5 +52,5 @@
 
         {{ form.submit() }}
     </form>
-   
+    -->
 {% endblock %}

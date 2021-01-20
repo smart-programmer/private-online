@@ -14,7 +14,7 @@ students_blueprint = Blueprint("students_blueprint", __name__)
 
 @students_blueprint.context_processor
 def utility_processor():
-    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.get_settings_dict())
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.instance())
 
 
 @students_blueprint.route('/students')
@@ -34,7 +34,6 @@ def register(): # create an email and add email verification functionality
         first_name = form.first_name.data
         last_name = form.last_name.data
         email = form.email.data
-        school_name = form.school_name.data
         gender = bool(int(form.gender.data))
         date_of_birth = form.date_of_birth.data
         password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
@@ -75,7 +74,6 @@ def edit_profile():
         current_user.username = form.username.data
         current_user.first_name = form.first_name.data
         current_user.last_name = form.last_name.data
-        student_data_model.school_name = form.school_name.data
         student_data_model.date_of_birth = form.date_of_birth.data
         current_user._gender = bool(int(form.gender.data))
         
@@ -95,7 +93,6 @@ def edit_profile():
         form.first_name.data = current_user.first_name
         form.last_name.data = current_user.last_name
         form.email.data = current_user.email
-        form.school_name.data = student_data_model.school_name
         form.date_of_birth.data = student_data_model.date_of_birth
         form.gender.choices = put_current_choice_first(form.gender.choices, str(int(current_user._gender)))
 

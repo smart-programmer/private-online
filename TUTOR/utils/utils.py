@@ -136,6 +136,12 @@ def list_to_select_compatable_tuple(ls, identifier, front):
 		base_list.append(tuple([str(getattr(obj, identifier)), str(getattr(obj, front))]))
 	return base_list
 
+def json_list_to_select_compatable_tuple(ls):
+	base_list = []
+	for item in ls:
+		base_list.append([item, item])
+	return base_list
+
 def dict_to_select_compatable_tuple(info_dict):
 	base_list = []
 	for key, value in info_dict.items():

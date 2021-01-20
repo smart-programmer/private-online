@@ -4,7 +4,7 @@ from TUTOR import db, bcrypt
 from TUTOR.TUTORS.forms import TutorRegistrationForm, TutorEditProfileForm, CourseCreationForm
 from TUTOR.models import UserModel, TutorDataModel, CourseModel, SiteSettingsModel
 from TUTOR.utils.mail import send_user_confirmation_email
-from TUTOR.utils.utils import generate_random_digits, login_required, put_current_choice_first, list_to_select_compatable_tuple
+from TUTOR.utils.utils import generate_random_digits, login_required, put_current_choice_first, list_to_select_compatable_tuple, json_list_to_select_compatable_tuple
 from TUTOR.utils.languages import LngObj
 from TUTOR.settings import LANGUAGES, ADMIN_TYPES
 
@@ -14,7 +14,7 @@ tutors_blueprint = Blueprint("tutors_blueprint", __name__)
 
 @tutors_blueprint.context_processor
 def utility_processor():
-    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.get_settings_dict())
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.instance())
 
 
 @tutors_blueprint.route('/tutors')
@@ -28,8 +28,9 @@ def register(): # create an email and add email verification functionality
     if current_user.is_authenticated:
         return redirect("main_blueprint.home")
 
-
     form = TutorRegistrationForm()
+    # form.subjects.choices = json_list_to_select_compatable_tuple(SiteSettingsModel.instance().subjects)
+
     if form.validate_on_submit():
         username = form.username.data
         first_name = form.first_name.data
@@ -128,11 +129,11 @@ def edit_profile():
 @tutors_blueprint.route("/tutors/create-course", methods=["GET", "POST"])
 @login_required(["tutor"])
 def add_course():
-    if current_user.user_type == "tutor":
-        if not SiteSettingsModel.get_settings_dict()["allow_tutors_to_create_courses"]:
-            return current_app.login_manager.unauthorized()    
+    if not CourseModel.is_allowed_to_create_course(current_user):
+        return current_app.login_manager.unauthorized()
+
     form = CourseCreationForm()
-    form.subject.choices = list_to_select_compatable_tuple(SiteSettingsModel.query.filter_by(name="allowed_subject").all(), "id", "value")
+    form.subject.choices = json_list_to_select_compatable_tuple(SiteSettingsModel.instance().subjects["setting_value"])
 
     if form.validate_on_submit():
         course_name = form.name.data

@@ -1,26 +1,26 @@
 <nav class="navbar navbar-expand-lg navbar-dark my-navbar">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <a class="navbar-brand" href="#">HLTC</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item active">
-          <a class="nav-link" href="{{ url_for('main_blueprint.home') }}">Home</a>
+          <a class="nav-link" href="{{ url_for('main_blueprint.home') }}">الرئيسية</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('tutors_blueprint.profile') }}">Profile</a>
+          <a class="nav-link" href="{{ url_for('tutors_blueprint.profile') }}">الملف الشخصي</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('users_blueprint.logout') }}">logout</a>
+          <a class="nav-link" href="{{ url_for('users_blueprint.logout') }}">سجل خروج</a>
         </li>
         {% if settings.get("allow_tutors_to_edit_courses") %}
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('tutors_blueprint.add_course') }}">add course</a>
+            <a class="nav-link" href="{{ url_for('tutors_blueprint.add_course') }}">اضف دورة</a>
           </li>
         {% endif %}
          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('courses_blueprint.courses') }}">Courses</a>
+            <a class="nav-link" href="{{ url_for('courses_blueprint.courses') }}">الدورات</a>
         </li>
         {% include "snippets/language_select_bootstrap.html" %}
       </ul>

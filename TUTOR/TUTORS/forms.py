@@ -5,11 +5,12 @@ from wtforms.validators import DataRequired, length, Email, ValidationError, Equ
 from wtforms_components import SelectField
 from flask_wtf.file import FileField, FileAllowed 
 from wtforms.widgets import TextArea
-from TUTOR.models import UserModel
+from TUTOR.models import UserModel, SiteSettingsModel
 from flask_login import current_user
 from TUTOR import bcrypt
 from TUTOR.utils.utils import dict_to_select_compatable_tuple
 from TUTOR.settings import CURRENCIES
+import json
 
 
 genders = [
@@ -28,7 +29,7 @@ class TutorRegistrationForm(FlaskForm):
     qualification = wtforms.StringField("qualification", validators=[length(max=35), DataRequired()])
     major = wtforms.StringField("major", validators=[length(max=35), DataRequired()])
     current_job = wtforms.StringField("current job", validators=[length(max=50), DataRequired()])
-    subjects = wtforms.StringField("subject you want to teach", validators=[length(min=0, max=30)])
+    subjects = wtforms.StringField("subjects you want to teach") # wtforms.SelectField("subjects you want to teach", choices=(()), validators=[length(min=0, max=30)])
     years_of_experience = IntegerField("years of experience", validators=[DataRequired()], render_kw={"min": 0, "max": 100})
     tools_used_for_online_tutoring = wtforms.StringField("tools used for online tutoring", validators=[length(min=0, max=60)])
     password = wtforms.StringField("password", validators=[length(min=3, max=40), DataRequired()])
@@ -45,6 +46,34 @@ class TutorRegistrationForm(FlaskForm):
         if user:
             raise ValidationError("this email is already registered, did you forget your password?")
 
+    def validate_subjects(self, subjects):
+        settings_subjects = SiteSettingsModel.instance().subjects["setting_value"]
+        subjects_list = None
+        try:
+            subjects_list = json.loads(subjects.data)
+        except:
+            raise ValidationError("not a valid json object")
+        finally:
+            if not type(subjects_list).__name__ == "list":
+                raise ValidationError(subjects_list)
+            for i in subjects_list:
+                count = subjects_list.count(i)
+                if count > 1:
+                    raise ValidationError(f"{i} is repeated {count} times")
+                if settings_subjects.count(i) < 1:
+                    raise ValidationError(f"{i} is not a subject")
+            
+
+    def validate_tools_used_for_online_tutoring(self, tools_used_for_online_tutoring):
+        tools_used_for_online_tutoring_list = None
+        try:
+            tools_used_for_online_tutoring_list = json.loads(tools_used_for_online_tutoring.data)
+        except:
+            raise ValidationError("not a valid json object")
+        finally:
+            if not type(tools_used_for_online_tutoring_list).__name__ == "list":
+                raise ValidationError("not a list")
+
 
 class TutorEditProfileForm(FlaskForm):
     first_name = wtforms.StringField("first name", validators=[length(max=128), DataRequired()])
@@ -57,7 +86,7 @@ class TutorEditProfileForm(FlaskForm):
     qualification = wtforms.StringField("qualification", validators=[length(max=35), DataRequired()])
     major = wtforms.StringField("major", validators=[length(max=35), DataRequired()])
     current_job = wtforms.StringField("current job", validators=[length(max=50), DataRequired()])
-    subjects = wtforms.StringField("subject you want to teach", validators=[length(min=0, max=30)])
+    subjects = wtforms.SelectField("subjects you want to teach", choices=(()), validators=[length(min=0, max=30)])
     years_of_experience = IntegerField("years of experience", validators=[DataRequired()], render_kw={"min": 0, "max": 100})
     tools_used_for_online_tutoring = wtforms.StringField("tools used for online tutoring", validators=[length(min=0, max=60)])
     submit = wtforms.SubmitField("Edit")
@@ -74,12 +103,11 @@ class TutorEditProfileForm(FlaskForm):
 
 
 currencies = dict_to_select_compatable_tuple(CURRENCIES)
-subjects = (())
 
 class CourseCreationForm(FlaskForm):
     name = wtforms.StringField("course name", validators=[length(max=130), DataRequired()])
     description = wtforms.StringField("description", validators=[length(max=1000), DataRequired()], widget=TextArea())
-    subject = wtforms.SelectField("course subject", choices=subjects, validators=[DataRequired()])
+    subject = wtforms.SelectField("course subject", choices=(()), validators=[DataRequired()])
     price = IntegerField("price", validators=[DataRequired()])
     currency = wtforms.SelectField("currency", choices=currencies, validators=[DataRequired()])
     min_students = IntegerField("minimum number of students", validators=[DataRequired()])

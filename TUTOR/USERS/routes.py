@@ -15,7 +15,7 @@ users_blueprint = Blueprint("users_blueprint", __name__)
 
 @users_blueprint.context_processor
 def utility_processor():
-    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.get_settings_dict())
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.instance())
 
 
 @users_blueprint.route("/users/confirm_email", methods=["GET", "POST"])
@@ -54,7 +54,7 @@ def login():
         user = user if user else UserModel.query.filter_by(username=username_or_email).first() 
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):
-                if  not user.is_confirmed:
+                if user.is_confirmed:
                     login_user(user, remember=True)
                     next_page = request.args.get("next")
                     default_page = None

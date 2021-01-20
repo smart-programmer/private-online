@@ -25,9 +25,35 @@
         <p id="change"></p>
 
         <ul>
-            <li><a href="{{ url_for('admins_blueprint.change_site_settings', setting='allow_tutors_to_create_courses') }}"><button><p>allow tutors to create courses</p></button></a>: {{settings.get("allow_tutors_to_create_courses")}}</li>
-            <li><a href="{{ url_for('admins_blueprint.change_site_settings', setting='allow_tutors_to_edit_courses') }}"><button><p>allow tutors to edit courses</p></button></a>: {{settings.get("allow_tutors_to_edit_courses")}}</li>
+            <li><a href="{{ url_for('admins_blueprint.change_site_settings', setting='allow_tutors_to_create_courses') }}"><button><p>allow tutors to create courses</p></button></a>: {{settings.allow_tutors_to_create_courses.setting_value}}</li>
+            <li><a href="{{ url_for('admins_blueprint.change_site_settings', setting='allow_tutors_to_edit_courses') }}"><button><p>allow tutors to edit courses</p></button></a>: {{settings.allow_tutors_to_edit_courses.setting_value}}</li>
+            <li><input type="text" id="subject-text"><button id="add-subject"><p>add subject</p></button></a>: {{settings.subjects.setting_value}}</li>
+            {{ value }}
         </ul>
 
+
+        <script>
+            $(document).ready(function(){
+                $("#add-subject").click(function() {
+                    value = $("#subject-text").val()
+                    link = "{{ url_for('admins_blueprint.change_site_settings') }}";
+                $.ajax({
+                    url: link,
+                    type: "GET",
+                    data: {
+                        value: value,
+                        setting: "subjects"
+                    },
+                    success: function(result){
+                        location.reload();
+                        console.log(result)
+                    },
+                    error: function(error){
+                        console.log("didn't work")
+                    }
+                })
+            })
+        })
+        </script>
 
 {% endblock %}

@@ -82,32 +82,18 @@
 
         <div class="row justify-content-center my-row">
             <div class="col my-col">
-                {% if current_user.user_type == "student" %}
-        {% if course not in current_user.student_data_model.courses %}
-            <a href="{{ url_for('students_blueprint.join_course', course_id=course.id) }}"><button type="button" class="btn btn-dark settings-button">انظم الى الكورس <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bag-plus" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z"/>
-            <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
-            </svg></button></a>
-        {% else %}
-            <a href="{{ url_for('students_blueprint.leave_course', course_id=course.id) }}"><button type="button" class="btn btn-dark settings-button">غادر الكورس <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-bag-plus" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M8 7.5a.5.5 0 0 1 .5.5v1.5H10a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0v-1.5H6a.5.5 0 0 1 0-1h1.5V8a.5.5 0 0 1 .5-.5z"/>
-            <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V5z"/>
-            </svg></button></a>
-        {% endif %}
-    {% else %}
-        {% if not settings.allow_tutors_to_edit_courses.setting_value %}
-            {% if current_user.user_type == "tutor" %}
-            {% else %}
+        {% if settings.allow_tutors_to_edit_courses..setting_value %}
+            {% if not course.began %}
             <a href="{{ url_for('courses_blueprint.control_course', course_id=course.id) }}"><button type="button" class="btn btn-dark settings-button">ابدأ الكورس <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
                 <path d="M.102 2.223A3.004 3.004 0 0 0 3.78 5.897l6.341 6.252A3.003 3.003 0 0 0 13 16a3 3 0 1 0-.851-5.878L5.897 3.781A3.004 3.004 0 0 0 2.223.1l2.141 2.142L4 4l-1.757.364L.102 2.223zm13.37 9.019l.528.026.287.445.445.287.026.529L15 13l-.242.471-.026.529-.445.287-.287.445-.529.026L13 15l-.471-.242-.529-.026-.287-.445-.445-.287-.026-.529L11 13l.242-.471.026-.529.445-.287.287-.445.529-.026L13 11l.471.242z"/>
               </svg></button></a>
-              {% endif %}
-        {% else %}
+              {% else %}
         <a href="{{ url_for('courses_blueprint.control_course', course_id=course.id) }}"><button type="button" class="btn btn-dark settings-button">ابدأ الكورس <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
             <path d="M.102 2.223A3.004 3.004 0 0 0 3.78 5.897l6.341 6.252A3.003 3.003 0 0 0 13 16a3 3 0 1 0-.851-5.878L5.897 3.781A3.004 3.004 0 0 0 2.223.1l2.141 2.142L4 4l-1.757.364L.102 2.223zm13.37 9.019l.528.026.287.445.445.287.026.529L15 13l-.242.471-.026.529-.445.287-.287.445-.529.026L13 15l-.471-.242-.529-.026-.287-.445-.445-.287-.026-.529L11 13l.242-.471.026-.529.445-.287.287-.445.529-.026L13 11l.471.242z"/>
           </svg></button></a>
+          {% endif %}
+        {% else %}
         {% endif %}
-    {% endif %}
             </div>
         </div>
     </div>
