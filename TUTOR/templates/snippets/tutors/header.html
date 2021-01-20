@@ -14,7 +14,7 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ url_for('users_blueprint.logout') }}">سجل خروج</a>
         </li>
-        {% if settings.get("allow_tutors_to_edit_courses") %}
+        {% if settings.allow_tutors_to_edit_courses.setting_value %}
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('tutors_blueprint.add_course') }}">اضف دورة</a>
           </li>

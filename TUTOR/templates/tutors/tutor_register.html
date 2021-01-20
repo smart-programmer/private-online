@@ -89,20 +89,9 @@
                     <label for="{{ form.years_of_experience.id }}">سنوات الخبرة</label>
                     {{ form.years_of_experience(class="form-control") }}
                 </div>
-            </div>
 
-            <div class="form-row my-row">
-               
-                <div class="form-group col-sm-3 my-col">
-                    <ul id="subs"> 
-            
-                    </ul>
-                </div>
-              
-            </div>
-
-            <div class="form-row my-row">
                 <div class="form-group col-sm-6 my-col">
+                <label class="col my-col">المواد التي ترغب بتدريسها</label>
             <div id="list1" class="dropdown-check-list" tabindex="100">
                 <span class="anchor">Select Fruits</span>
                 <ul class="items">
@@ -112,22 +101,12 @@
                 </ul>
               </div>
             </div>
-            </div>
-
-            <div class="form-row my-row">
-                <label for="{{ form.subjects.id }}" class="col my-col">المواد التي ترغب بتدريسها</label>
-                <div class="form-group col-sm-6 my-col">
-                    {{ form.subjects(id="subjects", class="form-control") }} 
-                </div>
-
-                {% for error in form.subjects.errors %}
+            {{ form.subjects(hidden="True") }}
+            {% for error in form.subjects.errors %}
                     <h3 style="color: red;">error in field: {{ error }}</h3> 
                  {% endfor %}
-                
-                <div class="form-group col-sm-3 my-col">
-                    <input type="button" value="أضف مادة" class="btn btn-dark" onclick="populate_list_with_text('subjects', 'subs')">
-                </div>
             </div>
+
 
             <div class="form-row my-row">
                
@@ -197,7 +176,7 @@
             form.subjects.value = JSON.stringify(subjects_checked_list)
             // subjects_array = []
             // Array.from(document.querySelectorAll('#subs>li'), li => subjects_array.push(li.textContent))
-            // JSON.stringify(subjects_array)
+            // form.subjects.value = JSON.stringify(subjects_array)
 
             tools_array = []
             Array.from(document.querySelectorAll('#tools_ul>li'), li => tools_array.push(li.textContent))
