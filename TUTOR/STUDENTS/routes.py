@@ -47,13 +47,14 @@ def register(): # create an email and add email verification functionality
 
         db.session.add(user)
         db.session.commit()
-        student_data_model = StudentDataModel(user=user, school_name=school_name, date_of_birth=date_of_birth)
+        student_data_model = StudentDataModel(user=user, date_of_birth=date_of_birth)
         db.session.add(student_data_model)
         db.session.commit()
 
         send_user_confirmation_email(email, email_confirmation_code)
 
         return redirect(url_for("users_blueprint.email_confirmation"))
+
     return render_template('students/student_register.html', form=form)  
 
 
@@ -109,29 +110,29 @@ def my_courses():
 @students_blueprint.route("/students/courses/join-course/<course_id>", methods=["GET"])
 @login_required(["student"])
 def join_course(course_id):
-    # if course has began or has ended or has reached max user then don't allow for new students
+    # if course has began or has ended or has reached max user or was canceled then don't allow for new students
+    # in other words: test course state then choose what to do
+    # so i need to make a new course state system for example {"state_coude": 1, "state_string": "pending"}
     student_data_model = current_user.student_data_model
     course = CourseModel.query.get(course_id)
-    student_data_model.courses.append(course)
-    db.session.commit()
-    #pay 
+    if course.can_join(student_data_model): 
+        course.add_student(student_data_model)
+        send_student_pay_for_course_email(student_data_model.user, course)
 
-    if len(course.students) >= course.min_students:
-        for sdm in course.students:
-            send_student_pay_for_course_email(sdm.user, course)
-        send_tutor_course_start_email(course.tutor.user, course)
-        course.began = True
-        db.session.commit()
-    else:
-        send_student_course_join_email(current_user, course)
+    # if course.should_send_first_payment_emails():
+    #     course.send_all_payment_emails()
 
     return redirect(url_for("courses_blueprint.course", course_id=course_id))
 
 @students_blueprint.route("/students/courses/leave-course/<course_id>", methods=["GET"])
 @login_required(["student"])
-def leave_course(course_id):
+def leave_course(course_id): # cannot leave after payment but a leave request is put to be revised by admins and if admin agrees payment is refunded
     student_data_model = current_user.student_data_model
     course = CourseModel.query.get(course_id)
+    #if student.has_paid:
+        # put leave request to admins 
+        # return redirect(url_for("students_blueprint.my_courses")) 
+    # else:
     student_data_model.courses.remove(course)
     db.session.commit()
     send_student_leave_course_email(current_user, course)

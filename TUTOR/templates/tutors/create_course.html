@@ -46,18 +46,73 @@
         {% endfor %}
         <br>
 
+        {{ form.course_type.name }}
+        {{ form.course_type(id="course_type") }}
+        {% for error in form.course_type.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+
+        <div id="type1">
+            {{ form.period.name }}
+            {{ form.period() }}
+            {% for error in form.period.errors %}
+                <h3 style="color: red;"> {{ error }}</h3> 
+            {% endfor %}
+        <br>
+        </div>
+
+        <div id="type2">
+            {{ form.start_date.name }}
+            {{ form.start_date() }}
+            {% for error in form.start_date.errors %}
+                <h3 style="color: red;"> {{ error }}</h3> 
+            {% endfor %}
+        <br>
+
+            {{ form.end_date.name }}
+            {{ form.end_date() }}
+            {% for error in form.end_date.errors %}
+                <h3 style="color: red;"> {{ error }}</h3> 
+            {% endfor %}
+        <br>
+        </div>
+
         {{ form.min_students.name }}
         {{ form.min_students() }}
         {% for error in form.min_students.errors %}
             <h3 style="color: red;"> {{ error }}</h3> 
         {% endfor %}
         <br>
+        
 
         {{ form.max_students.name }}
         {{ form.max_students() }}
         {% for error in form.max_students.errors %}
             <h3 style="color: red;"> {{ error }}</h3> 
         {% endfor %}
+        <br>
+
+        {{ form.zoom_link.name }}
+        {{ form.zoom_link() }}
+        {% for error in form.zoom_link.errors %}
+            <h3 style="color: red;"> {{ error }}</h3> 
+        {% endfor %}
+        <br>
+
+        {{ form.saturday_start.name }} {{ form.saturday_start() }} : {{ form.saturday_end.name }} {{ form.saturday_end() }}
+        <br>
+        {{ form.sunday_start.name }} {{ form.sunday_start() }} : {{ form.sunday_end.name }} {{ form.sunday_end() }}
+        <br>
+        {{ form.monday_start.name }} {{ form.monday_start() }} : {{ form.monday_end.name }} {{ form.monday_end() }}
+        <br>
+        {{ form.thursday_start.name }} {{ form.thursday_start() }} : {{ form.thursday_end.name }} {{ form.thursday_end() }}
+        <br>
+        {{ form.wednesday_start.name }} {{ form.wednesday_start() }} : {{ form.wednesday_end.name }} {{ form.wednesday_end() }}
+        <br>
+        {{ form.tuesday_start.name }} {{ form.tuesday_start() }} : {{ form.tuesday_end.name }} {{ form.tuesday_end() }}
+        <br>
+        {{ form.friday_start.name }} {{ form.friday_start() }} : {{ form.friday_end.name }} {{ form.friday_end() }}
         <br>
         
 
@@ -66,4 +121,42 @@
             <h3 style="color: red;">error in field: {{ error }}</h3> 
         {% endfor %}
     </form>
+    {{ url_for('static', filename='js/admins/create_course.js') }}
+    <script>
+        $("#course_type").change(function (){
+            if($(this).val() == "1"){
+                $("#type1").show();
+                $('input[name = "period"]').attr('required', '');
+                $('input[name = "period"]').attr('data-error', 'This field is required.');
+                $('#type2').hide();
+                $('input[name = "start_date"]').removeAttr('required');
+                $('input[name = "start_date"]').removeAttr('data-error');
+                $('input[name = "end_date"]').removeAttr('required');
+                $('input[name = "end_date"]').removeAttr('data-error');
+            }else if ($(this).val() == "2"){
+                $("#type2").show();
+                $('input[name = "start_date"]').attr('required', '');
+                $('input[name = "start_date"]').attr('data-error', 'This field is required.');
+                $('input[name = "end_date"]').attr('required', '');
+                $('input[name = "end_date"]').attr('data-error', 'This field is required.');
+                $('#type1').hide();
+                $('input[name = "period"]').removeAttr('required');
+                $('input[name = "period"]').removeAttr('data-error');
+            } else {
+                $('#type1').hide();
+                $('#type2').hide();
+                $('input[name = "period"]').attr('required', '');
+                $('input[name = "period"]').attr('data-error', 'This field is required.');
+                $('input[name = "start_date"]').attr('required', '');
+                $('input[name = "start_date"]').attr('data-error', 'This field is required.');
+                $('input[name = "end_date"]').attr('required', '');
+                $('input[name = "end_date"]').attr('data-error', 'This field is required.');
+            }
+        })
+
+        $('document').ready(function() {
+            $('#type1').hide();
+            $('#type2').hide();
+        })
+    </script>
 {% endblock %}

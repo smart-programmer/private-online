@@ -3,6 +3,7 @@
 {% block title %} Edit {% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tutors/editProfileForm.css') }}">
     <center>
         <h1 style="color: orange;">Tutor Edit Profile</h1>
     </center>
@@ -74,15 +75,22 @@
         {% endfor %}
         <br>
 
-        <ul id="subs"> 
-                    
-        </ul>
-        {{ form.subjects.name }}
-        {{ form.subjects(id="subjects") }} <input type="button" value="add subject" onclick="populate_list_with_text('subjects', 'subs')">
+        <div class="form-group col-sm-6 my-col">
+            <label class="col my-col">المواد التي ترغب بتدريسها</label>
+        <div id="list1" class="dropdown-check-list" tabindex="100">
+            <span class="anchor">Select Fruits</span>
+            <ul class="items">
+                {% for subject in settings.subjects.setting_value %}
+                    <li><input type="checkbox" name="{{subject}}" value="{{subject}}" id="checkbox-subject"/> {{subject}} </li>
+                {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {{ form.subjects(hidden="True") }}
         {% for error in form.subjects.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
+                <h3 style="color: red;">error in field: {{ error }}</h3> 
+             {% endfor %}
+        </div>
 
         {{ form.years_of_experience.name }}
         {{ form.years_of_experience() }}
@@ -119,18 +127,48 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}">
     </script>
     <script>
-        function DoSubmit(){
-            form = document.getElementById("form")
+        // $(document).ready(function(){
+            function DoSubmit(){
+                form = document.getElementById("form")
 
-            subjects_array = []
-            Array.from(document.querySelectorAll('#subs>li'), li => subjects_array.push(li.textContent))
-            form.subjects.value = subjects_array
+                subjects_array_from_database = "{% for i in settings.subjects.setting_value%}{{ i }} {% endfor %}".split(" ")
+                subjects_node_list = document.querySelectorAll('.items>li>input');
+                subjects_checked_list = []
+                for (subject of subjects_node_list){
+                    if (subject.checked){
+                        subjects_checked_list.push(subject.value)
+                    }
+                }
+                alert(subjects_checked_list)
+                form.subjects.value = JSON.stringify(subjects_checked_list)
 
-            tools_array = []
-            Array.from(document.querySelectorAll('#tools_ul>li'), li => tools_array.push(li.textContent))
-            form.tools_used_for_online_tutoring.value = tools_array
+                tools_array = []
+                Array.from(document.querySelectorAll('#tools_ul>li'), li => tools_array.push(li.textContent))
+                form.tools_used_for_online_tutoring.value = JSON.stringify(tools_array)
 
-            return true
-    }
+                return true
+
+                }
+
+                tutor_subjects_array_from_database = "{% for subject in current_user.tutor_data_model.subjects %}{{ subject }} {% endfor %}".split(" ")
+                subjects_node_list = document.querySelectorAll('.items>li>input');
+                for (tutor_subject of tutor_subjects_array_from_database){
+                    // grab input with the same and check it
+                    for (input of subjects_node_list){
+                        if (input.name == tutor_subject){
+                            input.checked = true;
+                        }
+                    }
+                }
+            
+
+                var checkList = document.getElementById('list1');
+                checkList.getElementsByClassName('anchor')[0].onclick = function(evt) {
+                if (checkList.classList.contains('visible'))
+                    checkList.classList.remove('visible');
+                else
+                    checkList.classList.add('visible');
+        }
+    // });
     </script>
 {% endblock %}

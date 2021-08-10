@@ -10,6 +10,7 @@ from flask_login import current_user
 from TUTOR import bcrypt
 from TUTOR.utils.utils import dict_to_select_compatable_tuple
 from TUTOR.settings import CURRENCIES
+from datetime import datetime
 import json
 
 
@@ -86,7 +87,7 @@ class TutorEditProfileForm(FlaskForm):
     qualification = wtforms.StringField("qualification", validators=[length(max=35), DataRequired()])
     major = wtforms.StringField("major", validators=[length(max=35), DataRequired()])
     current_job = wtforms.StringField("current job", validators=[length(max=50), DataRequired()])
-    subjects = wtforms.SelectField("subjects you want to teach", choices=(()), validators=[length(min=0, max=30)])
+    subjects = wtforms.StringField("subjects you want to teach")
     years_of_experience = IntegerField("years of experience", validators=[DataRequired()], render_kw={"min": 0, "max": 100})
     tools_used_for_online_tutoring = wtforms.StringField("tools used for online tutoring", validators=[length(min=0, max=60)])
     submit = wtforms.SubmitField("Edit")
@@ -103,13 +104,67 @@ class TutorEditProfileForm(FlaskForm):
 
 
 currencies = dict_to_select_compatable_tuple(CURRENCIES)
+course_types = (
+    [
+        "1", "دورة تبدأ عند الوصول للحد الادنى من المتسجلين بدون وجود تاريخ بداية"
+    ],
+    [
+        "2", "دورة تبدأ عند تاريخ معين عند وصول للحد الادنى من المتسجلين"
+    ],
+    [
+        None, "----"
+    ]
+)
 
 class CourseCreationForm(FlaskForm):
     name = wtforms.StringField("course name", validators=[length(max=130), DataRequired()])
     description = wtforms.StringField("description", validators=[length(max=1000), DataRequired()], widget=TextArea())
-    subject = wtforms.SelectField("course subject", choices=(()), validators=[DataRequired()])
     price = IntegerField("price", validators=[DataRequired()])
+    subject = wtforms.SelectField("course subject", choices=(()), validators=[DataRequired()])
+    course_type = wtforms.SelectField("course type", choices=course_types, default=None, validators=[DataRequired()])
     currency = wtforms.SelectField("currency", choices=currencies, validators=[DataRequired()])
-    min_students = IntegerField("minimum number of students", validators=[DataRequired()])
-    max_students = IntegerField("maximum number of students", validators=[DataRequired()])
+    period = IntegerField("period", validators=[Optional()])
+    start_date = DateField("start date", format="%Y-%m-%d", validators=[Optional()])
+    end_date = DateField("end date", format="%Y-%m-%d", validators=[Optional()])
+    zoom_link = wtforms.StringField("zoom link", validators=[length(max=255), DataRequired()], widget=TextArea()) 
+    min_students = IntegerField("minimum number of students", validators=[Optional()])
+    max_students = IntegerField("maximum number of students", validators=[Optional()])
+    saturday_start = DecimalField("saturday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    saturday_end = DecimalField("saturday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    sunday_start = DecimalField("sunday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    sunday_end = DecimalField("sunday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    monday_start = DecimalField("monday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    monday_end = DecimalField("monday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    tuesday_start = DecimalField("tuesday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    tuesday_end = DecimalField("tuesday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    wednesday_start = DecimalField("wednesday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    wednesday_end = DecimalField("wednesday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    thursday_start = DecimalField("thursday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    thursday_end = DecimalField("thursday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    friday_start = DecimalField("friday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    friday_end = DecimalField("friday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
     submit = wtforms.SubmitField("create course")
+
+
+    def validate(self):
+        rv = FlaskForm.validate(self)
+        if not rv:
+            return False
+
+        if self.course_type == 1 and self.start_date.data and self.end_date.data:
+            raise ValidationError("لا يمكن اذافة تاريخ في هذا النوع من الدورات")
+
+        if self.course_type == 2 and self.period.data:
+            raise ValidationError("لا يمكن اضافة مدة دورة في هذ االنوع من الدورات")
+
+        if self.start_date.data and self.end_date.data:
+            period = int((self.end_date.data - self.start_date.data).days)
+            if period <= 0:
+                raise ValidationError("تأكد من الفارق بين تاريخ البداية والنهاية")
+        return True
+
+    def validate_start_date(self, start_date):
+        if start_date:
+            delta_time = int((start_date.data - datetime.date(datetime.utcnow())).days)
+            if delta_time <= 0 and start_date.data != datetime.date(datetime.utcnow()):
+                raise ValidationError("الرجاء التأكد من تاريخ البداية")

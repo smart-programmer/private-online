@@ -1,8 +1,10 @@
 from flask import current_app
 from TUTOR import db, login_manager, create_app
+from TUTOR.utils.utils import get_dicts_with_key
+from TUTOR.utils.mail import send_student_pay_for_course_email, send_tutor_course_start_email, send_student_course_join_email, send_student_course_ended_email, send_tutor_course_ended_email, send_student_course_start_email
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from flask_login import UserMixin
-from datetime import datetime
+from flask_login import UserMixin, current_user
+from datetime import datetime, timedelta
 import json
 
 @login_manager.user_loader
@@ -102,15 +104,22 @@ class CourseModel(db.Model):
     _end_date = db.Column(db.DateTime, nullable=True)
     links = db.Column(db.String(), nullable=False) # {"zoom": "link", ....}
     weekly_time_table_json  = db.Column(db.String(1000), nullable=False) # {"saturday": {"from": ..., "to": ...}, ...}
+    _state = db.Column(db.String(), nullable=False, default=json.dumps({"state_code": 1, "state_string": "لم تبدأ بعد", "allowed_actions": ["join", "view", "start", "cancel"]})) # {"state_code": 2, "state_string": "قائم", "allowed_actions": ["view", "end"]} {"state_code": 3, "state_string": "انتهى", "allowed_actions": ["delete"]} {"state_code": 4, "state_string": "ملغي", "allowed_actions": ["delete"]}
+    number_of_students_paid = db.Column(db.Integer, nullable=False, default=0)
+    have_sent_first_payment_emails = db.Column(db.Boolean, nullable=False, default=False)
     created_by_admin = db.Column(db.Boolean, nullable=False)
     creation_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    payment_model = db.relationship('PaymentModel', backref='course', uselist=False)
     tutor_data_model_id = db.Column(db.Integer, db.ForeignKey('tutor_data_model.id'),
         nullable=False)
 
 
     @property
     def period(self):
-        return self._period if self._period else int((datetime.date(self._end_date) - datetime.date(self._start_date)).days)
+        if not self._period:
+            return int((datetime.date(self._end_date) - datetime.date(self._start_date)).days)
+        else:
+            return self._period
 
     @property
     def weekly_time_table(self):
@@ -131,15 +140,18 @@ class CourseModel(db.Model):
     @property
     def empty_seats(self):
         return self.max_students - self.number_of_participants
+    
+    # ///////////////////////////// from here i start fixing course systems ///////////////////////////////
 
     @property
-    def state(self):
-        if not self.began:
-            return "لم تبدأ بعد"
-        elif not sel.ended:
-            return "قائم"
-        else:
-            return "انتهى"
+    def state(self): # hold the course's state for example (is it runnung or hasn't began yet...) this helps with determaning what to do with the couse next for example (if it's running we should look into if it should end)
+        return json.loads(self._state)
+        # if not self.began:
+        #     return {"state_code": 1, "state_string": "لم تبدأ بعد", "allowed_actions": ["join", "view", "start", "cancel"]}
+        # elif not self.ended:
+        #     return {"state_code": 2, "state_string": "قائم", "allowed_actions": ["join", "view", "end"]}
+        # else:
+        #     return {"state_code": 3, "state_string": "انتهى", "allowed_actions": ["delete"]}
 
     @staticmethod
     def is_allowed_to_control_course(course, user):
@@ -160,22 +172,161 @@ class CourseModel(db.Model):
             return False
 
     @staticmethod
-    def is_allowed_to_create_course(course, user):
+    def is_allowed_to_create_course(user):
         user_type = user.user_type
         if not user_type == "student":
             allow_tutors_to_create_courses = SiteSettingsModel.instance().allow_tutors_to_create_courses["setting_value"]
             if user_type == "tutor":
-                if not allow_tutors_edit_course_setting:
+                if not allow_tutors_to_create_courses:
                     return False
                 else:
-                    if user == course.tutor.user:
-                        return True
-                    else:
-                        return False
+                    return True
             else:
                 return True
         else:
             return False
+
+    # def should_send_first_payment_emails(self):
+    #     if not self.have_sent_first_payment_emails:
+    #         if self.number_of_participants >= self.min_students:
+    #             return True
+
+    # def send_all_payment_emails(self):
+    #     for student in self.students:
+    #         send_student_pay_for_course_email(student.user, self)
+    #     self.have_sent_first_payment_emails = True
+    #     db.session.commit()
+
+    def start(self): 
+        self.began = True
+        self.state = json.dumps({"state_code": 2, "state_string": "قائم", "allowed_actions": ["view", "end"]})
+        # NOTE: if it's type 2 then period is already calculated in self.period
+        if self.course_type == 1:
+            now = datetime.date(datetime.utcnow())
+            self._start_date = now
+            self._end_date = now + timedelta(days=self.period)
+        db.session.commit()
+        for sdm in self.students: # the paymetn is when a student joins not when the course begins bcz the course wont begin if students didn't pay
+            send_student_pay_for_course_email(sdm.user, self)
+        send_tutor_course_start_email(self.tutor.user, self)
+        return True
+
+    def end(self):
+        self.ended = True
+        self.state = json.dumps({"state_code": 3, "state_string": "انتهى", "allowed_actions": ["delete"]})
+        db.session.commit()
+        for sdm in self.students:
+            send_student_course_start_email(sdm.user, self)
+        send_tutor_course_ended_email(self.tutor.user, self)
+        return True
+
+    def should_start(self):# check should cancel: if it's not should cancel than it's a should start
+        if self.startable:
+            course_type = self.course_type
+            if self.began == True: # this is dump bcz it wouldnt be startable if it has began
+                return False
+            else:
+                course_min_students = self.min_students
+                number_of_paid_students = self.payment_model.number_of_students_paid
+                if course_type == 1:
+                    #check if reached specified student paid number if yes start
+                    if number_of_paid_students >= course_min_students:
+                        return True
+                    else:
+                        return False
+                elif course_type == 2:
+                    # check if reached minimum student have paid number 
+                    # check if date has been reached
+                    delta = (datetime.date(datetime.utcnow()) - self.start_date).days
+                    if delta <= 0:
+                        if number_of_paid_students >= course_min_students:
+                            return True
+                        else:
+                            return False
+                    else:
+                        return False
+
+    def should_end(self): # both types end when end date come NOTE: type 1 end date is set in start method
+        if self.endable:
+            if not self.began:
+                return False
+            else:
+                delta = (self.end_date - datetime.date(datetime.utcnow())).days
+                if delta <= 0:
+                    return True
+                else:
+                    return False
+        else:
+            return False
+
+    def should_cancel(self): 
+        # this is for deleting course and refunding
+        # type 2 courses should be deleted when the course date has come but the minimum number of paid student is not met
+        # type 1 courses should only be deleted by an authority not automatically and if a student doesn't wanna be wating anymore they could just choose to leave the course and a leave request will be sent to us so we can decide to refund or no
+        # all types of courses should be deletd if and authority choses to
+        if self.cancelable:
+            if self.course_type == 2:
+                remaining_days_to_start = (datetime.date(datetime.utcnow()) - self.start_date)
+                if remaining_days_to_start <= 0:
+                    if len(self.payment_model.students_paid) < self.min_students:
+                        return True
+                
+        return False
+
+    def cancel(self):
+        # make state canceled
+        self.state = json.dumps({"state_code": 4, "state_string": "ملغي", "allowed_actions": ["delete"]})
+        self.payment_model.refund_all()
+        # refund who deserves to be refunded
+
+    def can_join(self, student):
+        # depends on course state and if user has joined and number of students allowed
+        if self.joinable:
+            if not self.has_student(student):
+                if len(self.students) < self.max_students:
+                    if student.user.is_confirmed:
+                        return True
+        return False
+
+    def add_student(self, student):
+        student.courses.append(self)
+        self.payment_model.add_student(student)
+        send_student_course_join_email(student.user, self)
+        db.session.commit()
+
+    def has_student(self, student):
+        return True if self in student.courses else False
+
+    @property
+    def joinable(self):
+        return True if "join" in self.state["allowed_actions"] else False
+
+    @property
+    def deletable(self):
+        return True if "delete" in self.state["allowed_actions"] else False
+
+    @property
+    def startable(self):
+        return True if "start" in self.state["allowed_actions"] else False
+
+    @property
+    def cancelable(self):
+        return True if "cancel" in self.state["allowed_actions"] else False
+
+    @property
+    def viewable(self):
+        return True if "view" in self.state["allowed_actions"] else False
+
+    @property
+    def endable(self):
+        return True if "end" in self.state["allowed_actions"] else False
+
+    # def remove_action(self, action_name):
+    #     self.state[]
+
+    # ////////////////////////////////// from here i stop fixing //////////////////////////////
+
+
 
 
 class TutorDataModel(db.Model):
@@ -206,18 +357,24 @@ class TutorDataModel(db.Model):
         return json.loads(self._tools_used_for_online_tutoring)
         # return self._tools_used_for_online_tutoring.split(",")
 
-    @staticmethod
-    def list_to_comma_seperated_string(ls):
-        str_ls = str(ls)
-        str_ls = str_ls.replace(str_ls[0], " ")
-        str_ls = str_ls.replace(str_ls[-1], " ")
-        new_ls = str_ls.strip().split(",")
-        n = None
-        for item in new_ls:
-            n = item.strip()
-            n = str_ls.replace(str_ls[1], "")
-            n = str_ls.replace(str_ls[-2], "")
-        return n.strip()
+    def add_to_tools_used_for_online_tutoring(self, tools_list):
+        tools = self.tools_used_for_online_tutoring
+        tools += tools_list
+        self._tools_used_for_online_tutoring = json.dumps(tools)
+        db.session.commit()
+
+    # @staticmethod
+    # def list_to_comma_seperated_string(ls):
+    #     str_ls = str(ls)
+    #     str_ls = str_ls.replace(str_ls[0], " ")
+    #     str_ls = str_ls.replace(str_ls[-1], " ")
+    #     new_ls = str_ls.strip().split(",")
+    #     n = None
+    #     for item in new_ls:
+    #         n = item.strip()
+    #         n = str_ls.replace(str_ls[1], "")
+    #         n = str_ls.replace(str_ls[-2], "")
+    #     return n.strip()
     
 
 
@@ -236,16 +393,99 @@ class StudentDataModel(db.Model):
         return int((datetime.date(datetime.utcnow()) - datetime.date(self.date_of_birth)).days / 365)
 
 
+# /////////////////////////// from here i start fixing billing and POS systems ///////////////////////////
+
+class PaymentModel(db.Model): # a payment class for each course to register course transactions and payment data
+    id = db.Column(db.Integer, primary_key=True)
+    _transactions_objet = db.Column(db.String(), nullable=False, default="{}") # {"student1_id": [{payment: {date: ..., amount:...}}, {refund: ...}], "student2_id": ...}
+    last_payment_date = db.Column(db.DateTime, nullable=True)
+    course_id = db.Column(db.Integer, db.ForeignKey('course_model.id'))   
+    creation_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    @property
+    def transactions_objet(self):
+        if self._transactions_objet:
+            return json.loads(self._transactions_objet)
+        else:
+            return None
+
+    @staticmethod
+    def pay(student):
+        if not course.has_student(student):
+
+            return False
+            
+
+    # @staticmethod
+    # def refund(student, amount):
+    #     if course.has_student(student):
+
+    def refund_all(self):
+        students = self.students_paid
+        for student in students:
+            # self.refund(student, self.course.price)
+            self.register_refund(student, self.course.price)
+
+    def register_payment(self, student, amount):
+        current_date = datetime.date(datetime.utcnow())
+        new_obj = self.transactions_objet
+        new_obj[str(student.user.id)].append({"payment": {"date": current_date, "amount": amount}})
+        self._transactions_objet = json.dumps(new_obj)
+        self.last_payment_date = current_date
+        db.session.commit()
+        
+    def register_refund(self, student, amount):
+        new_obj = self.transactions_objet
+        new_obj[str(student.user.id)].append({"refund": {"date": datetime.date(datetime.utcnow()), "amount": amount}})
+        self._transactions_objet = json.dumps(new_obj)
+        db.session.commit()
+
+    def add_student(self, student):
+        new_obj = self.transactions_objet
+        new_obj[str(student.user.id)] = []
+        self._transactions_objet = json.dumps(new_obj)
+        db.session.commit()
+
+    def remove_student(self, student):
+        if self.exists(student):
+            new_obj = self.transactions_objet
+            new_obj.pop(str(student.user.id), None)
+            self._transactions_objet = json.dumps(new_obj)
+            db.session.commit()
+
+    def exists(self, student):
+        return True if str(student.user.id) in self.transactions_objet.keys() else False
+
+    def get_student_payments(self, student):
+        get_dicts_with_key(self.transactions_objet[str(student.user.id)], "payment")
+
+    def get_student_refunds(self, student):
+        get_dicts_with_key(self.transactions_objet[str(student.user.id)], "refund")
+
+    @property
+    def last_payment_period(self):
+        if self.last_payment_date:
+            return (datetime.date(datetime.utcnow()) - self.last_payment_date).days
+        else:
+            return None
+
+    def students_paid(self):
+        # see the last thing every student did and if they paid count them in
+        payment_list = []
+        for i in self.transactions_objet.values():
+            payment_list.append(get_dicts_with_key(self.transactions_objet[str(student.user.id)], "payment"))
+
+        return payment_list
+
+
+# ///////////////////////////// from here i stop fixing POS and billing systems ///////////////////////////
+    
 
 
 
 class SiteSettingsModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     _settings = db.Column(db.String(), nullable=True) # '{"setting_name": {"setting_type": ..., "setting_value": ....}, ....}'
-    # name = db.Column(db.String(50), nullable=False)
-    # value = db.Column(db.String(50), nullable=False)
-    # allowe_tutors_to_edit_courses = db.Column(db.Boolean, nullable=False, default=False)
-    # allow_tutors_to_create_courses = db.Column(db.Boolean, nullable=False, default=False)
 
 
     @property
@@ -264,9 +504,19 @@ class SiteSettingsModel(db.Model):
     def settings(self):
         return json.loads(self._settings)
 
-    def add_or_change_setting(self, setting_key, setting_value):
+    def add_setting(self, setting_key, setting_value, setting_type):
         settings_dict = self.settings
-        settings_dict[setting_key]["setting_value"] = setting_value
+        if setting_key in settings_dict:
+            return
+        settings_dict[setting_key] = {"setting_type": setting_type, "setting_value" : setting_value}
+        self._settings = json.dumps(settings_dict)
+        db.session.commit()
+
+    def change_setting(self, setting_key, setting_value):
+        settings_dict = self.settings
+        if not setting_key in settings_dict:
+            return
+        settings_dict[setting_key] = {"setting_type": setting_type, "setting_value" : setting_value}
         self._settings = json.dumps(settings_dict)
         db.session.commit()
 
@@ -292,21 +542,6 @@ class SiteSettingsModel(db.Model):
     @classmethod
     def instance(cls):
         return cls.query.get(1)
-
-    # @staticmethod
-    # def get_str_bool(string):
-    #     return True if string in ("True", "true") else False
-
-    # @classmethod
-    # def get_settings_dict(cls):
-    #     all_settings = cls.query.all()
-    #     settings = {}
-    #     for setting in all_settings:
-    #         if setting.is_bool():
-    #             settings[setting.name] = SiteSettingsModel.get_str_bool(setting.value)
-    #         else: 
-    #             settings[setting.name] = setting.value
-    #     return settings
 
 
 

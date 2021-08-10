@@ -37,50 +37,49 @@ def course(course_id):
         return render_template("admins/course.html", course=course, is_allowed=is_allowed)
 
 
-@courses_blueprint.route("/courses/control-course/<course_id>")
-@login_required(ADMIN_TYPES + ["tutor"]) # check if admin allowes tutors to edit
-def control_course(course_id):
-    # if current_user.user_type == "tutor":
-    #     if not SiteSettingsModel.get_str_bool(SiteSettingsModel.query.filter_by(name="allow_tutors_to_edit_courses").first().value):
-    course = CourseModel.query.get(course_id)
-    if not course or not CourseModel.is_allowed_to_control_course(course, current_user):
-        return current_app.login_manager.unauthorized()    
-    # here one can edit course data or delete course or begin or end it
-    # if user.user_type is tutor make a can edit variable
-    return render_template("control_course.html", course=course)
+# the views below are commented because we decided that everything will be automated instead of 
+# someone starting and ending the courses
+
+# @courses_blueprint.route("/courses/control-course/<course_id>")
+# @login_required(ADMIN_TYPES + ["tutor"]) # check if admin allowes tutors to edit
+# def control_course(course_id):
+#     # if current_user.user_type == "tutor":
+#     #     if not SiteSettingsModel.get_str_bool(SiteSettingsModel.query.filter_by(name="allow_tutors_to_edit_courses").first().value):
+#     course = CourseModel.query.get(course_id)
+#     if not course or not CourseModel.is_allowed_to_control_course(course, current_user):
+#         return current_app.login_manager.unauthorized()    
+#     # here one can edit course data or delete course or begin or end it
+#     # if user.user_type is tutor make a can edit variable
+#     return render_template("control_course.html", course=course)
 
 
 
-@courses_blueprint.route("/courses/control-course/<course_id>/end")
-@login_required(ADMIN_TYPES + ["tutor"]) # check if admin allowes tutors to edit
-def start_course(course_id):
-    # if current_user.user_type == "tutor":
-    #     if not SiteSettingsModel.get_str_bool(SiteSettingsModel.query.filter_by(name="allow_tutors_to_edit_courses").first().value):
-    #         return current_app.login_manager.unauthorized()    
-    course = CourseModel.query.get(course_id)
-    if not course or not CourseModel.is_allowed_to_control_course(course, current_user):
-        return current_app.login_manager.unauthorized()    
-    # check if course has already ended or if it hasen't started
-    course.began = True
-    db.session.commit()
-    return redirect(url_for("course", course_id=course_id))
+# @courses_blueprint.route("/courses/control-course/<course_id>/end")
+# @login_required(ADMIN_TYPES + ["tutor"]) # check if admin allowes tutors to edit
+# def start_course(course_id):
+#     if CourseModel.is_allowed_to_control_course(current_user):
+#         return True
+#     course = CourseModel.query.get(course_id)
+#     if not course or not CourseModel.is_allowed_to_control_course(course, current_user):
+#         return current_app.login_manager.unauthorized()    
+#     course.began = True
+#     db.session.commit()
+#     # send emails
+#     return redirect(url_for("course", course_id=course_id))
 
 
 
 
-@courses_blueprint.route("/courses/control-course/<course_id>/end")
-@login_required(ADMIN_TYPES + ["tutor"]) # check if admin allowes tutors to edit
-def end_course(course_id):
-    # if current_user.user_type == "tutor":
-    #     if not SiteSettingsModel.get_str_bool(SiteSettingsModel.query.filter_by(name="allow_tutors_to_edit_courses").first().value):
-    #         return current_app.login_manager.unauthorized()
-    course = CourseModel.query.get(course_id)
-    if not course or not CourseModel.is_allowed_to_control_course(course, current_user):
-        return current_app.login_manager.unauthorized()        
-    # check if course has already ended or if it hasen't started
-    course.ended = True
-    db.session.commit()
-    return redirect(url_for("course", course_id=course_id))
+# @courses_blueprint.route("/courses/control-course/<course_id>/end")
+# @login_required(ADMIN_TYPES + ["tutor"]) # check if admin allowes tutors to edit
+# def end_course(course_id):
+#     course = CourseModel.query.get(course_id)
+#     if not course or not CourseModel.is_allowed_to_control_course(course, current_user):
+#         return current_app.login_manager.unauthorized()        
+#     # check if course has already ended or if it hasen't started
+#     course.ended = True
+#     db.session.commit()
+#     return redirect(url_for("course", course_id=course_id))
 
 
 

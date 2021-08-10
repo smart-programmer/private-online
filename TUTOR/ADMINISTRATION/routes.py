@@ -47,7 +47,7 @@ def control_panel():
 @login_required(["admin1"])
 def register(): # create an email and add email verification functionality
 
-    form = RegistrationForm()
+    form = AdminRegistrationForm()
     if form.validate_on_submit():
         username = form.username.data
         first_name = form.first_name.data
@@ -94,13 +94,13 @@ def add_course():
         course_description = form.description.data
         course_type = int(form.course_type.data)
         price = form.price.data
-        subject = int(form.subject.data)
+        subject = form.subject.data
         period = int(form.period.data) if form.period.data else None
         currency = form.currency.data
-        min_students = form.min_students.data if form.min_students.data else None
-        max_students = form.max_students.data if form.max_students.data else None
+        min_students = form.min_students.data
+        max_students = form.max_students.data
         start_date = form.start_date.data
-        end_date = form.end_date.data
+        end_date = form.end_date.data 
         link = form.zoom_link.data
         table = {
             "saturday": {"from": str(form.saturday_start.data), "to": str(form.saturday_end.data)},
@@ -116,7 +116,7 @@ def add_course():
         tutor_data_model = UserModel.query.get(int(form.tutors.data)).tutor_data_model
         course = CourseModel(name=course_name, description=course_description, created_by_admin=True,
          tutor=tutor_data_model, price=price, min_students=min_students, max_students=max_students, currency=currency, 
-         _period=period, course_type=course_type, subject_id=subject, _start_date=start_date, _end_date=end_date, 
+         _period=period, course_type=course_type, subject=subject, _start_date=start_date, _end_date=end_date, 
          weekly_time_table_json=weekly_time_table_json, links=link)
         db.session.add(course)
         db.session.commit()

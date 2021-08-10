@@ -130,7 +130,7 @@ class AdminCourseCreationForm(FlaskForm):
     def validate_start_date(self, start_date):
         if start_date:
             delta_time = int((start_date.data - datetime.date(datetime.utcnow())).days)
-            if delta_time <= 0:
+            if delta_time <= 0 and start_date.data != datetime.date(datetime.utcnow()):
                 raise ValidationError("الرجاء التأكد من تاريخ البداية")
             
 

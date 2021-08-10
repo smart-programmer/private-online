@@ -161,7 +161,16 @@ def put_current_choice_first(select_list, current_choice):
 		
 	return select_list
 
+def has_key(dictionary, key):
+	has_it = False
+	for i in dictionary.keys():
+		if i == key:
+			has_it =  True
+		
+	return has_it
 
+def get_dicts_with_key(dict_list, key):
+	return [i for i in dict_list if has_key(i, key)]
 
 # def handle_new_visitor(response):
 # 	expire_date = datetime.datetime.now()

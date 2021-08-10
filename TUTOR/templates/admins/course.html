@@ -53,7 +53,7 @@
 
         <div class="row justify-content-center my-row">
             <div class="col-4 my-col">
-                <h5>الحالة: {{ course.state }}</h5>
+                <h5>الحالة: {{ course.state.state_string }}</h5>
             </div>
             <div class="col-4 my-col">
                 <h5>المدة: {{ course.period }} ايام</h5>
@@ -72,9 +72,15 @@
         <div class="row justify-content-center my-row">
             جدول الحصص
             {% for day, time_obj in course.weekly_time_table.items() %}
-                <div class="col-12 my-col">
-                    <p>{{ day }}: from {{ time_obj.get("from") }} to {{ time_obj.get("to") }}</p>
-                </div>
+                {% if time_obj.from != "None" and time_obj.to != "None" %}
+                    <div class="col-12 my-col">
+                        <p>{{ day }}: from {{ time_obj.from }} to {{ time_obj.to }}</p>
+                    </div>
+                {% else %}
+                    <div class="col-12 my-col">
+                        <p>{{ day }}: لا توجد حصة في هذا اليوم</p>
+                    </div>
+                {% endif %}
             {% endfor %}
         </div>
 

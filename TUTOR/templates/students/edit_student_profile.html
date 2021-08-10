@@ -33,13 +33,6 @@
         <br>
         <br>
 
-        {{ form.school_name.name }}
-        {{ form.school_name() }}
-        {% for error in form.school_name.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
-        <br>
 
         {{ form.date_of_birth.name }}
         {{ form.date_of_birth() }}
@@ -56,7 +49,6 @@
         {% endfor %}
         <br>
         <br>
-        {{ gender_choices }}
 
         {{ form.submit() }}
         <br>

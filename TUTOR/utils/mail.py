@@ -2,7 +2,6 @@ from flask import url_for, current_app, request
 import datetime
 from flask_mail import Message as MailMessage
 from TUTOR import mail
-from TUTOR.models import UserModel
 
 
 
@@ -100,6 +99,18 @@ def send_student_pay_for_course_email(user, course):
 	'''
 	mail.send(msg)
 
+def send_student_course_start_email(user, course):
+	#send mail
+
+	string = """HLTC course"""
+	msg = MailMessage(string, sender="Horizon Light Training Centre", 
+	recipients=[user.email])
+	msg.body = f'''Hello {user.full_name} we're glad to tell you
+	the course you joined {course.name} has started be ready for the tutor to contact you
+
+	'''
+	mail.send(msg)
+
 def send_tutor_course_start_email(user, course):
 	#send mail
 
@@ -112,5 +123,23 @@ def send_tutor_course_start_email(user, course):
 	'''
 	mail.send(msg)
 
+def send_student_course_ended_email(user, course):
+	string = """HLTC course"""
+	msg = MailMessage(string, sender="Horizon Light Training Centre", 
+	recipients=[user.email])
+	msg.body = f'''Hello {user.full_name} the course {course.name} has ended thank you for
+	using our website
 
+	'''
+	mail.send(msg)
+
+def send_tutor_course_ended_email(user, course):
+	string = """HLTC course"""
+	msg = MailMessage(string, sender="Horizon Light Training Centre", 
+	recipients=[user.email])
+	msg.body = f'''Hello {user.full_name} the course {course.name} has ended thank you for
+	using our website
+
+	'''
+	mail.send(msg)
 

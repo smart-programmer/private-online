@@ -72,9 +72,9 @@
         <div class="row justify-content-center my-row">
             جدول الحصص
             {% for day, time_obj in course.weekly_time_table.items() %}
-                <div class="col-12 my-col">
-                    <p>{{ day }}: from {{ time_obj.get("from") }} to {{ time_obj.get("to") }}</p>
-                </div>
+                    <div class="col-12 my-col">
+                        <p>{{ day }}: from {{ time_obj.from) }} to {{ time_obj.to }}</p>
+                    </div>
             {% endfor %}
         </div>
 

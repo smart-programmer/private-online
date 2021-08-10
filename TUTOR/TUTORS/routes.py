@@ -2,11 +2,12 @@ from flask import Blueprint, render_template, request, redirect, url_for, make_r
 from flask_login import current_user, login_user, logout_user
 from TUTOR import db, bcrypt
 from TUTOR.TUTORS.forms import TutorRegistrationForm, TutorEditProfileForm, CourseCreationForm
-from TUTOR.models import UserModel, TutorDataModel, CourseModel, SiteSettingsModel
+from TUTOR.models import UserModel, TutorDataModel, CourseModel, SiteSettingsModel, PaymentModel
 from TUTOR.utils.mail import send_user_confirmation_email
 from TUTOR.utils.utils import generate_random_digits, login_required, put_current_choice_first, list_to_select_compatable_tuple, json_list_to_select_compatable_tuple
 from TUTOR.utils.languages import LngObj
 from TUTOR.settings import LANGUAGES, ADMIN_TYPES
+import json
 
 
 tutors_blueprint = Blueprint("tutors_blueprint", __name__)
@@ -91,11 +92,11 @@ def edit_profile():
         current_user.tutor_data_model.qualification = form.qualification.data
         current_user.tutor_data_model.major = form.major.data
         current_user.tutor_data_model.current_job = form.current_job.data
-        if form.subjects.data.strip():
-            current_user.tutor_data_model._subjects =  TutorDataModel.list_to_comma_seperated_string(current_user.tutor_data_model.subjects + form.subjects.data.split(","))
         current_user.tutor_data_model.years_of_experience = form.years_of_experience.data
-        if form.tools_used_for_online_tutoring.data.strip():
-            current_user.tutor_data_model._tools_used_for_online_tutoring = TutorDataModel.list_to_comma_seperated_string(current_user.tutor_data_model.tools_used_for_online_tutoring + form.tools_used_for_online_tutoring.data.split(","))
+        if form.subjects.data:
+            current_user.tutor_data_model._subjects =  form.subjects.data 
+        if form.tools_used_for_online_tutoring.data:
+            current_user.tutor_data_model.add_to_tools_used_for_online_tutoring(json.loads(form.tools_used_for_online_tutoring.data))#TutorDataModel.list_to_comma_seperated_string(current_user.tutor_data_model.tools_used_for_online_tutoring + form.tools_used_for_online_tutoring.data.split(","))
 
         db.session.commit()
 
@@ -133,20 +134,49 @@ def add_course():
         return current_app.login_manager.unauthorized()
 
     form = CourseCreationForm()
-    form.subject.choices = json_list_to_select_compatable_tuple(SiteSettingsModel.instance().subjects["setting_value"])
+    form.subject.choices = json_list_to_select_compatable_tuple(current_user.tutor_data_model.subjects)
 
     if form.validate_on_submit():
         course_name = form.name.data
         course_description = form.description.data
-        subject = int(form.subject.data)
+        course_type = int(form.course_type.data)
+        subject = form.subject.data
+        period = int(form.period.data) if form.period.data else None
         price = form.price.data
         currency = form.currency.data
         min_students = form.min_students.data
         max_students = form.max_students.data
+        start_date = form.start_date.data
+        end_date = form.end_date.data
+        link = form.zoom_link.data
+        table = {
+            "saturday": {"from": str(form.saturday_start.data), "to": str(form.saturday_end.data)},
+            "sunday": {"from": str(form.sunday_start.data), "to": str(form.sunday_end.data)},
+            "monday": {"from": str(form.monday_start.data), "to": str(form.monday_end.data)},
+            "tuesday": {"from": str(form.tuesday_start.data), "to": str(form.tuesday_end.data)},
+            "wednesday": {"from": str(form.wednesday_start.data), "to": str(form.wednesday_end.data)},
+            "tuesday": {"from": str(form.tuesday_start.data), "to": str(form.tuesday_end.data)},
+            "friday": {"from": str(form.friday_start.data), "to": str(form.friday_end.data)}
+        }
+        weekly_time_table_json = json.dumps(table)
+
         course = CourseModel(name=course_name, description=course_description, created_by_admin=False,
-         tutor=current_user.tutor_data_model, price=price, min_students=min_students, max_students=max_students, currency=currency, subject_id=subject)
+         tutor=current_user.tutor_data_model, price=price, min_students=min_students, max_students=max_students, currency=currency, 
+         _period=period, course_type=course_type, subject=subject, _start_date=start_date, _end_date=end_date, 
+         weekly_time_table_json=weekly_time_table_json, links=link)
         db.session.add(course)
+        payment_model = PaymentModel(course=course)
+        db.session.add(payment_model)
         db.session.commit()
         return redirect(url_for("courses_blueprint.courses"))
 
     return render_template("tutors/create_course.html", form=form)
+
+
+@tutors_blueprint.route("/tutors/my-courses", methods=["GET", "POST"])
+@login_required(["tutor"])
+def tutor_courses():
+    all_courses = CourseModel.query.filter_by(tutor_data_model_id=current_user.tutor_data_model.id).all()
+    return render_template("tutors/tutor_courses.html", all_courses=all_courses)
+
+
