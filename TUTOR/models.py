@@ -199,7 +199,7 @@ class CourseModel(db.Model):
 
     def start(self): 
         self.began = True
-        self.state = json.dumps({"state_code": 2, "state_string": "قائم", "allowed_actions": ["view", "end"]})
+        self._state = json.dumps({"state_code": 2, "state_string": "قائم", "allowed_actions": ["view", "end"]})
         # NOTE: if it's type 2 then period is already calculated in self.period
         if self.course_type == 1:
             now = datetime.date(datetime.utcnow())
@@ -207,16 +207,16 @@ class CourseModel(db.Model):
             self._end_date = now + timedelta(days=self.period)
         db.session.commit()
         for sdm in self.students: # the paymetn is when a student joins not when the course begins bcz the course wont begin if students didn't pay
-            send_student_pay_for_course_email(sdm.user, self)
+            send_student_course_start_email(sdm.user, self)
         send_tutor_course_start_email(self.tutor.user, self)
         return True
 
     def end(self):
         self.ended = True
-        self.state = json.dumps({"state_code": 3, "state_string": "انتهى", "allowed_actions": ["delete"]})
+        self._state = json.dumps({"state_code": 3, "state_string": "انتهى", "allowed_actions": ["delete"]})
         db.session.commit()
         for sdm in self.students:
-            send_student_course_start_email(sdm.user, self)
+            send_student_course_ended_email(sdm.user, self)
         send_tutor_course_ended_email(self.tutor.user, self)
         return True
 
@@ -268,14 +268,14 @@ class CourseModel(db.Model):
             if self.course_type == 2:
                 remaining_days_to_start = (datetime.date(datetime.utcnow()) - self.start_date)
                 if remaining_days_to_start <= 0:
-                    if len(self.payment_model.students_paid) < self.min_students:
+                    if self.payment_model.number_of_students_paid < self.min_students:
                         return True
                 
         return False
 
     def cancel(self):
         # make state canceled
-        self.state = json.dumps({"state_code": 4, "state_string": "ملغي", "allowed_actions": ["delete"]})
+        self._state = json.dumps({"state_code": 4, "state_string": "ملغي", "allowed_actions": ["delete"]})
         self.payment_model.refund_all()
         # refund who deserves to be refunded
 
@@ -410,17 +410,19 @@ class PaymentModel(db.Model): # a payment class for each course to register cour
             return None
 
     @staticmethod
-    def pay(student):
-        if not course.has_student(student):
+    def pay(student): # if student eligibal to pay then pay using payment gateway api
+        # if not course.has_student(student):
 
-            return False
+        #     return False
+        pass
             
 
-    # @staticmethod
-    # def refund(student, amount):
-    #     if course.has_student(student):
+    @staticmethod
+    def refund(student, amount):# if student eligibal for refund then refund using payment gateway api
+        # if course.has_student(student):
+        pass
 
-    def refund_all(self):
+    def refund_all(self): # refund all student who are eligibal for refund
         students = self.students_paid
         for student in students:
             # self.refund(student, self.course.price)
@@ -476,6 +478,11 @@ class PaymentModel(db.Model): # a payment class for each course to register cour
             payment_list.append(get_dicts_with_key(self.transactions_objet[str(student.user.id)], "payment"))
 
         return payment_list
+
+    @property
+    def number_of_students_paid(self):
+        return 2
+        # return len(self.students_paid) 
 
 
 # ///////////////////////////// from here i stop fixing POS and billing systems ///////////////////////////

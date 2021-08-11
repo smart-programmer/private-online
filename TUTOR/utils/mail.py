@@ -71,6 +71,7 @@ def send_student_course_join_email(user, course):
 	we will notify you for payment when the course reaches the requested number of students to start which is {course.min_students}
 	it's currently at {len(course.students)}
 
+	please pay using this LINK if you dont pay you will not be included in the course
 	'''
 	mail.send(msg)
 

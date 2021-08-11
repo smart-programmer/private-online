@@ -92,7 +92,7 @@ class AdminCourseCreationForm(FlaskForm):
     end_date = DateField("end date", format="%Y-%m-%d", validators=[Optional()])
     zoom_link = wtforms.StringField("zoom link", validators=[length(max=255), DataRequired()], widget=TextArea()) 
     min_students = IntegerField("minimum number of students", validators=[DataRequired()])
-    max_students = IntegerField("maximum number of students", validators=[DataRequired()])
+    max_students = IntegerField("maximum number of students", validators=[Optional()])
     saturday_start = DecimalField("saturday class start time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
     saturday_end = DecimalField("saturday class end time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
     sunday_start = DecimalField("sunday class start time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
@@ -116,7 +116,7 @@ class AdminCourseCreationForm(FlaskForm):
             return False
 
         if self.course_type == 1 and self.start_date.data and self.end_date.data:
-            raise ValidationError("لا يمكن اذافة تاريخ في هذا النوع من الدورات")
+            raise ValidationError("لا يمكن اضافة تاريخ في هذا النوع من الدورات")
 
         if self.course_type == 2 and self.period.data:
             raise ValidationError("لا يمكن اضافة مدة دورة في هذ االنوع من الدورات")
@@ -125,6 +125,10 @@ class AdminCourseCreationForm(FlaskForm):
             period = int((self.end_date.data - self.start_date.data).days)
             if period <= 0:
                 raise ValidationError("تأكد من الفارق بين تاريخ البداية والنهاية")
+
+        if self.course_type == 2 and not self.max_students:
+            raise ValidationError("يجب وضع اقصى عدد طلاب اذااردت هذا النوع من الدورات")
+
         return True
 
     def validate_start_date(self, start_date):
@@ -132,6 +136,8 @@ class AdminCourseCreationForm(FlaskForm):
             delta_time = int((start_date.data - datetime.date(datetime.utcnow())).days)
             if delta_time <= 0 and start_date.data != datetime.date(datetime.utcnow()):
                 raise ValidationError("الرجاء التأكد من تاريخ البداية")
+
+        
             
 
 

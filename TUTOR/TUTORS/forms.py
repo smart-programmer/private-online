@@ -127,7 +127,7 @@ class CourseCreationForm(FlaskForm):
     start_date = DateField("start date", format="%Y-%m-%d", validators=[Optional()])
     end_date = DateField("end date", format="%Y-%m-%d", validators=[Optional()])
     zoom_link = wtforms.StringField("zoom link", validators=[length(max=255), DataRequired()], widget=TextArea()) 
-    min_students = IntegerField("minimum number of students", validators=[Optional()])
+    min_students = IntegerField("minimum number of students", validators=[DataRequired()])
     max_students = IntegerField("maximum number of students", validators=[Optional()])
     saturday_start = DecimalField("saturday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
     saturday_end = DecimalField("saturday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
@@ -161,6 +161,10 @@ class CourseCreationForm(FlaskForm):
             period = int((self.end_date.data - self.start_date.data).days)
             if period <= 0:
                 raise ValidationError("تأكد من الفارق بين تاريخ البداية والنهاية")
+
+        if self.course_type == 2 and not self.max_students:
+            raise ValidationError("يجب وضع اقصى عدد طلاب اذااردت هذا النوع من الدورات")
+
         return True
 
     def validate_start_date(self, start_date):

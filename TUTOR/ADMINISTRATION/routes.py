@@ -98,7 +98,7 @@ def add_course():
         period = int(form.period.data) if form.period.data else None
         currency = form.currency.data
         min_students = form.min_students.data
-        max_students = form.max_students.data
+        max_students = form.max_students.data if course_type == 2 else min_students
         start_date = form.start_date.data
         end_date = form.end_date.data 
         link = form.zoom_link.data

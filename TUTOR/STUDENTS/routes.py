@@ -117,7 +117,6 @@ def join_course(course_id):
     course = CourseModel.query.get(course_id)
     if course.can_join(student_data_model): 
         course.add_student(student_data_model)
-        send_student_pay_for_course_email(student_data_model.user, course)
 
     # if course.should_send_first_payment_emails():
     #     course.send_all_payment_emails()
