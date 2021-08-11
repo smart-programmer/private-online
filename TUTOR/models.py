@@ -277,8 +277,7 @@ class CourseModel(db.Model):
         # make state canceled
         self._state = json.dumps({"state_code": 4, "state_string": "ملغي", "allowed_actions": ["delete"]})
         db.session.commit()
-        # self.payment_model.refund_all()
-        # refund who deserves to be refunded
+        self.payment_model.refund_all()
         for sdm in self.students:
             send_student_course_canceled_email(sdm.user, self)
         send_tutor_course_canceled_email(self.tutor.user, self)
@@ -401,7 +400,7 @@ class StudentDataModel(db.Model):
 
 class PaymentModel(db.Model): # a payment class for each course to register course transactions and payment data
     id = db.Column(db.Integer, primary_key=True)
-    _transactions_objet = db.Column(db.String(), nullable=False, default="{}") # {"student1_id": [{payment: {date: ..., amount:...}}, {refund: ...}], "student2_id": ...}
+    _transactions_objet = db.Column(db.String(), nullable=False, default="{}") # {"student1_id": [{payment: {date: ..., amount:..., currency:...}}, {refund: ...}], "student2_id": ...}
     last_payment_date = db.Column(db.DateTime, nullable=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course_model.id'))   
     creation_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -413,60 +412,62 @@ class PaymentModel(db.Model): # a payment class for each course to register cour
         else:
             return None
 
-    @staticmethod
-    def pay(student): # if student eligibal to pay then pay using payment gateway api
-        # if not course.has_student(student):
-
-        #     return False
-        pass
+    def pay(self, student, price, currency): # if student eligibal to pay then pay course amount using payment gateway api then register payment
+        # the pay method can't be implemented yet as it rely on the api heavily 
+        # gateway_api.pay(student.account, price, currency)
+        self.register_payment(student.id, price, currency)
+        return price, currency
             
 
-    @staticmethod
-    def refund(student, amount):# if student eligibal for refund then refund using payment gateway api
-        # if course.has_student(student):
-        pass
+    def refund(self, student):# if student eligibal for refund then refund paid amount using payment gateway api then register refund
+        price, currency = self.price_paid_and_currency(student.id)
+        # gateway_api.refund(student.account, price, currency)
+        self.register_refund(student.id, price, currency)
+        return price, currency
 
-    def refund_all(self): # refund all student who are eligibal for refund
+
+    def refund_all(self): # refund all student who are eligibal for refund with the paid price then register refunds for all
         students = self.students_paid
         for student in students:
-            # self.refund(student, self.course.price)
-            self.register_refund(student, self.course.price)
+            price, currency = self.refund(student)
+            self.register_refund(student.id, price, currency)
 
-    def register_payment(self, student, amount):
+    def register_payment(self, student_id, amount, currency):
         current_date = datetime.date(datetime.utcnow())
         new_obj = self.transactions_objet
-        new_obj[str(student.user.id)].append({"payment": {"date": current_date, "amount": amount}})
+        new_obj[student_id].append({"payment": {"date": current_date, "amount": amount, "currency": currency}})
         self._transactions_objet = json.dumps(new_obj)
         self.last_payment_date = current_date
         db.session.commit()
         
-    def register_refund(self, student, amount):
+    def register_refund(self, student_id, amount, currency):
         new_obj = self.transactions_objet
-        new_obj[str(student.user.id)].append({"refund": {"date": datetime.date(datetime.utcnow()), "amount": amount}})
+        new_obj[student_id].append({"refund": {"date": datetime.date(datetime.utcnow()), "amount": amount, "currency": currency}})
         self._transactions_objet = json.dumps(new_obj)
         db.session.commit()
 
-    def add_student(self, student):
-        new_obj = self.transactions_objet
-        new_obj[str(student.user.id)] = []
-        self._transactions_objet = json.dumps(new_obj)
-        db.session.commit()
-
-    def remove_student(self, student):
-        if self.exists(student):
+    def add_student(self, student_id):
+        if not self.exists(student_id):
             new_obj = self.transactions_objet
-            new_obj.pop(str(student.user.id), None)
+            new_obj[student_id] = []
             self._transactions_objet = json.dumps(new_obj)
             db.session.commit()
 
-    def exists(self, student):
-        return True if str(student.user.id) in self.transactions_objet.keys() else False
+    def remove_student(self, student_id):
+        if self.exists(student_id):
+            new_obj = self.transactions_objet
+            new_obj.pop(student_id, None)
+            self._transactions_objet = json.dumps(new_obj)
+            db.session.commit()
+
+    def exists(self, student_id):
+        return True if student_id in self.transactions_objet.keys() else False
 
     def get_student_payments(self, student):
-        get_dicts_with_key(self.transactions_objet[str(student.user.id)], "payment")
+        get_dicts_with_key(self.transactions_objet[student.user.id], "payment")
 
     def get_student_refunds(self, student):
-        get_dicts_with_key(self.transactions_objet[str(student.user.id)], "refund")
+        get_dicts_with_key(self.transactions_objet[student.user.id], "refund")
 
     @property
     def last_payment_period(self):
@@ -475,18 +476,39 @@ class PaymentModel(db.Model): # a payment class for each course to register cour
         else:
             return None
 
-    def students_paid(self):
-        # see the last thing every student did and if they paid count them in
-        payment_list = []
-        for i in self.transactions_objet.values():
-            payment_list.append(get_dicts_with_key(self.transactions_objet[str(student.user.id)], "payment"))
-
-        return payment_list
+    def students_paid(self): # returns student_data_models whod paid for the course and not refunded
+        # loop through each student transactions if last transaction was payment then put student in list
+        students_list = []
+        for student_id in self.transactions_objet:
+            if self.is_paid_student(student_id):
+                students_list.append(StudentDataModel.query.get(student_id))
+        return students_list
 
     @property
     def number_of_students_paid(self):
-        return 2
-        # return len(self.students_paid) 
+        return len(self.students_paid) 
+
+    @staticmethod
+    def is_payment_dict(transaction_dict): 
+        return True if list(transaction_dict.keys())[0] == "payment" else False
+
+    @staticmethod
+    def is_refund_dict(transaction_dict):
+        return True if list(transaction_dict.keys())[0] == "refund" else False
+
+
+    def is_paid_student(self, student_id): # return true if last transaction is payment
+        if self.exists(student_id):
+            last_transaction_dict = self.transactions_objet[student_id][-1] # no need for try catch bcz there always be at least 1 transaction type the first payment when the student joins
+            return True if self.is_payment_dict(last_transaction_dict) else False
+        return False
+
+    def price_paid_and_currency(self, student_id):
+        if self.is_paid_student(student_id):
+            payment_transaction_dict = self.transactions_objet[student_id][-1]
+            return payment_transaction_dict["amount"], payment_transaction_dict["currency"]
+        return 0, 0
+                
 
 
 # ///////////////////////////// from here i stop fixing POS and billing systems ///////////////////////////

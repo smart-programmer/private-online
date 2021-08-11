@@ -157,10 +157,10 @@ class CourseCreationForm(FlaskForm):
         if self.course_type == 2 and self.period.data:
             raise ValidationError("لا يمكن اضافة مدة دورة في هذ االنوع من الدورات")
 
-        # if self.start_date.data and self.end_date.data:
-        #     period = int((self.end_date.data - self.start_date.data).days)
-        #     if period <= 0:
-        #         raise ValidationError("تأكد من الفارق بين تاريخ البداية والنهاية")
+        if self.start_date.data and self.end_date.data:
+            period = int((self.end_date.data - self.start_date.data).days)
+            if period <= 0:
+                raise ValidationError("تأكد من الفارق بين تاريخ البداية والنهاية")
 
         if self.course_type == 2 and not self.max_students:
             raise ValidationError("يجب وضع اقصى عدد طلاب اذااردت هذا النوع من الدورات")

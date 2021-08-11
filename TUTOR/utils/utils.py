@@ -169,7 +169,7 @@ def has_key(dictionary, key):
 		
 	return has_it
 
-def get_dicts_with_key(dict_list, key):
+def get_dicts_with_key(dict_list, key): # given a list of dicts return only dicts with specified key
 	return [i for i in dict_list if has_key(i, key)]
 
 # def handle_new_visitor(response):
