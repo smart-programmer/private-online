@@ -144,3 +144,24 @@ def send_tutor_course_ended_email(user, course):
 	'''
 	mail.send(msg)
 
+def send_student_course_canceled_email(user, course):
+	string = """HLTC course"""
+	msg = MailMessage(string, sender="Horizon Light Training Centre", 
+	recipients=[user.email])
+	msg.body = f'''Hello {user.full_name} the course {course.name} has been canceled thank you for
+	using our website
+
+	'''
+	mail.send(msg)
+
+def send_tutor_course_canceled_email(user, course):
+	string = """HLTC course"""
+	msg = MailMessage(string, sender="Horizon Light Training Centre", 
+	recipients=[user.email])
+	msg.body = f'''Hello {user.full_name} the course {course.name} has been canceled thank you for
+	using our website
+
+	'''
+	mail.send(msg)
+
+

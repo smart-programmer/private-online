@@ -1,7 +1,7 @@
 from flask import current_app
 from TUTOR import db, login_manager, create_app
 from TUTOR.utils.utils import get_dicts_with_key
-from TUTOR.utils.mail import send_student_pay_for_course_email, send_tutor_course_start_email, send_student_course_join_email, send_student_course_ended_email, send_tutor_course_ended_email, send_student_course_start_email
+from TUTOR.utils.mail import send_student_pay_for_course_email, send_tutor_course_start_email, send_student_course_join_email, send_student_course_ended_email, send_tutor_course_ended_email, send_student_course_start_email, send_student_course_canceled_email, send_tutor_course_canceled_email
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin, current_user
 from datetime import datetime, timedelta
@@ -266,7 +266,7 @@ class CourseModel(db.Model):
         # all types of courses should be deletd if and authority choses to
         if self.cancelable:
             if self.course_type == 2:
-                remaining_days_to_start = (datetime.date(datetime.utcnow()) - self.start_date)
+                remaining_days_to_start = (datetime.date(datetime.utcnow()) - self.start_date).days
                 if remaining_days_to_start <= 0:
                     if self.payment_model.number_of_students_paid < self.min_students:
                         return True
@@ -276,8 +276,12 @@ class CourseModel(db.Model):
     def cancel(self):
         # make state canceled
         self._state = json.dumps({"state_code": 4, "state_string": "ملغي", "allowed_actions": ["delete"]})
-        self.payment_model.refund_all()
+        db.session.commit()
+        # self.payment_model.refund_all()
         # refund who deserves to be refunded
+        for sdm in self.students:
+            send_student_course_canceled_email(sdm.user, self)
+        send_tutor_course_canceled_email(self.tutor.user, self)
 
     def can_join(self, student):
         # depends on course state and if user has joined and number of students allowed
@@ -481,7 +485,7 @@ class PaymentModel(db.Model): # a payment class for each course to register cour
 
     @property
     def number_of_students_paid(self):
-        return 2
+        return 1
         # return len(self.students_paid) 
 
 

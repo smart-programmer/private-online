@@ -26,5 +26,6 @@ def check_courses():
                 course.end()
             if course.should_cancel():
                 course.cancel()
+                
 
 sched.start()
