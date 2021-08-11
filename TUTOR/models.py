@@ -485,7 +485,7 @@ class PaymentModel(db.Model): # a payment class for each course to register cour
 
     @property
     def number_of_students_paid(self):
-        return 1
+        return 2
         # return len(self.students_paid) 
 
 
