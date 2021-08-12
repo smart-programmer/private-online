@@ -93,20 +93,20 @@ class AdminCourseCreationForm(FlaskForm):
     zoom_link = wtforms.StringField("zoom link", validators=[length(max=255), DataRequired()], widget=TextArea()) 
     min_students = IntegerField("minimum number of students", validators=[DataRequired()])
     max_students = IntegerField("maximum number of students", validators=[Optional()])
-    saturday_start = DecimalField("saturday class start time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
-    saturday_end = DecimalField("saturday class end time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
-    sunday_start = DecimalField("sunday class start time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
-    sunday_end = DecimalField("sunday class end time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
-    monday_start = DecimalField("monday class start time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
-    monday_end = DecimalField("monday class end time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
-    tuesday_start = DecimalField("tuesday class start time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
-    tuesday_end = DecimalField("tuesday class end time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
-    wednesday_start = DecimalField("wednesday class start time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
-    wednesday_end = DecimalField("wednesday class end time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
-    thursday_start = DecimalField("thursday class start time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
-    thursday_end = DecimalField("thursday class end time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
-    friday_start = DecimalField("friday class start time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
-    friday_end = DecimalField("friday class end time", validators=[DataRequired()], render_kw={"min": 1, "max": 24})
+    saturday_start = DecimalField("saturday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    saturday_end = DecimalField("saturday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    sunday_start = DecimalField("sunday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    sunday_end = DecimalField("sunday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    monday_start = DecimalField("monday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    monday_end = DecimalField("monday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    tuesday_start = DecimalField("tuesday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    tuesday_end = DecimalField("tuesday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    wednesday_start = DecimalField("wednesday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    wednesday_end = DecimalField("wednesday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    thursday_start = DecimalField("thursday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    thursday_end = DecimalField("thursday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    friday_start = DecimalField("friday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    friday_end = DecimalField("friday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
     tutors = wtforms.SelectField("tutor", choices=(()), validators=[DataRequired()])
     submit = wtforms.SubmitField("create course")
 
@@ -128,6 +128,9 @@ class AdminCourseCreationForm(FlaskForm):
 
         if self.course_type == 2 and not self.max_students:
             raise ValidationError("يجب وضع اقصى عدد طلاب اذااردت هذا النوع من الدورات")
+
+        if self.max_students < self.min_students:
+            raise ValidationError("يجب ان يكون الحد الادنى اقل او مساو للحد الاعلى")
 
         return True
 

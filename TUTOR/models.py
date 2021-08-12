@@ -515,6 +515,7 @@ class PaymentModel(db.Model): # a payment class for each course to register cour
     
 
 
+#///////////////////////////// from here i start fixing setting model /////////////////////////////////
 
 class SiteSettingsModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -545,7 +546,7 @@ class SiteSettingsModel(db.Model):
         self._settings = json.dumps(settings_dict)
         db.session.commit()
 
-    def change_setting(self, setting_key, setting_value):
+    def change_setting(self, setting_key, setting_value, setting_type):
         settings_dict = self.settings
         if not setting_key in settings_dict:
             return
@@ -566,6 +567,12 @@ class SiteSettingsModel(db.Model):
         self._settings = json.dumps(settings_dict)
         db.session.commit() 
 
+    def remove_from_list_type_setting(self, setting_key, item):
+        settings_dict = self.settings
+        settings_dict[setting_key]["setting_value"].remove(item)
+        self._settings = json.dumps(settings_dict)
+        db.session.commit() 
+
     def add_or_change_to_dict_type_setting(self, setting_key, key, value):
         setting = self.settings[setting_key]["setting_value"]
         setting[key] = value
@@ -577,4 +584,4 @@ class SiteSettingsModel(db.Model):
         return cls.query.get(1)
 
 
-
+# ///////////////////////////////// from here i stop fixing settings model //////////////////////////////////////

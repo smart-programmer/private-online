@@ -165,6 +165,10 @@ class CourseCreationForm(FlaskForm):
         if self.course_type == 2 and not self.max_students:
             raise ValidationError("يجب وضع اقصى عدد طلاب اذااردت هذا النوع من الدورات")
 
+        if self.max_students < self.min_students:
+            raise ValidationError("يجب ان يكون الحد الادنى اقل او مساو للحد الاعلى")
+
+
         return True
 
     def validate_start_date(self, start_date):

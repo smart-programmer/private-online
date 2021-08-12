@@ -1,0 +1,58 @@
+{% extends "template.html" %}
+
+{% block title %} User Info{% endblock %}
+{% block content %}
+    <center>
+        <h1 style="color: orange;">{{ get_language_text('test_translation', get_current_page_language_list()) }}</h1>
+    </center>
+    <br><br><br>
+
+       {% include "snippets/language_select.html" %}
+
+        <h1>User Info</h1>
+
+        <br><br><br>
+        name: {{ user.full_name }}
+        <br>
+        username: {{ user.username }}
+        <br>
+        email: {{ user.email }}
+        <br>
+        age: {{ user.tutor_data_model.age }}
+        <br>
+        gender: {{ user.gender }}
+        <br>
+        nationality: {{ user.tutor_data_model.nationality }}
+        <br>
+        qualification: {{ user.tutor_data_model.qualification }}
+        <br>
+        major: {{ user.tutor_data_model.major }}
+        <br>
+        current_job: {{ user.tutor_data_model.current_job }}
+        <br>
+        years_of_experience: {{ user.tutor_data_model.years_of_experience }}
+        <br>
+        tools_used_for_online_tutoring: {{ user.tutor_data_model.tools_used_for_online_tutoring }}
+        <br>
+        is_accepted: {{ user.tutor_data_model.is_accepted }}
+        <br>
+        <br><br><br>
+
+        <h2>Courses</h2>
+        {% for course in user.tutor_data_model.courses %}
+            <a href="{{ url_for('courses_blueprint.course', course_id=course.id) }}">{{ course.name }}</a>
+        {% endfor %}
+        <br>
+        <h2>subjects</h2>
+        {% for subject in user.tutor_data_model.subjects %}
+            {{ subject }}
+        {% endfor %}
+        <br>
+
+        {% if not user.tutor_data_model.is_accepted %}
+            <a href="{{ url_for('admins_blueprint.accept_tutor', tutor_id=user.tutor_data_model.id) }}"><button>accept</button></a>
+        {% endif %}
+    
+      
+
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "template.html" %}
+
+{% block title %} User Info{% endblock %}
+{% block content %}
+    <center>
+        <h1 style="color: orange;">{{ get_language_text('test_translation', get_current_page_language_list()) }}</h1>
+    </center>
+    <br><br><br>
+
+       {% include "snippets/language_select.html" %}
+
+        <h1>User Info</h1>
+
+        <br><br><br>
+        name: {{ user.full_name }}
+        <br>
+        username: {{ user.username }}
+        <br>
+        email: {{ user.email }}
+        <br>
+        age: {{ user.age }}
+        <br>
+        gender: {{ user.gender }}
+        <br>
+        type: {{ user.user_type }}
+        <br><br><br>
+
+    
+      
+
+{% endblock %}

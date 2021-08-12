@@ -2,8 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, make_r
 from flask_login import current_user, login_user, logout_user
 from TUTOR import db, bcrypt
 from TUTOR.ADMINISTRATION.forms import AdminRegistrationForm, AdminCourseCreationForm
-from TUTOR.models import UserModel, AdminDataModel, CourseModel, SiteSettingsModel
-from TUTOR.utils.mail import send_user_confirmation_email, send_user_reset_password_email, send_user_change_password_email, send_email_change_request_email, send_deny_email_change_email
+from TUTOR.models import TutorDataModel, UserModel, AdminDataModel, CourseModel, SiteSettingsModel
+from TUTOR.utils.mail import send_user_confirmation_email, send_user_reset_password_email, send_user_change_password_email, send_email_change_request_email, send_deny_email_change_email, send_tutor_accepted_email
 from TUTOR.utils.utils import save_image_locally, delete_image, generate_random_digits, login_required, list_to_select_compatable_tuple, json_list_to_select_compatable_tuple
 from TUTOR.settings import ADMIN_TYPES, LANGUAGES
 from TUTOR.utils.languages import LngObj
@@ -75,10 +75,10 @@ def register(): # create an email and add email verification functionality
 
 
 
-@admins_blueprint.route("/admins/courses", methods=["GET"])
-@login_required(ADMIN_TYPES)
-def courses():
-    return render_template("admins/courses.html")
+# @admins_blueprint.route("/admins/courses", methods=["GET"])
+# @login_required(ADMIN_TYPES)
+# def courses():
+#     return render_template("admins/courses.html")
 
 @admins_blueprint.route("/admins/courses/create-course", methods=["GET", "POST"])
 @login_required(ADMIN_TYPES)
@@ -124,33 +124,59 @@ def add_course():
     return render_template("admins/create_course.html", form=form)
 
 
-@admins_blueprint.route("/admins/all_users", methods=["GET", "POST"])
+@admins_blueprint.route("/admins/all_users", methods=["GET"])
 @login_required(ADMIN_TYPES)
 def users_list_view(): # admin only
     users = UserModel.query.all()
     return render_template("admins/users.html", users=users)
 
+@admins_blueprint.route("/admins/user/<user_id>", methods=["GET"])
+@login_required(ADMIN_TYPES)
+def user_detailed_view(user_id): # admin only
+    user = UserModel.query.get(user_id)
+    user_type = user.user_type
+    if user_type == "tutor":
+        return render_template("admins/users/tutor.html", user=user)
+    elif user_type == "student":
+        return render_template("admins/users/student.html", user=user)
+    elif user_type in ADMIN_TYPES:
+        return render_template("admins/users/admin.html", user=user)
+
 
 @admins_blueprint.route("/admins/change-site-settings")
 @login_required(ADMIN_TYPES)
-def change_site_settings():
+def change_site_settings(): # there should be a 
     setting_name = str(request.args.get("setting"))
     
     settings = SiteSettingsModel.instance()
     setting = getattr(settings, setting_name)
     setting_type = setting["setting_type"]
+    value = None
     if setting_type == bool.__name__:
         settings.reverse_bool_setting(setting_name)
-    elif setting_type == list.__name__:
+    elif setting_type == list.__name__: # what if i wanted to remove?
         value = str(request.args.get("value"))
-        settings.add_to_list_type_setting(setting_name, value)
-    elif setting_type == dict.__name__:
+        change_action_name = str(request.args.get("change_action_name"))
+        if change_action_name == "add":
+            settings.add_to_list_type_setting(setting_name, value)
+        elif change_action_name == "remove":
+            settings.remove_from_list_type_setting(setting_name, value)
+    elif setting_type == dict.__name__: # also what if i wanted to remove?
         key = str(request.args.get("key"))
         value = str(request.args.get("value"))
         settings.add_or_change_to_dict_type_setting(setting_name, key, value)
 
     return redirect(url_for("admins_blueprint.control_panel", vlaue=value))
 
+
+@admins_blueprint.route("/admins/accept_tutor/<tutor_id>", methods=["GET"])
+@login_required(ADMIN_TYPES)
+def accept_tutor(tutor_id): # admin only
+    tutor = TutorDataModel.query.get(tutor_id)
+    tutor.is_accepted = True 
+    db.session.commit()
+    send_tutor_accepted_email(tutor)
+    return redirect(url_for('admins_blueprint.user_detailed_view', user_id=tutor.user.id))
 
 # @admins_blueprint.route("/admins/profile", methods=["GET"])
 # @login_required([i for i in ADMIN_TYPES])

@@ -165,3 +165,13 @@ def send_tutor_course_canceled_email(user, course):
 	mail.send(msg)
 
 
+
+def send_tutor_accepted_email(tutor):
+	string = """HLTC course"""
+	msg = MailMessage(string, sender="Horizon Light Training Centre", 
+	recipients=[tutor.user.email])
+	msg.body = f'''Hello {tutor.user.full_name} congratulations for being accepted 
+	into our oraganisation as a tutor 
+
+	'''
+	mail.send(msg)

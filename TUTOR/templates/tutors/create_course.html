@@ -86,12 +86,14 @@
         <br>
         
 
+        <div id="type1-max-students">
         {{ form.max_students.name }}
         {{ form.max_students() }}
         {% for error in form.max_students.errors %}
             <h3 style="color: red;"> {{ error }}</h3> 
         {% endfor %}
         <br>
+    </div>
 
         {{ form.zoom_link.name }}
         {{ form.zoom_link() }}
@@ -129,6 +131,7 @@
                 $('input[name = "period"]').attr('required', '');
                 $('input[name = "period"]').attr('data-error', 'This field is required.');
                 $('#type2').hide();
+                $('#type1-max-students').hide();
                 $('input[name = "start_date"]').removeAttr('required');
                 $('input[name = "start_date"]').removeAttr('data-error');
                 $('input[name = "end_date"]').removeAttr('required');
