@@ -85,6 +85,7 @@ def register(): # create an email and add email verification functionality
 def add_course():
     form = AdminCourseCreationForm()
     tutors = UserModel.query.filter_by(user_type="tutor").all()
+    tutors = [tutor for tutor in tutors if tutor.tutor_data_model.is_accepted == True]
     tutors_select_tuple = list_to_select_compatable_tuple(tutors, "id", "full_name")
     form.tutors.choices = tutors_select_tuple
     form.subject.choices = json_list_to_select_compatable_tuple(SiteSettingsModel.instance().subjects["setting_value"])

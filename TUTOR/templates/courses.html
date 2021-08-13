@@ -53,7 +53,11 @@
                                 <h5 class="card-title">{{ course.name }}</h5>
                                 <h5 class="card-title"><i class='fas fa-chalkboard-teacher' style='font-size:24px'></i> {{ course.tutor.user.full_name }}</h5>
                                 <p class="card-text"><i class="bi bi-person-dash"></i> {{ course.empty_seats }}</p>
+                                {% if current_user.user_type == "student" %}
+                                  <p class="card-text"><i class="bi bi-cash"></i> ${{ course.price_for_student(current_user.student_data_mode) }} {{ course.currency }}  {% if course.has_discount_for_student(current_user.student_data_mode) %}عرض خاص{% endif %}</p> 
+                                  {% else %}
                                   <p class="card-text"><i class="bi bi-cash"></i> ${{ course.price }} {{ course.currency }}</p>
+                                  {% endif %}
                                   <a href="{{ url_for('courses_blueprint.course', course_id=course.id) }}" class="btn btn-primary">شاهد التفاصيل</a>
                         </div>
                     </div>

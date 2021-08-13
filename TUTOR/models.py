@@ -2,6 +2,7 @@ from flask import current_app
 from flask_mail import FlaskMailUnicodeDecodeError
 from TUTOR import db, login_manager, create_app
 from TUTOR.utils.utils import get_dicts_with_key
+from TUTOR.utils.discount_scripts import run_discount_checks
 from TUTOR.utils.mail import send_student_pay_for_course_email, send_tutor_course_start_email, send_student_course_join_email, send_student_course_ended_email, send_tutor_course_ended_email, send_student_course_start_email, send_student_course_canceled_email, send_tutor_course_canceled_email, send_denied_leave_request_email, send_student_leave_course_email
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin, current_user
@@ -121,6 +122,16 @@ class CourseModel(db.Model):
             return int((datetime.date(self._end_date) - datetime.date(self._start_date)).days)
         else:
             return self._period
+
+    def price_for_student(self, student):
+        discount_percentage = run_discount_checks(student, self)
+        finale_price = self.price - ((self.price * discount_percentage) / 100)
+        return finale_price
+
+    def has_discount_for_student(self, student):
+        discount_price = self.price_for_student(student)
+        return True if discount_price != self.price else False
+
 
     @property
     def weekly_time_table(self):
@@ -404,7 +415,7 @@ class StudentDataModel(db.Model):
     def leave_course(self, course):
         self.courses.remove(course)
         db.session.commit()
-        send_student_leave_course_email(self, course)
+        send_student_leave_course_email(self.user, course)
 
 
 # /////////////////////////// from here i start fixing billing and POS systems ///////////////////////////

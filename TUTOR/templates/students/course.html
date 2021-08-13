@@ -41,7 +41,10 @@
 
         <div class="row justify-content-center my-row">
             <div class="col-4 my-col">
-                <h5><i class="bi bi-cash"></i> ${{ course.price }} {{ course.currency }}</h5>
+                <h5><i class="bi bi-cash"></i> ${{ course.price_for_student(current_user.student_data_mode) }} {{ course.currency }}</h5>
+                {% if course.has_discount_for_student(current_user.student_data_mode) %}
+                <h5>discounted from <i class="bi bi-cash"></i>  ${{ course.price }} {{ course.currency }}</h5>
+                {% endif %}
             </div>
             <div class="col-4 my-col">
                 <h5>عدد الكراسي الشاغرة: {{ course.empty_seats }}</h5>
