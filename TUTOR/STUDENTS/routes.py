@@ -134,9 +134,7 @@ def leave_course(course_id): # cannot leave after payment but a leave request is
             send_student_leave_request_email(current_user, course)
             return redirect(url_for("students_blueprint.my_courses")) 
         else:
-            student.courses.remove(course)
-            db.session.commit()
-            send_student_leave_course_email(current_user, course)
+            student.leave_course(course)
             redirect(url_for("students_blueprint.my_courses"))
     return redirect(url_for("students_blueprint.my_courses"))
 

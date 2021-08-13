@@ -2,7 +2,7 @@ from flask import current_app
 from flask_mail import FlaskMailUnicodeDecodeError
 from TUTOR import db, login_manager, create_app
 from TUTOR.utils.utils import get_dicts_with_key
-from TUTOR.utils.mail import send_student_pay_for_course_email, send_tutor_course_start_email, send_student_course_join_email, send_student_course_ended_email, send_tutor_course_ended_email, send_student_course_start_email, send_student_course_canceled_email, send_tutor_course_canceled_email, send_denied_leave_request_email
+from TUTOR.utils.mail import send_student_pay_for_course_email, send_tutor_course_start_email, send_student_course_join_email, send_student_course_ended_email, send_tutor_course_ended_email, send_student_course_start_email, send_student_course_canceled_email, send_tutor_course_canceled_email, send_denied_leave_request_email, send_student_leave_course_email
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin, current_user
 from datetime import date, datetime, timedelta
@@ -401,6 +401,11 @@ class StudentDataModel(db.Model):
     def age(self):
         return int((datetime.date(datetime.utcnow()) - datetime.date(self.date_of_birth)).days / 365)
 
+    def leave_course(self, course):
+        self.courses.remove(course)
+        db.session.commit()
+        send_student_leave_course_email(self, course)
+
 
 # /////////////////////////// from here i start fixing billing and POS systems ///////////////////////////
 
@@ -664,7 +669,11 @@ class AdminstrationStorageModel(db.Model): # in this model i'll try the other be
             leave_request = self.get_leave_request_for_course(student_id, course_id)
             if leave_request["status"] != "accepted":
                 self.change_leave_request_status(student_id, course_id, "accepted")
-                CourseModel.query.get(course_id).payment_model.refund(StudentDataModel.query.get(student_id))
+                course = CourseModel.query.get(course_id)
+                student = StudentDataModel.query.get(student_id)
+                course.payment_model.refund(student)
+                student.leave_course(course)
+
 
     def change_leave_request_status(self, student_id,  course_id, status):
         leave_requests = self.leave_requests
