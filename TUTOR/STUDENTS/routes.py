@@ -3,7 +3,7 @@ from flask_login import current_user, login_user, logout_user
 from TUTOR import db, bcrypt
 from TUTOR.STUDENTS.forms import StudentRegistrationForm, StudentEditProfileForm
 from TUTOR.models import UserModel, StudentDataModel, CourseModel, SiteSettingsModel
-from TUTOR.utils.mail import send_user_confirmation_email, send_student_course_join_email, send_student_leave_course_email, send_student_pay_for_course_email, send_tutor_course_start_email
+from TUTOR.utils.mail import send_user_confirmation_email, send_student_course_join_email, send_student_leave_course_email, send_student_pay_for_course_email, send_tutor_course_start_email, send_student_leave_request_email
 from TUTOR.utils.utils import generate_random_digits, login_required, put_current_choice_first
 from TUTOR.utils.languages import LngObj
 from TUTOR.settings import LANGUAGES, ADMIN_TYPES
@@ -126,16 +126,18 @@ def join_course(course_id):
 @students_blueprint.route("/students/courses/leave-course/<course_id>", methods=["GET"])
 @login_required(["student"])
 def leave_course(course_id): # cannot leave after payment but a leave request is put to be revised by admins and if admin agrees payment is refunded
-    student_data_model = current_user.student_data_model
+    student = current_user.student_data_model
     course = CourseModel.query.get(course_id)
-    #if student.has_paid:
-        # put leave request to admins 
-        # return redirect(url_for("students_blueprint.my_courses")) 
-    # else:
-    student_data_model.courses.remove(course)
-    db.session.commit()
-    send_student_leave_course_email(current_user, course)
-    #send email with
+    if course.has_student(student):
+        if course.payment_model.is_paid_student(student.id):
+            course.put_leave_request(student.id)
+            send_student_leave_request_email(current_user, course)
+            return redirect(url_for("students_blueprint.my_courses")) 
+        else:
+            student.courses.remove(course)
+            db.session.commit()
+            send_student_leave_course_email(current_user, course)
+            redirect(url_for("students_blueprint.my_courses"))
     return redirect(url_for("students_blueprint.my_courses"))
 
 

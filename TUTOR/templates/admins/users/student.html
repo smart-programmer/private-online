@@ -27,7 +27,7 @@
 
         <h2>Courses joined</h2>
         {% for course in user.student_data_model.courses %}
-            <a href="{{ url_for('courses_blueprint.course', course_id=course.id) }}">{{ course.name }}</a>
+            <a href="{{ url_for('courses_blueprint.course', course_id=course.id) }}">{{ course.name }}</a> :{% if course.payment_model.is_paid_student(user.student_data_model.id) %} paid student {% else %} non paid{% endif %}
         {% endfor %}
     
       

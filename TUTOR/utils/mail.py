@@ -75,6 +75,7 @@ def send_student_course_join_email(user, course):
 	'''
 	mail.send(msg)
 
+
 def send_student_leave_course_email(user, course):
 	#send mail
 
@@ -175,3 +176,26 @@ def send_tutor_accepted_email(tutor):
 
 	'''
 	mail.send(msg)
+
+
+def send_denied_leave_request_email(user, course):
+	string = """HLTC course"""
+	msg = MailMessage(string, sender="Horizon Light Training Centre", 
+	recipients=[user.email])
+	msg.body = f'''Hello {user.full_name} we're soory to tell you
+	that your request to leave the course {course.name} was denied
+
+	'''
+	mail.send(msg)
+
+
+def send_student_leave_request_email(user, course):
+	string = """HLTC course"""
+	msg = MailMessage(string, sender="Horizon Light Training Centre", 
+	recipients=[user.email])
+	msg.body = f'''Hello {user.full_name} we've recived your leave request
+	for the course {course.name} we'll get back to you soon on it
+
+	'''
+	mail.send(msg)
+

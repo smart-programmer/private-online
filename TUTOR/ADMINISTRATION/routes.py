@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, make_r
 from flask_login import current_user, login_user, logout_user
 from TUTOR import db, bcrypt
 from TUTOR.ADMINISTRATION.forms import AdminRegistrationForm, AdminCourseCreationForm
-from TUTOR.models import TutorDataModel, UserModel, AdminDataModel, CourseModel, SiteSettingsModel
+from TUTOR.models import StudentDataModel, TutorDataModel, UserModel, AdminDataModel, CourseModel, SiteSettingsModel, PaymentModel, AdminstrationStorageModel
 from TUTOR.utils.mail import send_user_confirmation_email, send_user_reset_password_email, send_user_change_password_email, send_email_change_request_email, send_deny_email_change_email, send_tutor_accepted_email
 from TUTOR.utils.utils import save_image_locally, delete_image, generate_random_digits, login_required, list_to_select_compatable_tuple, json_list_to_select_compatable_tuple
 from TUTOR.settings import ADMIN_TYPES, LANGUAGES
@@ -119,6 +119,8 @@ def add_course():
          _period=period, course_type=course_type, subject=subject, _start_date=start_date, _end_date=end_date, 
          weekly_time_table_json=weekly_time_table_json, links=link)
         db.session.add(course)
+        payment_model = PaymentModel(course=course)
+        db.session.add(payment_model)
         db.session.commit()
         return redirect(url_for("courses_blueprint.courses"))
     return render_template("admins/create_course.html", form=form)
@@ -169,7 +171,7 @@ def change_site_settings(): # there should be a
     return redirect(url_for("admins_blueprint.control_panel", vlaue=value))
 
 
-@admins_blueprint.route("/admins/accept_tutor/<tutor_id>", methods=["GET"])
+@admins_blueprint.route("/admins/accept-tutor/<tutor_id>", methods=["GET"])
 @login_required(ADMIN_TYPES)
 def accept_tutor(tutor_id): # admin only
     tutor = TutorDataModel.query.get(tutor_id)
@@ -177,6 +179,32 @@ def accept_tutor(tutor_id): # admin only
     db.session.commit()
     send_tutor_accepted_email(tutor)
     return redirect(url_for('admins_blueprint.user_detailed_view', user_id=tutor.user.id))
+
+@admins_blueprint.route("/admins/leave-requests", methods=["GET"])
+@login_required(ADMIN_TYPES)
+def requests_list(): # admin only
+    storage = AdminstrationStorageModel.instance()
+    new_leave_requests = {}
+    if storage.has_leave_requests():
+        leave_requests = storage.leave_requests
+        for student_id in leave_requests: #'{"student_id": [{"course_id": ..., "date": ..., "status": "pending"/"accepted"/"denied"}, {}], ....}'
+            new_leave_requests[StudentDataModel.query.get(int(student_id))] = leave_requests[student_id] # change key to student pointer
+            # change courses id's to courses pointers
+            for student in new_leave_requests:
+                for i, request in enumerate(new_leave_requests[student]):
+                    new_leave_requests[student][i] = {"course": CourseModel.query.get(new_leave_requests[student][i].get("course_id")), "date": new_leave_requests[student][i].get("date"), "status": new_leave_requests[student][i].get("status")} 
+    return render_template("admins/leave_requests.html", requests=new_leave_requests)
+
+
+@admins_blueprint.route("/admins/reply-leave-request/<reply>/<student_id>/<course_id>", methods=["GET"])
+@login_required(ADMIN_TYPES)
+def reply_to_leave_request(reply, student_id, course_id): # admin only
+    storage = AdminstrationStorageModel.instance()
+    if reply == "accept":
+        storage.accept_leave_request(student_id, course_id)
+    elif reply == "deny":
+        storage.deny_leave_request(student_id, course_id)
+    return redirect(url_for('admins_blueprint.requests_list'))
 
 # @admins_blueprint.route("/admins/profile", methods=["GET"])
 # @login_required([i for i in ADMIN_TYPES])

@@ -1,10 +1,11 @@
 from flask import current_app
+from flask_mail import FlaskMailUnicodeDecodeError
 from TUTOR import db, login_manager, create_app
 from TUTOR.utils.utils import get_dicts_with_key
-from TUTOR.utils.mail import send_student_pay_for_course_email, send_tutor_course_start_email, send_student_course_join_email, send_student_course_ended_email, send_tutor_course_ended_email, send_student_course_start_email, send_student_course_canceled_email, send_tutor_course_canceled_email
+from TUTOR.utils.mail import send_student_pay_for_course_email, send_tutor_course_start_email, send_student_course_join_email, send_student_course_ended_email, send_tutor_course_ended_email, send_student_course_start_email, send_student_course_canceled_email, send_tutor_course_canceled_email, send_denied_leave_request_email
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin, current_user
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 import json
 
 @login_manager.user_loader
@@ -293,7 +294,7 @@ class CourseModel(db.Model):
 
     def add_student(self, student):
         student.courses.append(self)
-        self.payment_model.add_student(student)
+        self.payment_model.add_student(student.id)
         send_student_course_join_email(student.user, self)
         db.session.commit()
 
@@ -324,8 +325,13 @@ class CourseModel(db.Model):
     def endable(self):
         return True if "end" in self.state["allowed_actions"] else False
 
-    # def remove_action(self, action_name):
-    #     self.state[]
+
+    def show_leave_request_button(self, student_id):
+        return True if AdminstrationStorageModel.instance().eligible_to_add_leave_request(student_id, self.id) else False
+    
+    def put_leave_request(self, student_id):
+        AdminstrationStorageModel.instance().add_leave_request(student_id, str(self.id))
+
 
     # ////////////////////////////////// from here i stop fixing //////////////////////////////
 
@@ -400,22 +406,25 @@ class StudentDataModel(db.Model):
 
 class PaymentModel(db.Model): # a payment class for each course to register course transactions and payment data
     id = db.Column(db.Integer, primary_key=True)
-    _transactions_objet = db.Column(db.String(), nullable=False, default="{}") # {"student1_id": [{payment: {date: ..., amount:..., currency:...}}, {refund: ...}], "student2_id": ...}
+    _transactions_object = db.Column(db.String(), nullable=False, default="{}") # {"student1_id": [{payment: {date: ..., amount:..., currency:...}}, {refund: ...}], "student2_id": ...}
     last_payment_date = db.Column(db.DateTime, nullable=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course_model.id'))   
     creation_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     @property
-    def transactions_objet(self):
-        if self._transactions_objet:
-            return json.loads(self._transactions_objet)
+    def transactions_object(self):#transactions_object
+        if self._transactions_object:
+            return json.loads(self._transactions_object)
         else:
             return None
 
-    def pay(self, student, price, currency): # if student eligibal to pay then pay course amount using payment gateway api then register payment
-        # the pay method can't be implemented yet as it rely on the api heavily 
-        # gateway_api.pay(student.account, price, currency)
-        self.register_payment(student.id, price, currency)
+    # revisit after discount system
+    def pay(self, student, price, currency): # if student eligibal to pay then pay course amount using payment gateway api considering discounts then register payment
+        self.add_student(student.id)
+        if not self.is_paid_student(student.id):
+            # the pay method can't be implemented yet as it rely on the api heavily 
+            # gateway_api.pay(student.account, price, currency)
+            self.register_payment(student.id, price, currency)
         return price, currency
             
 
@@ -434,40 +443,40 @@ class PaymentModel(db.Model): # a payment class for each course to register cour
 
     def register_payment(self, student_id, amount, currency):
         current_date = datetime.date(datetime.utcnow())
-        new_obj = self.transactions_objet
-        new_obj[student_id].append({"payment": {"date": current_date, "amount": amount, "currency": currency}})
-        self._transactions_objet = json.dumps(new_obj)
+        new_obj = self.transactions_object
+        new_obj[str(student_id)].append({"payment": {"date": str(current_date), "amount": amount, "currency": currency}})
+        self._transactions_object = json.dumps(new_obj)
         self.last_payment_date = current_date
         db.session.commit()
         
     def register_refund(self, student_id, amount, currency):
-        new_obj = self.transactions_objet
-        new_obj[student_id].append({"refund": {"date": datetime.date(datetime.utcnow()), "amount": amount, "currency": currency}})
-        self._transactions_objet = json.dumps(new_obj)
+        new_obj = self.transactions_object
+        new_obj[str(student_id)].append({"refund": {"date": str(datetime.date(datetime.utcnow())), "amount": amount, "currency": currency}})
+        self._transactions_object = json.dumps(new_obj)
         db.session.commit()
 
     def add_student(self, student_id):
         if not self.exists(student_id):
-            new_obj = self.transactions_objet
-            new_obj[student_id] = []
-            self._transactions_objet = json.dumps(new_obj)
+            new_obj = self.transactions_object
+            new_obj[str(student_id)] = []
+            self._transactions_object = json.dumps(new_obj)
             db.session.commit()
 
     def remove_student(self, student_id):
         if self.exists(student_id):
-            new_obj = self.transactions_objet
-            new_obj.pop(student_id, None)
-            self._transactions_objet = json.dumps(new_obj)
+            new_obj = self.transactions_object
+            new_obj.pop(str(student_id), None)
+            self._transactions_object = json.dumps(new_obj)
             db.session.commit()
 
     def exists(self, student_id):
-        return True if student_id in self.transactions_objet.keys() else False
+        return True if str(student_id) in self.transactions_object.keys() else False
 
     def get_student_payments(self, student):
-        get_dicts_with_key(self.transactions_objet[student.user.id], "payment")
+        get_dicts_with_key(self.transactions_object[str(student.id)], "payment")
 
     def get_student_refunds(self, student):
-        get_dicts_with_key(self.transactions_objet[student.user.id], "refund")
+        get_dicts_with_key(self.transactions_object[str(student.id)], "refund")
 
     @property
     def last_payment_period(self):
@@ -479,7 +488,7 @@ class PaymentModel(db.Model): # a payment class for each course to register cour
     def students_paid(self): # returns student_data_models whod paid for the course and not refunded
         # loop through each student transactions if last transaction was payment then put student in list
         students_list = []
-        for student_id in self.transactions_objet:
+        for student_id in self.transactions_object:
             if self.is_paid_student(student_id):
                 students_list.append(StudentDataModel.query.get(student_id))
         return students_list
@@ -499,14 +508,14 @@ class PaymentModel(db.Model): # a payment class for each course to register cour
 
     def is_paid_student(self, student_id): # return true if last transaction is payment
         if self.exists(student_id):
-            last_transaction_dict = self.transactions_objet[student_id][-1] # no need for try catch bcz there always be at least 1 transaction type the first payment when the student joins
+            last_transaction_dict = self.transactions_object[str(student_id)][-1] # no need for try catch bcz there always be at least 1 transaction type the first payment when the student joins
             return True if self.is_payment_dict(last_transaction_dict) else False
         return False
 
     def price_paid_and_currency(self, student_id):
         if self.is_paid_student(student_id):
-            payment_transaction_dict = self.transactions_objet[student_id][-1]
-            return payment_transaction_dict["amount"], payment_transaction_dict["currency"]
+            payment_transaction_dict = self.transactions_object[str(student_id)][-1]
+            return payment_transaction_dict["payment"]["amount"], payment_transaction_dict["payment"]["currency"]
         return 0, 0
                 
 
@@ -585,3 +594,94 @@ class SiteSettingsModel(db.Model):
 
 
 # ///////////////////////////////// from here i stop fixing settings model //////////////////////////////////////
+
+
+
+class AdminstrationStorageModel(db.Model): # in this model i'll try the other behaviour that i could've made for the settings model which is instead of alll settings in 1 string i make a field for each setting which doesn't limit the type of data i put in those field but makes me remake the database each time i add something and instead of add makng methods for types of data i make methods for each field
+    id = db.Column(db.Integer, primary_key=True)
+    _leave_requests = db.Column(db.String(), nullable=False, default="{}") # '{"student_id": [{"course_id": ..., "date": ..., "status": "pending"/"accepted"/"denied"}, {}], ....}'
+    # consider adding leave requests to course model which will mean leav requests will be deleted when course deleted
+
+    @property
+    def leave_requests(self):
+        return json.loads(self._leave_requests)
+
+    def has_leave_requests(self):
+        return True if len(self.leave_requests) > 0 else False
+
+    def has_leave_request_list(self, student_id):
+        return True if str(student_id) in self.leave_requests else False
+
+    def get_leave_request_list(self, student_id):
+        return self.leave_requests[str(student_id)] if self.has_leave_request_list(student_id) else []
+
+    def has_leave_request_for_course(self, student_id, course_id):
+        leave_request_list = self.get_leave_request_list(student_id)
+        if len(leave_request_list) > 0:
+            for request in leave_request_list:
+                if request.get("course_id") == str(course_id):
+                    return True
+
+        return False
+
+    def get_leave_request_for_course(self, student_id, course_id):
+        if self.has_leave_request_for_course(student_id, course_id):
+            leave_request_list = self.get_leave_request_list(student_id)
+            for request in leave_request_list:
+                if request.get("course_id") == str(course_id):
+                    return request
+
+    def eligible_to_add_leave_request(self, student_id, course_id): # if deosn't already has leave request for course and is joined in course and has paid for course
+        course = CourseModel.query.get(course_id)
+        student = StudentDataModel.query.get(student_id)
+        if course in student.courses:
+            if course.payment_model.is_paid_student(student.id):
+                if not self.has_leave_request_for_course(student.id, course_id):
+                    return True 
+
+        return False 
+
+    def add_leave_request(self, student_id, course_id):
+        if self.eligible_to_add_leave_request(student_id, course_id):
+            if self.has_leave_request_list(student_id):
+                new_obj = self.leave_requests
+                today_date = datetime.date(datetime.utcnow())
+                new_obj[str(student_id)].append({"course_id": str(course_id), "date": str(today_date), "status": "pending"})
+                self._leave_requests = json.dumps(new_obj)
+                db.session.commit()
+            else:
+                new_obj = self.leave_requests
+                today_date = datetime.date(datetime.utcnow())
+                new_obj[str(student_id)] = []
+                new_obj[str(student_id)].append({"course_id": str(course_id), "date": str(today_date), "status": "pending"})
+                self._leave_requests = json.dumps(new_obj)
+                db.session.commit()
+                
+        return False
+
+    def accept_leave_request(self, student_id, course_id):
+        if self.has_leave_request_for_course(student_id, course_id):
+            leave_request = self.get_leave_request_for_course(student_id, course_id)
+            if leave_request["status"] != "accepted":
+                self.change_leave_request_status(student_id, course_id, "accepted")
+                CourseModel.query.get(course_id).payment_model.refund(StudentDataModel.query.get(student_id))
+
+    def change_leave_request_status(self, student_id,  course_id, status):
+        leave_requests = self.leave_requests
+        for request in leave_requests[str(student_id)]: #{"student_id": [{"course_id": ..., "date": ..., "status": "pending"/"accepted"/"denied"}, {}], ....}
+            if request.get("course_id") == str(course_id):
+                request["status"] = status
+        self._leave_requests = json.dumps(leave_requests)
+        db.session.commit()
+
+    def deny_leave_request(self, student_id, course_id):
+        if self.has_leave_request_for_course(student_id, course_id):
+            leave_request = self.get_leave_request_for_course(student_id, course_id)
+            if leave_request["status"] != "denied":
+                self.change_leave_request_status(student_id, course_id, "denied")
+                send_denied_leave_request_email(StudentDataModel.query.get(student_id).user, CourseModel.query.get(course_id))
+
+    @classmethod
+    def instance(cls):
+        return cls.query.get(1)
+

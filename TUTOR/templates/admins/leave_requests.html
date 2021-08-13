@@ -1,0 +1,23 @@
+{% extends "template.html" %}
+
+{% block title %} Home admins{% endblock %}
+{% block content %}
+    <center>
+        <h1 style="color: orange;">{{ get_language_text('test_translation', get_current_page_language_list()) }}</h1>
+    </center>
+    <br><br><br>
+
+       {% include "snippets/language_select.html" %}
+
+    <br>
+    {% for student in requests %}
+        {{ student.user.full_name }}
+        <br> 
+        {% for request in requests.get(student) %}
+        course name: <a href="{{ url_for('courses_blueprint.course', course_id=request.get('course').id) }}">{{ request.get("course").name }}</a>, request date: {{ request.get("date") }}, request status: {{ request.get("status") }} 
+        <a href="{{ url_for('admins_blueprint.reply_to_leave_request', reply='accept', student_id=student.id, course_id=request.get('course').id) }}"><button>accept</button></a> or <a href="{{ url_for('admins_blueprint.reply_to_leave_request', reply='deny', student_id=student.id, course_id=request.get('course').id) }}"><button>deny</button></a>
+        <br>
+        {% endfor %}
+        <br><br><br>
+    {% endfor %}
+{% endblock %}
