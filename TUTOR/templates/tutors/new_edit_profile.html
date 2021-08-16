@@ -1,0 +1,200 @@
+{% extends "template.html" %}
+
+{% block title %} Register Tutor{% endblock %}
+
+{% block content %}
+<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tutors/registrationForm.css') }}">
+
+<div class="container parent-cont">
+    <div class="row justify-content-center parent-row">
+
+    <div class="col-sm-8 parent-col">
+
+    <form action="" method="POST" enctype="multipart/form-data" id="form" class="container my-cont" onsubmit="DoSubmit()">
+        {{ form.hidden_tag() }}
+
+        <div class="form-fields-wrapper">
+
+            <div class="form-row my-row">
+                <div class='col-12'>
+                    <h1 id="title">
+                        عدل معلوماتك
+                    </h1>
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6 my-col">
+                    <label for="{{ form.first_name.id }}">الاسم الأول</label>
+                    {{ form.first_name(class="form-control") }}
+                </div>
+                
+                <div class="form-group col-sm-6 my-col">
+                    <label for="{{ form.last_name.id }}">الاسم الاخير</label>
+                    {{ form.last_name(class="form-control") }}
+                </div>
+            </div>
+    
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6 my-col">
+                    <label for="{{ form.username.id }}">اسم المستخدم</label>
+                    {{ form.username(class="form-control") }}
+                </div>
+                
+                <div class="form-group col-sm-6 my-col">
+                    <label for="{{ form.email.id }}">الايميل</label>
+                    {{ form.email(class="form-control") }}
+                </div>
+            </div>
+    
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6 my-col">
+                    <label for="{{ form.date_of_birth.id }}">تاريخ الميلاد</label>
+                    {{ form.date_of_birth(class="form-control") }}
+                </div>
+                
+                <div class="form-group col-sm-6 my-col">
+                    <label for="{{ form.gender.id }}">الجنس</label>
+                    {{ form.gender(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.nationality.id }}">الجنسية</label>
+                    {{ form.nationality(class="form-control") }}
+                </div>
+                
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.qualification.id }}">المؤهل</label>
+                    {{ form.qualification(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.major.id }}">التخصص</label>
+                    {{ form.major(class="form-control") }}
+                </div>
+                
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.current_job.id }}">الوظيفة الحالية</label>
+                    {{ form.current_job(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.years_of_experience.id }}">سنوات الخبرة</label>
+                    {{ form.years_of_experience(class="form-control") }}
+                </div>
+
+                <div class="form-group col-sm-6 my-col">
+                <label class="col my-col">المواد التي ترغب بتدريسها</label>
+            <div id="list1" class="dropdown-check-list" tabindex="100">
+                <span class="anchor">المواد التي ترغب بتدريسها</span>
+                <ul class="items">
+                    {% for subject in settings.subjects.setting_value %}
+                        <li><input type="checkbox" name="{{subject}}" value="{{subject}}" id="checkbox-subject"/> {{subject}} </li>
+                    {% endfor %}
+                </ul>
+              </div>
+            </div>
+            {{ form.subjects(hidden="True") }}
+            {% for error in form.subjects.errors %}
+                    <h3 style="color: red;">error in field: {{ error }}</h3> 
+                 {% endfor %}
+            </div>
+
+
+            <div class="form-row my-row">
+               
+                <div class="form-group col-sm-3 my-col">
+                    <ul id="tools_ul"> 
+            
+                    </ul>
+                </div>
+              
+            </div>
+
+            <div class="form-row my-row">
+                <label for="{{ form.tools_used_for_online_tutoring.id }}" class="col my-col">الادوات المستخدمة في التدريس</label>
+                <div class="form-group col-sm-6 my-col">
+                    {{ form.tools_used_for_online_tutoring(id="tools", class="form-control") }} 
+                </div>
+                {% for error in form.tools_used_for_online_tutoring.errors %}
+                    <h3 style="color: red;">error in field: {{ error }}</h3> 
+                 {% endfor %}
+                
+                <div class="form-group col-sm-3 my-col">
+                    <input type="button" value="أضف اداة" class="btn btn-dark" onclick="populate_list_with_text('tools', 'tools_ul')">
+                </div>
+            </div>
+
+
+            <div class="form-row my-row">
+                <div class='col-12'>
+                    {{ form.submit(class="btn btn-primary submit", value="عدل") }}
+                </div>
+            </div>
+            <a href="{{ url_for('users_blueprint.change_password') }}">change password</a>
+        
+        {% for error in form.errors %}
+            <h3 style="color: red;">error in field: {{ error }}</h3> 
+        {% endfor %}
+    </div>
+    </form>
+</div>
+</div>
+</div>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}">
+    </script>
+    <script>
+        // $(document).ready(function(){
+            function DoSubmit(){
+                form = document.getElementById("form")
+
+                subjects_array_from_database = "{% for i in settings.subjects.setting_value%}{{ i }} {% endfor %}".split(" ")
+                subjects_node_list = document.querySelectorAll('.items>li>input');
+                subjects_checked_list = []
+                for (subject of subjects_node_list){
+                    if (subject.checked){
+                        subjects_checked_list.push(subject.value)
+                    }
+                }
+                alert(subjects_checked_list)
+                form.subjects.value = JSON.stringify(subjects_checked_list)
+
+                tools_array = []
+                Array.from(document.querySelectorAll('#tools_ul>li'), li => tools_array.push(li.textContent))
+                form.tools_used_for_online_tutoring.value = JSON.stringify(tools_array)
+
+                return true
+
+                }
+
+                tutor_subjects_array_from_database = "{% for subject in current_user.tutor_data_model.subjects %}{{ subject }} {% endfor %}".split(" ")
+                subjects_node_list = document.querySelectorAll('.items>li>input');
+                for (tutor_subject of tutor_subjects_array_from_database){
+                    // grab input with the same and check it
+                    for (input of subjects_node_list){
+                        if (input.name == tutor_subject){
+                            input.checked = true;
+                        }
+                    }
+                }
+            
+
+                var checkList = document.getElementById('list1');
+                checkList.getElementsByClassName('anchor')[0].onclick = function(evt) {
+                if (checkList.classList.contains('visible'))
+                    checkList.classList.remove('visible');
+                else
+                    checkList.classList.add('visible');
+        }
+    // });
+    </script>
+       
+{% endblock %}

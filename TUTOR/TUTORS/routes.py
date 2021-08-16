@@ -3,7 +3,7 @@ from flask_login import current_user, login_user, logout_user
 from TUTOR import db, bcrypt
 from TUTOR.TUTORS.forms import TutorRegistrationForm, TutorEditProfileForm, CourseCreationForm
 from TUTOR.models import UserModel, TutorDataModel, CourseModel, SiteSettingsModel, PaymentModel
-from TUTOR.utils.mail import send_user_confirmation_email
+from TUTOR.utils.mail import send_user_confirmation_email, send_email_change_request_email
 from TUTOR.utils.utils import generate_random_digits, login_required, put_current_choice_first, list_to_select_compatable_tuple, json_list_to_select_compatable_tuple
 from TUTOR.utils.languages import LngObj
 from TUTOR.settings import LANGUAGES, ADMIN_TYPES
@@ -72,7 +72,7 @@ def register(): # create an email and add email verification functionality
 @tutors_blueprint.route("/tutors/profile", methods=["GET", "POST"])
 @login_required(["tutor"])
 def profile():
-    return render_template("tutors/tutor_profile.html")
+    return render_template("tutors/new_profile.html")
 
 
 @tutors_blueprint.route("/tutors/profile/edit", methods=["GET", "POST"])
@@ -121,7 +121,7 @@ def edit_profile():
         form.years_of_experience.data = current_user.tutor_data_model.years_of_experience
         form.gender.choices = put_current_choice_first(form.gender.choices, str(int(current_user._gender)))
 
-    return render_template('tutors/edit_tutor_profile.html', form=form)  
+    return render_template('tutors/new_edit_profile.html', form=form)  
 
 
 
