@@ -10,6 +10,19 @@
 
 <div class="container">
     <div class="main-body">
+      <div class="row justify-content-center">
+        <div class="col-sm-7 my-col">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+             {% for category, message in messages %}
+             <div class="alert alert-{{ category }}">
+              {{ message }}
+             </div>
+             {% endfor %}
+          {% endif %}
+       {% endwith %}
+        </div>
+    </div>
     
           <!-- Breadcrumb -->
           <!-- /Breadcrumb -->
@@ -19,13 +32,18 @@
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex flex-column align-items-center text-center">
-                    {% if current_user._gender  %}
+                    {% if user._gender  %}
                     <img src="{{ url_for('static', filename='images/male_student.png') }}" alt="Admin" class="rounded-circle" width="150">
                     {% else %}
-                    <img src="{{ url_for('static', filename='images/female_student.png') }}" alt="Admin" class="rounded-circle" width="150">
+                    <img src="{{ url_for('static', filename='images/female_tutor.jpg') }}" alt="Admin" class="rounded-circle" width="150">
                     {% endif %}
                     <div class="mt-3">
-                      <h4>{{ current_user.username }}</h4>
+                      <h4>{{ user.username }}</h4>
+                      {% if user.tutor_data_model.is_accepted %}
+                      <span class="badge bg-success">مقبول</span>
+                      {% else %}
+                      <span class="badge bg-secondary">تحت المراجعة</span>
+                      {% endif %}
                       <!-- <p class="text-secondary mb-1">Full Stack Developer</p>
                       <p class="text-muted font-size-sm">Bay Area, San Francisco, CA</p>
                       <button class="btn btn-primary">Follow</button>
@@ -67,7 +85,7 @@
                       <h6 class="mb-0">الاسم</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      {{ current_user.full_name }}
+                      {{ user.full_name }}
                     </div>
                   </div>
                   <hr>
@@ -76,7 +94,7 @@
                       <h6 class="mb-0">البريد الالكتروني</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      {{ current_user.email }}
+                      {{ user.email }}
                     </div>
                   </div>
                   <hr>
@@ -85,7 +103,7 @@
                       <h6 class="mb-0">العمر</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      {{ current_user.student_data_model.age }}
+                      {{ user.tutor_data_model.age }}
                     </div>
                   </div>
                   <hr>
@@ -94,74 +112,87 @@
                       <h6 class="mb-0">الجنس</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                      {{ current_user.gender }}
+                      {{ user.gender }}
                     </div>
                   </div>
                   <hr>
                   <div class="row">
-                    <div class="col-sm-12">
-                      <a class="btn btn-info " href="{{ url_for('students_blueprint.edit_profile') }}">عدل</a>
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">الجنسية</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ user.tutor_data_model.nationality }}
                     </div>
                   </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">المؤهل</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ user.tutor_data_model.qualification }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">التخصص</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ user.tutor_data_model.major }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">الوظيفة الحالية</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ user.tutor_data_model.current_job }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">سنوات الخبرة</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ user.tutor_data_model.years_of_experience }}
+                    </div>
+                  </div>
+                  <hr>
+    
                 </div>
               </div>
 
-              <!-- <div class="row gutters-sm">
+              <div class="row gutters-sm">
                 <div class="col-sm-6 mb-3">
-                  <div class="card h-100">
-                    <div class="card-body">
-                      <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
-                      <small>Web Design</small>
-                      <div class="progress mb-3" style="height: 5px">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <small>Website Markup</small>
-                      <div class="progress mb-3" style="height: 5px">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <small>One Page</small>
-                      <div class="progress mb-3" style="height: 5px">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <small>Mobile Template</small>
-                      <div class="progress mb-3" style="height: 5px">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <small>Backend API</small>
-                      <div class="progress mb-3" style="height: 5px">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </div>
-                  </div>
+                    <ul class="list-group">
+                        <li class="list-group-item active" aria-current="true"><center>المواد</center></li>
+                        {% for subject in user.tutor_data_model.subjects %}
+                        <li class="list-group-item">{{ subject }}</li>
+                        {% endfor %}
+                      </ul>
                 </div>
                 <div class="col-sm-6 mb-3">
-                  <div class="card h-100">
-                    <div class="card-body">
-                      <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">assignment</i>Project Status</h6>
-                      <small>Web Design</small>
-                      <div class="progress mb-3" style="height: 5px">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <small>Website Markup</small>
-                      <div class="progress mb-3" style="height: 5px">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <small>One Page</small>
-                      <div class="progress mb-3" style="height: 5px">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <small>Mobile Template</small>
-                      <div class="progress mb-3" style="height: 5px">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <small>Backend API</small>
-                      <div class="progress mb-3" style="height: 5px">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </div>
-                  </div>
+                    <ul class="list-group">
+                        <li class="list-group-item active" aria-current="true"><center>برامج التدريس</center></li>
+                        {% for tool in user.tutor_data_model.tools_used_for_online_tutoring %}
+                        <li class="list-group-item">{{ tool }}</li>
+                        {% endfor %}
+                      </ul>
                 </div>
-              </div> -->
+              
+              <div class="col-sm-12 mb-6">
+                <ul class="list-group">
+                    <li class="list-group-item active" aria-current="true"><center>الكورسات</center></li>
+                    {% for course in user.tutor_data_model.courses %}
+                    <center><li class="list-group-item"><a href="{{ url_for('courses_blueprint.course', course_id=course.id) }}">{{ course.name }}</a> | {{ course.state.state_string }}</li></center>
+                    {% endfor %}
+                  </ul>
+            </div>
+        </div>
+            
 
 
 
@@ -170,5 +201,5 @@
 
         </div>
     </div>
-    <br><br><br><br><br><br><br><br>
+    <br><br><br><br>
 {% endblock %}

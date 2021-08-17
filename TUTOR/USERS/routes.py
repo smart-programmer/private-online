@@ -88,7 +88,7 @@ def request_reset_password():
         user = user if user else UserModel.query.filter_by(username=username_or_email).first() 
         send_user_reset_password_email(user.email, user.get_reset_token())
         return redirect(url_for("users_blueprint.login"))
-    return render_template("users/request_reset_password.html", form=form)
+    return render_template("users/new_request_reset_password.html", form=form)
 
 @users_blueprint.route("/users/reset_password/<user_serialized_id>", methods=["GET", "POST"])
 def reset_password(user_serialized_id):
@@ -103,7 +103,7 @@ def reset_password(user_serialized_id):
     else:
         flash("reset token time expired, try again", "error")
         return redirect(url_for("users_blueprint.request_reset_password"))
-    return render_template("users/reset_password.html", form=form)
+    return render_template("users/new_reset_password.html", form=form)
 
 @users_blueprint.route("/users/change_password", methods=["GET", "POST"])
 @login_required([])
@@ -116,8 +116,9 @@ def change_password():
             db.session.commit()
             send_user_change_password_email(current_user.email, current_user.get_reset_token())
             flash("changing password, please wait", "info")
-            return redirect(url_for("users_blueprint.profile"))
-    return render_template("users/change_password.html", form=form)
+            logout_user()
+            return redirect(url_for("users_blueprint.login"))
+    return render_template("users/new_change_password.html", form=form)
 
 @users_blueprint.route("/users/change_email/<user_serialized_id_and_email>", methods=["GET", "POST"])
 @login_required([])

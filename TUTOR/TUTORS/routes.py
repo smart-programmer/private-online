@@ -131,7 +131,8 @@ def edit_profile():
 @login_required(["tutor"])
 def add_course():
     if not CourseModel.is_allowed_to_create_course(current_user):
-        return current_app.login_manager.unauthorized()
+        flash("ليس مسموح لك بإنشاء دورات. اذا كنت معلم مقبول في المنصة تواصل مع المدير لانشاء دورة", "warning")
+        return redirect(url_for("tutors_blueprint.profile"))
 
     form = CourseCreationForm()
     form.subject.choices = json_list_to_select_compatable_tuple(current_user.tutor_data_model.subjects)

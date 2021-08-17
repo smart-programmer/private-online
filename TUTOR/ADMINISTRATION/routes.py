@@ -139,11 +139,11 @@ def user_detailed_view(user_id): # admin only
     user = UserModel.query.get(user_id)
     user_type = user.user_type
     if user_type == "tutor":
-        return render_template("admins/users/tutor.html", user=user)
+        return render_template("admins/users/new_tutor.html", user=user)
     elif user_type == "student":
-        return render_template("admins/users/student.html", user=user)
+        return render_template("admins/users/new_student.html", user=user)
     elif user_type in ADMIN_TYPES:
-        return render_template("admins/users/admin.html", user=user)
+        return render_template("admins/users/new_admin.html", user=user)
 
 
 @admins_blueprint.route("/admins/change-site-settings")

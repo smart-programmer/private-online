@@ -1,10 +1,29 @@
 {% extends "template.html" %}
-
+{% with messages = get_flashed_messages() %}
+   {% if messages %}
+      {% for message in messages %}
+         {{ message }}
+      {% endfor %}
+   {% endif %}
+{% endwith %}
 {% block title %} Home {% endblock %}
 {% block content %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 
     <div class="container-fluid parent-container">
+      <div class="row justify-content-center my-row">
+        <div class="col-sm-7 my-col">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+             {% for category, message in messages %}
+             <div class="alert alert-{{ category }}">
+              {{ message }}
+             </div>
+             {% endfor %}
+          {% endif %}
+       {% endwith %}
+        </div>
+    </div>
         <div class="row justify-content-center parent-row">
             <div class="col parent-col">
                 <div class="container">
