@@ -41,10 +41,6 @@ def email_confirmation():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("main_blueprint.home"))
-    
-    redirected = request.args.get("redirected")
-    if redirected == "wrong":
-        flash("wrong credentials, please try again.", "error")
 
     form = LoginForm()
 
@@ -66,8 +62,10 @@ def login():
                         default_page = url_for("admins_blueprint.control_panel")
                     return redirect(next_page) if next_page else redirect(default_page)
                 else:
+                    flash("لست مستخدم مؤكد, من فضلك أكد بريدك الالكتروني", "warning")
                     return redirect(url_for("users_blueprint.login", redirected="not_confirmed"))
             else:
+                flash("معلومات تسجيل الدخول خاطئة, الرجاء المحاولة مجددا", "danger")
                 return redirect(url_for("users_blueprint.login", redirected="wrong"))
         else:
             return redirect(url_for("users_blueprint.login", redirected="wrong"))

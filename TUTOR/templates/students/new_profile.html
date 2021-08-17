@@ -10,6 +10,20 @@
 
 <div class="container">
     <div class="main-body">
+
+      <div class="row justify-content-center">
+        <div class="col-sm-7 my-col">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+             {% for category, message in messages %}
+             <div class="alert alert-{{ category }}">
+              {{ message }}
+             </div>
+             {% endfor %}
+          {% endif %}
+       {% endwith %}
+        </div>
+    </div>
     
           <!-- Breadcrumb -->
           <!-- /Breadcrumb -->

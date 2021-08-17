@@ -524,7 +524,9 @@ class PaymentModel(db.Model): # a payment class for each course to register cour
 
     def is_paid_student(self, student_id): # return true if last transaction is payment
         if self.exists(student_id):
-            last_transaction_dict = self.transactions_object[str(student_id)][-1] # no need for try catch bcz there always be at least 1 transaction type the first payment when the student joins
+            try:
+                last_transaction_dict = self.transactions_object[str(student_id)][-1] # no need for try catch bcz there always be at least 1 transaction type the first payment when the student joins unless i haven't done the payment system yet
+            except: return False
             return True if self.is_payment_dict(last_transaction_dict) else False
         return False
 
