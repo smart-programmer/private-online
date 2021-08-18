@@ -1,0 +1,240 @@
+{% extends "template.html" %}
+
+{% block title %} Register Tutor{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tutors/registrationForm.css') }}">
+
+<div class="container parent-cont">
+    <div class="row justify-content-center parent-row">
+
+    <div class="col-sm-8 parent-col">
+
+    <form action="" method="POST" enctype="multipart/form-data" id="form" class="container my-cont" onsubmit="DoSubmit()">
+        {{ form.hidden_tag() }}
+
+        <div class="form-fields-wrapper">
+
+            <div class="form-row my-row">
+                <div class='col-12'>
+                    <h1 id="title">
+                        انشئ دورة
+                    </h1>
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6 my-col">
+                    <label for="{{ form.name.id }}">اسم الدورة</label>
+                    {{ form.name(class="form-control") }}
+                </div>
+            </div>
+                
+    
+            <div class="form-row my-row">
+                <div class="form-group col-sm-12 my-col">
+                    <label for="{{ form.course_type.id }}">نوع الدورة</label>
+                    {{ form.course_type(class="form-control") }}
+                </div>
+            </div>
+    
+            <div class="form-row my-row">
+                <div class="form-group col-sm-3 my-col type1">
+                    <label for="{{ form.period.id }}">مدة الدورة بالايام</label>
+                    {{ form.period(class="form-control") }}
+                </div>
+                
+                <div class="form-group col-sm-3 my-col">
+                    <label for="{{ form.subject.id }}">المادة</label>
+                    {{ form.subject(class="form-control") }}
+                </div>
+
+                <div class="form-group col-sm-3 my-col type2">
+                    <label for="{{ form.start_date.id }}">تاريخ الابتداء</label>
+                    {{ form.start_date(class="form-control") }}
+                </div>
+
+                <div class="form-group col-sm-3 my-col type2">
+                    <label for="{{ form.end_date.id }}">تاريخ الانتهاء</label>
+                    {{ form.end_date(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-3">
+                    <label for="{{ form.price.id }}">السعر</label>
+                    {{ form.price(class="form-control") }}
+                </div>
+                
+                <div class="form-group col-sm-3">
+                    <label for="{{ form.currency.id }}">العملة</label>
+                    {{ form.currency(class="form-control") }}
+                </div>
+
+                <div class="form-group col-sm-3">
+                    <label for="{{ form.min_students.id }}">اقل عدد طلاب مقبول</label>
+                    {{ form.min_students(class="form-control") }}
+                </div>
+
+                <div class="form-group col-sm-3 type2">
+                    <label for="{{ form.max_students.id }}">اكثر عدد طلاب مقبول</label>
+                    {{ form.max_students(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-12">
+                    <label for="{{ form.description.id }}">وصف الدورة</label>
+                    {{ form.description(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-8">
+                    <label for="{{ form.zoom_link.id }}">رابط زوم</label>
+                    {{ form.zoom_link(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.saturday_start.id }}">وقت بداية حصة يوم الاحد</label>
+                    {{ form.sunday_start(class="form-control") }}
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.saturday_end.id }}">وقت نهاية حصة يوم الاحد</label>
+                    {{ form.sunday_end(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.sunday_start.id }}">وقت بداية حصة يوم الاثنين</label>
+                    {{ form.monday_start(class="form-control") }}
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.sunday_end.id }}">وقت نهاية حصة يوم الاثنين</label>
+                    {{ form.monday_end(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.tuesday_start.id }}">وقت بداية حصة يوم الثلاثاء</label>
+                    {{ form.tuesday_start(class="form-control") }}
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.tuesday_end.id }}">وقت نهاية حصة يوم الثلاثاء</label>
+                    {{ form.tuesday_end(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.wednesday_start.id }}">وقت بداية حصة يوم الاربعاء</label>
+                    {{ form.wednesday_start(class="form-control") }}
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.wednesday_end.id }}">وقت نهاية حصة يوم الاربعاء</label>
+                    {{ form.wednesday_end(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.thursday_start.id }}">وقت بداية حصة يوم الخميس</label>
+                    {{ form.thursday_start(class="form-control") }}
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.thursday_end.id }}">وقت نهاية حصة يوم الخميس</label>
+                    {{ form.thursday_end(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.friday_start.id }}">وقت بداية حصة يوم الجمعة</label>
+                    {{ form.friday_start(class="form-control") }}
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.friday_end.id }}">وقت نهاية حصة يوم الجمعة</label>
+                    {{ form.friday_end(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.saturday_start.id }}">وقت بداية حصة يوم السبت</label>
+                    {{ form.saturday_start(class="form-control") }}
+                </div>
+
+                <div class="form-group col-sm-6">
+                    <label for="{{ form.saturday_end.id }}">وقت نهاية حصة يوم السبت</label>
+                    {{ form.saturday_end(class="form-control") }}
+                </div>
+            </div>
+
+               
+         
+
+            <div class="form-row my-row">
+                <div class='col-12'>
+                    {{ form.submit(class="btn btn-primary submit", value="انشئ") }}
+                </div>
+            </div>
+        
+        {% for error in form.errors %}
+            <h3 style="color: red;">error in field: {{ error }}</h3> 
+        {% endfor %}
+    </div>
+    </form>
+</div>
+</div>
+</div>
+
+{{ url_for('static', filename='js/admins/create_course.js') }}
+<script>
+    $("#course_type").change(function (){
+        if($(this).val() == "1"){
+            $(".type1").show();
+            $('input[name = "period"]').attr('required', '');
+            $('input[name = "period"]').attr('data-error', 'This field is required.');
+            $('.type2').hide();
+            $('input[name = "start_date"]').removeAttr('required');
+            $('input[name = "start_date"]').removeAttr('data-error');
+            $('input[name = "end_date"]').removeAttr('required');
+            $('input[name = "end_date"]').removeAttr('data-error');
+        }else if ($(this).val() == "2"){
+            $(".type2").show();
+            $('input[name = "start_date"]').attr('required', '');
+            $('input[name = "start_date"]').attr('data-error', 'This field is required.');
+            $('input[name = "end_date"]').attr('required', '');
+            $('input[name = "end_date"]').attr('data-error', 'This field is required.');
+            $('.type1').hide();
+            $('input[name = "period"]').removeAttr('required');
+            $('input[name = "period"]').removeAttr('data-error');
+        } else {
+            $('.type1').hide();
+            $('.type2').hide();
+            $('input[name = "period"]').attr('required', '');
+            $('input[name = "period"]').attr('data-error', 'This field is required.');
+            $('input[name = "start_date"]').attr('required', '');
+            $('input[name = "start_date"]').attr('data-error', 'This field is required.');
+            $('input[name = "end_date"]').attr('required', '');
+            $('input[name = "end_date"]').attr('data-error', 'This field is required.');
+        }
+    })
+
+    $('document').ready(function() {
+        $('.type1').hide();
+        $('.type2').hide();
+    })
+</script>
+       
+{% endblock %}

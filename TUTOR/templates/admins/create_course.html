@@ -145,6 +145,7 @@
                 $('input[name = "end_date"]').removeAttr('data-error');
             }else if ($(this).val() == "2"){
                 $("#type2").show();
+                $('#type1-max-students').show();
                 $('input[name = "start_date"]').attr('required', '');
                 $('input[name = "start_date"]').attr('data-error', 'This field is required.');
                 $('input[name = "end_date"]').attr('required', '');

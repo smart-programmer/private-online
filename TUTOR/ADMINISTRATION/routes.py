@@ -104,17 +104,20 @@ def add_course():
         end_date = form.end_date.data 
         link = form.zoom_link.data
         table = {
-            "saturday": {"from": str(form.saturday_start.data), "to": str(form.saturday_end.data)},
             "sunday": {"from": str(form.sunday_start.data), "to": str(form.sunday_end.data)},
             "monday": {"from": str(form.monday_start.data), "to": str(form.monday_end.data)},
             "tuesday": {"from": str(form.tuesday_start.data), "to": str(form.tuesday_end.data)},
             "wednesday": {"from": str(form.wednesday_start.data), "to": str(form.wednesday_end.data)},
-            "tuesday": {"from": str(form.tuesday_start.data), "to": str(form.tuesday_end.data)},
-            "friday": {"from": str(form.friday_start.data), "to": str(form.friday_end.data)}
+            "thursday": {"from": str(form.thursday_start.data), "to": str(form.thursday_end.data)},
+            "friday": {"from": str(form.friday_start.data), "to": str(form.friday_end.data)},
+            "saturday": {"from": str(form.saturday_start.data), "to": str(form.saturday_end.data)}
         }
         weekly_time_table_json = json.dumps(table)
        
         tutor_data_model = UserModel.query.get(int(form.tutors.data)).tutor_data_model
+        if subject not in tutor_data_model.subjects:
+            flash("المادة المختارة في الكورس ليست من ضمن المواد التي يدرسها المعلم المختار", "danger")
+            return redirect(url_for("admins_blueprint.add_course"))
         course = CourseModel(name=course_name, description=course_description, created_by_admin=True,
          tutor=tutor_data_model, price=price, min_students=min_students, max_students=max_students, currency=currency, 
          _period=period, course_type=course_type, subject=subject, _start_date=start_date, _end_date=end_date, 
@@ -124,7 +127,7 @@ def add_course():
         db.session.add(payment_model)
         db.session.commit()
         return redirect(url_for("courses_blueprint.courses"))
-    return render_template("admins/create_course.html", form=form)
+    return render_template("admins/new_create_course.html", form=form)
 
 
 @admins_blueprint.route("/admins/all_users", methods=["GET"])

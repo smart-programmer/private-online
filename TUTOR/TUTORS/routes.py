@@ -151,13 +151,13 @@ def add_course():
         end_date = form.end_date.data
         link = form.zoom_link.data
         table = {
-            "saturday": {"from": str(form.saturday_start.data), "to": str(form.saturday_end.data)},
             "sunday": {"from": str(form.sunday_start.data), "to": str(form.sunday_end.data)},
             "monday": {"from": str(form.monday_start.data), "to": str(form.monday_end.data)},
             "tuesday": {"from": str(form.tuesday_start.data), "to": str(form.tuesday_end.data)},
             "wednesday": {"from": str(form.wednesday_start.data), "to": str(form.wednesday_end.data)},
-            "tuesday": {"from": str(form.tuesday_start.data), "to": str(form.tuesday_end.data)},
-            "friday": {"from": str(form.friday_start.data), "to": str(form.friday_end.data)}
+            "thursday": {"from": str(form.thursday_start.data), "to": str(form.thursday_end.data)},
+            "friday": {"from": str(form.friday_start.data), "to": str(form.friday_end.data)},
+            "saturday": {"from": str(form.saturday_start.data), "to": str(form.saturday_end.data)}
         }
         weekly_time_table_json = json.dumps(table)
 
@@ -171,7 +171,7 @@ def add_course():
         db.session.commit()
         return redirect(url_for("courses_blueprint.courses"))
 
-    return render_template("tutors/create_course.html", form=form)
+    return render_template("tutors/new_create_course.html", form=form)
 
 
 @tutors_blueprint.route("/tutors/my-courses", methods=["GET", "POST"])

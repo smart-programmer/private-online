@@ -15,11 +15,6 @@
     <div class="col-sm-10 parent-col">
 
     <div class="container my-cont">
-        <div class="row justify-content-center my-row">
-            <div class="col my-col">
-                <h1 id="heights-elemnt">{{is_allowed}}</h1>
-            </div>
-        </div>
 
         <div class="row justify-content-center my-row">
             <div class="col my-col">
@@ -74,11 +69,11 @@
             {% for day, time_obj in course.weekly_time_table.items() %}
                 {% if time_obj.from != "None" and time_obj.to != "None" %}
                     <div class="col-12 my-col">
-                        <p>{{ day }}: from {{ time_obj.from }} to {{ time_obj.to }}</p>
+                        <p>{{ get_language_text(day, get_current_page_language_list()) }}: {{ get_language_text('from', get_current_page_language_list()) }} {{ time_obj.from }} {{ get_language_text('to', get_current_page_language_list()) }} {{ time_obj.to }}</p>
                     </div>
                 {% else %}
                     <div class="col-12 my-col">
-                        <p>{{ day }}: لا توجد حصة في هذا اليوم</p>
+                        <p>{{ get_language_text(day, get_current_page_language_list()) }}: {{ get_language_text("no class today", get_current_page_language_list()) }}</p>
                     </div>
                 {% endif %}
             {% endfor %}

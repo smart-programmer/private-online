@@ -5,5 +5,49 @@
             "tag": "test_translation",
             "description": "Horizon Light Training Centre"
         }
+    ],
+
+    "courses_blueprint.course": 
+    [
+        {
+            "tag": "no class today",
+            "description": "no class today"
+        },
+        {
+            "tag": "from",
+            "description": "from"
+        },
+        {
+            "tag": "to",
+            "description": "to"
+        },
+        {
+            "tag": "sunday",
+            "description": "sunday"
+        },
+        {
+            "tag": "monday",
+            "description": "monday"
+        },
+        {
+            "tag": "tuesday",
+            "description": "tuesday"
+        },
+        {
+            "tag": "wednesday",
+            "description": "wednesday"
+        },
+        {
+            "tag": "thursday",
+            "description": "thursday"
+        },
+        {
+            "tag": "friday",
+            "description": "friday"
+        },
+        {
+            "tag": "saturday",
+            "description": "saturday"
+        }
     ]
 }

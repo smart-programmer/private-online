@@ -5,5 +5,49 @@
             "tag": "test_translation",
             "description": "مركز تدريب افق الضوء"
         }
+    ],
+
+    "courses_blueprint.course": 
+    [
+        {
+            "tag": "no class today",
+            "description": "لا توجد حصة هذا اليوم"
+        },
+        {
+            "tag": "from",
+            "description": "من"
+        },
+        {
+            "tag": "to",
+            "description": "الى"
+        },
+        {
+            "tag": "sunday",
+            "description": "الاحد"
+        },
+        {
+            "tag": "monday",
+            "description": "الاثنين"
+        },
+        {
+            "tag": "tuesday",
+            "description": "الثلاثاء"
+        },
+        {
+            "tag": "wednesday",
+            "description": "الاربعاء"
+        },
+        {
+            "tag": "thursday",
+            "description": "الخميس"
+        },
+        {
+            "tag": "friday",
+            "description": "الجمعة"
+        },
+        {
+            "tag": "saturday",
+            "description": "السبت"
+        }
     ]
 }
