@@ -26,7 +26,8 @@ def home():
 @students_blueprint.route("/students/register", methods=["GET", "POST"])
 def register(): # create an email and add email verification functionality
     if current_user.is_authenticated:
-        return redirect("main_blueprint.home")
+        flash("You need to sign out to register.", "warning")
+        return redirect(url_for("main_blueprint.home"))
 
     form = StudentRegistrationForm()
     if form.validate_on_submit():

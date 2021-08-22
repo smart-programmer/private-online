@@ -4,10 +4,10 @@
     /* background: #D1913C;  
     background: -webkit-linear-gradient(to right, #FFD194, #D1913C); 
     background: linear-gradient(to right, #FFD194, #D1913C);  */
-    background-image: url("/static/images/index-background.jpg");
+    background-image: url("/static/images/flat-mountains.svg");
     background-repeat: no-repeat;
-    /* background-size: cover; */
-    background-size: 100% 100%;
+    background-size: cover;
+    /* background-size: 100% 100%; */
     background-position: center;
     /* border: 3px solid red; */
     /* max-width:100%; */

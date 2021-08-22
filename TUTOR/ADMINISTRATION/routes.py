@@ -118,6 +118,9 @@ def add_course():
         if subject not in tutor_data_model.subjects:
             flash("المادة المختارة في الكورس ليست من ضمن المواد التي يدرسها المعلم المختار", "danger")
             return redirect(url_for("admins_blueprint.add_course"))
+        elif not tutor_data_model.is_accepted:
+            flash("هذاالمعلم لم يقبل بعد", "danger")
+            return redirect(url_for("admins_blueprint.add_course"))
         course = CourseModel(name=course_name, description=course_description, created_by_admin=True,
          tutor=tutor_data_model, price=price, min_students=min_students, max_students=max_students, currency=currency, 
          _period=period, course_type=course_type, subject=subject, _start_date=start_date, _end_date=end_date, 

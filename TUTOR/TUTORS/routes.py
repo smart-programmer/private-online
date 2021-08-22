@@ -27,7 +27,8 @@ def home():
 @tutors_blueprint.route("/tutors/register", methods=["GET", "POST"])
 def register(): # create an email and add email verification functionality
     if current_user.is_authenticated:
-        return redirect("main_blueprint.home")
+        flash("You need to sign out to register.", "warning")
+        return redirect(url_for("main_blueprint.home"))
 
     form = TutorRegistrationForm()
     # form.subjects.choices = json_list_to_select_compatable_tuple(SiteSettingsModel.instance().subjects)
@@ -160,6 +161,10 @@ def add_course():
             "saturday": {"from": str(form.saturday_start.data), "to": str(form.saturday_end.data)}
         }
         weekly_time_table_json = json.dumps(table)
+
+        if not current_user.tutor_data_model.is_accepted:
+            flash("هذاالمعلم لم يقبل بعد", "danger")
+            return redirect(url_for("admins_blueprint.add_course"))
 
         course = CourseModel(name=course_name, description=course_description, created_by_admin=False,
          tutor=current_user.tutor_data_model, price=price, min_students=min_students, max_students=max_students, currency=currency, 
