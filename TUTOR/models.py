@@ -211,7 +211,7 @@ class CourseModel(db.Model):
 
     def start(self): 
         self.began = True
-        self._state = json.dumps({"state_code": 2, "state_string": "قائم", "allowed_actions": ["view", "end"]})
+        self._state = json.dumps({"state_code": 2, "state_string": "قائم", "allowed_actions": ["view", "end", "cancel"]})
         # NOTE: if it's type 2 then period is already calculated in self.period
         if self.course_type == 1:
             now = datetime.date(datetime.utcnow())
@@ -501,6 +501,7 @@ class PaymentModel(db.Model): # a payment class for each course to register cour
         else:
             return None
 
+    @property
     def students_paid(self): # returns student_data_models whod paid for the course and not refunded
         # loop through each student transactions if last transaction was payment then put student in list
         students_list = []

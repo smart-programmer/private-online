@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, make_response, current_app, request, url_for, redirect
+from flask.helpers import flash
 from flask_login import current_user
 from TUTOR import db
 from TUTOR.utils.utils import reverse_url_for, parse_view_name, login_required
@@ -36,6 +37,27 @@ def course(course_id):
     elif user_type in ADMIN_TYPES:
         return render_template("admins/course.html", course=course, is_allowed=is_allowed)
 
+
+@courses_blueprint.route("/cancel-course/<course_id>")
+@login_required(ADMIN_TYPES + ["tutor"])
+def cancel_course(course_id):
+    course = CourseModel.query.get(course_id)
+    is_allowed = CourseModel.is_allowed_to_control_course(course, current_user)
+    if is_allowed:
+        if course.cancelable:
+            course.cancel()
+            flash("تم الغاء الدورة بنجاح", "success")
+            return redirect(url_for("main_blueprint.home"))
+    flash("لا يمكنك الغاء هذه الدورة", "warning")        
+    return redirect(url_for("main_blueprint.home"))
+
+    # user_type = current_user.user_type
+    # if user_type == "student":
+    #     return render_template("students/course.html", course=course, is_allowed=is_allowed)
+    # elif user_type == "tutor":
+    #     return render_template("tutors/course.html", course=course, is_allowed=is_allowed)
+    # elif user_type in ADMIN_TYPES:
+    #     return render_template("admins/course.html", course=course, is_allowed=is_allowed)
 
 # the views below are commented because we decided that everything will be automated instead of 
 # someone starting and ending the courses

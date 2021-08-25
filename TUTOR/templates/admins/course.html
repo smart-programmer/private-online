@@ -80,8 +80,11 @@
         </div>
 
         <div class="row justify-content-center my-row">
-            <div class="col-4 my-col">
+            <div class="col-12 my-col mb-3">
                 <h5>المدرس: {{ course.tutor.user.first_name }}</h5>
+            </div>
+            <div class="col-12 my-col mb-3">
+               <button type="button" class="btn btn-danger" id="cancel-course">الغي الدورة</button>
             </div>
         </div>
 
@@ -91,4 +94,17 @@
 </div>
 </div>
 </div>
+
+
+<script>
+     $(document).ready(function(){
+                $("#cancel-course").click(function() {
+                value = confirm("هل انت متأكد من انك تريد الغاء الدورة؟")
+                link = "{{ url_for('courses_blueprint.cancel_course', course_id=course.id) }}"
+                if (value){
+                    window.location.href = link
+                }
+            })
+        })
+</script>
 {% endblock %}

@@ -1,11 +1,5 @@
 {% extends "template.html" %}
-{% with messages = get_flashed_messages() %}
-   {% if messages %}
-      {% for message in messages %}
-         {{ message }}
-      {% endfor %}
-   {% endif %}
-{% endwith %}
+
 {% block title %} Home {% endblock %}
 {% block content %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
@@ -45,9 +39,6 @@
                             <a href="{{ url_for('students_blueprint.register') }}" class="btn btn-outline-dark">سجل كطالب الآن</a>
                             <a href="{{ url_for('tutors_blueprint.register') }}" class="btn btn-outline-dark">سجل كمدرس الآن</a>
                         </div>
-                        <!-- <div class="col my-col lowest-elemnts">
-                            <button class="btn btn-primary">سجل كمدرس الآن</button>
-                        </div> -->
                     </div>
                 </div>
             </div>
