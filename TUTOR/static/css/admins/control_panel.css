@@ -54,10 +54,17 @@
 }
 
 
+.bar-button-col {
+  margin: 5px;
+}
+
+.margined-item {
+  margin: 5px;
+}
 
 .links-bar {
   border-radius: 5px;
-  background-color: white;
+  background-color: rgb(230, 205, 159);
   /* border: 3px solid red; */
   
 }

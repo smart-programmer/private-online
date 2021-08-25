@@ -21,7 +21,7 @@
     </div>
     <div class="row justify-content-between parent-row align-items-start">
 
-    <div class="col-lg-3 profile-col">
+    <div class="col-lg-3 profile-col mb-3">
         <div class="row profile-image-row justify-content-center">
             <div class="col-12 profile-image-col">
                <center><img src="{{ url_for('static', filename='images/male_student.png') }}" alt="Admin" class="rounded-circle" width="150"></center>
@@ -44,33 +44,39 @@
 </div>
 
 <div class="col-lg-8 settings-col ">
-    <div class="row my-row links-bar justify-content-center mb-3">
-        <div class='col-md-2 link-col mb-2'>
-            <a href="{{ url_for('admins_blueprint.users_list_view') }}"><button type="button" class="btn btn-info">Users</button></a>
+    <div class="row my-row links-bar justify-content-center">
+        <div class='col-md-2 link-col mb-2 bar-button-col'>
+            <a href="{{ url_for('admins_blueprint.users_list_view') }}"><button type="button" class="btn btn-info">المستخدمين</button></a>
         </div>
-        <div class='col-md-2 link-col mb-2'>
-            <a href="{{ url_for('courses_blueprint.courses') }}"><button type="button" class="btn btn-info">Courses</button></a>
+        <div class='col-md-2 link-col mb-2 bar-button-col'>
+            <a href="{{ url_for('courses_blueprint.courses') }}"><button type="button" class="btn btn-info">الدورات</button></a>
         </div>
-        <div class='col-md-2 link-col mb-2'>
-            <a href="{{ url_for('admins_blueprint.add_course') }}"><button type="button" class="btn btn-info">Create Course</button></a>
-        </div>
+        <div class='col-md-2 link-col mb-2 bar-button-col'>
+            <a href="{{ url_for('admins_blueprint.add_course') }}"><button type="button" class="btn btn-info">انشئ دورة</button></a>
+    </div>
     </div>
 
     <div class="row my-row settings-row align-items-start">
         <div class="col-sm-6 my-col setting-col mb-2">
             <div class="row my-row justify-content-center">
                 <div class="col-md-12 setting-title-col">
-                    <center>course access settings</center>
+                    <center><h5>اعدادات نظام الوصول الى الدورات</h5></center>
                 </div>
             </div>
             <div class="row my-row justify-content-center">
                 <div class="col-md-12 setting-content-col ">
-                    <div class="row my-row justify-content-center">
-                        <div class="col-md-12">
-                            <a href="{{ url_for('admins_blueprint.change_site_settings', setting='allow_tutors_to_create_courses') }}"><button type="button" class="btn btn-dark">allow tutors to create courses</button></a> : {{settings.allow_tutors_to_create_courses.setting_value}}
+                    <div class="row my-row justify-content-between ">
+                        <div class="col-md-8 margined-item">
+                            <a href="{{ url_for('admins_blueprint.change_site_settings', setting='allow_tutors_to_create_courses') }}"><button type="button" class="btn btn-dark">اسمح للمعلمين بإنشاء دورات دون اذن</button></a>
                         </div>
-                        <div class="col-md-12">
-                            <a href="{{ url_for('admins_blueprint.change_site_settings', setting='allow_tutors_to_edit_courses') }}"><button type="button" class="btn btn-dark">allow tutors to edit courses</button></a> : {{settings.allow_tutors_to_edit_courses.setting_value}}
+                        <div class="col-md-3">
+                            : {{settings.allow_tutors_to_create_courses.setting_value}}
+                        </div>
+                        <div class="col-md-8 margined-item">
+                            <a href="{{ url_for('admins_blueprint.change_site_settings', setting='allow_tutors_to_edit_courses') }}"><button type="button" class="btn btn-dark">اسمح للمعلمين بالتعديل على الدورات دون اذن</button></a>
+                        </div>
+                        <div class="col-md-3">
+                            : {{settings.allow_tutors_to_edit_courses.setting_value}}
                         </div>
                     </div>
                 </div>
@@ -80,23 +86,23 @@
         <div class="col-sm-6 my-col setting-col mb-2">
             <div class="row my-row justify-content-center">
                 <div class="col-md-12 setting-title-col">
-                    <center>allowed subjects</center>
+                    <center><h5>المواد التعليمية المسموحة</h5></center>
                 </div>
             </div>
             <div class="row my-row justify-content-center">
                 <div class="col-md-12 setting-content-col">
                     <div class="row my-row justify-content-center">
                         <div class="col-md-12 mb-2">
-                            <div class="input-group">
+                            <div class="input-group margined-item">
                                 <div class="input-group-prepend">
-                                  <button class="btn btn-dark" type="button" id="add-subject">add subject</button>
+                                  <button class="btn btn-dark " type="button" id="add-subject">أضف مادة</button>
                                 </div>
-                                <input type="text" class="form-control" placeholder="subject" aria-label="" aria-describedby="basic-addon1" id="subject-text">
+                                <input type="text" class="form-control" placeholder="المادة" aria-label="" aria-describedby="basic-addon1" id="subject-text">
                               </div>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-12 mb-3">
                             {% for subject in settings.subjects.setting_value %}
-                            <a href="{{ url_for('admins_blueprint.change_site_settings', setting='subjects', change_action_name='remove', value=subject) }}"><button class="btn btn-dark">delete</button></a> : {{ subject }} 
+                            <a href="{{ url_for('admins_blueprint.change_site_settings', setting='subjects', change_action_name='remove', value=subject) }}"><button class="btn btn-dark">احذف</button></a> : {{ subject }} 
                             {% endfor %}
                     </div>
                 </div>
