@@ -59,7 +59,7 @@
 }
 
 .margined-item {
-  margin: 5px;
+  margin: 5px 0px 5px 0px;
 }
 
 .links-bar {
@@ -68,6 +68,14 @@
   /* border: 3px solid red; */
   
 }
+
+/* .r {
+  border: 3px solid green;
+}
+
+.c {
+  border: 3px solid red;
+} */
 
 .my-cont {
     border-radius: 15px;
