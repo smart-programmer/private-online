@@ -39,7 +39,7 @@ def control_panel():
         # register admins 
         # delete admins
         # change admins info
-    return render_template('admins/control_panel.html', value=request.args.get("value"))
+    return render_template('admins/new_control_panel.html', value=request.args.get("value"))
 
 
 

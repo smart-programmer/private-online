@@ -1,0 +1,134 @@
+{% extends "template.html" %}
+
+{% block title %} Register Tutor{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admins/control_panel.css') }}">
+
+<div class="container parent-cont">
+    <div class="row justify-content-center my-row">
+        <div class="col-sm-7 my-col">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+             {% for category, message in messages %}
+             <div class="alert alert-{{ category }}">
+              {{ message }}
+             </div>
+             {% endfor %}
+          {% endif %}
+       {% endwith %}
+        </div>
+    </div>
+    <div class="row justify-content-between parent-row align-items-start">
+
+    <div class="col-lg-3 profile-col">
+        <div class="row profile-card">
+            profile row
+        </div>
+        profile colgrageageargeargaregaergeragaegagagargaergeargaegerag
+        <!-- <img src="{{ url_for('static', filename='images/male_student.png') }}" alt="place holder"> -->
+            
+            <!-- <div class="row my-row">
+                <div class='col-12'>
+                    <h1>
+                        انشئ دورة
+                    </h1>
+                </div>
+            </div> -->
+</div>
+
+<div class="col-lg-8 settings-col">
+    <div class="row my-row links-bar justify-content-center">
+        <div class='col-2 link-col'>
+            <button type="button" class="btn btn-info">Users</button>
+        </div>
+        <div class='col-2 link-col'>
+            <button type="button" class="btn btn-info">Home</button>
+        </div>
+        <div class='col-2 link-col'>
+            <button type="button" class="btn btn-info">Create Course</button>
+        </div>
+    </div>
+
+    <div class="row my-row settings-row allign-items-start">
+        <div class="col-sm-6 my-col setting-col">
+            <div class="row my-row justify-content-center">
+                <div class="col-md-12 setting-title-col">
+                    <center>course access settings</center>
+                </div>
+            </div>
+            <div class="row my-row justify-content-center">
+                <div class="col-md-12 setting-content-col">
+                    setting
+                    <div class="row my-row justify-content-center">
+                        <div class="col-md-12">
+                            <button type="button" class="btn btn-dark">course access setting</button> : state
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 my-col setting-col">
+            <div class="row my-row justify-content-center">
+                <div class="col-md-12 setting-title-col">
+                    <center>allowed subjects</center>
+                </div>
+            </div>
+            <div class="row my-row justify-content-center">
+                <div class="col-md-12 setting-content-col">
+                    setting
+                    <div class="row my-row justify-content-center">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                  <button class="btn btn-dark" type="button" id="add-subject">Button</button>
+                                </div>
+                                <input type="text" class="form-control" placeholder="subject" aria-label="" aria-describedby="basic-addon1" id="subject-text">
+                              </div>
+                        </div>
+                    </div>
+                    {% for subject in subjects %}
+                    <div class="row my-row justify-content-center">
+                        <div class="col-md-12">
+                            {{ subject }} : <a href="{{ url_for('admins_blueprint.change_site_settings', setting='subjects', change_action_name='remove', value=subject) }}"><button class="btn btn-dark">delete</button></a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div> 
+        
+
+  
+</div>
+</div>
+</div>
+
+<script>
+    $(document).ready(function(){
+                $("#add-subject").click(function() {
+                    value = $("#subject-text").val()
+                    link = "{{ url_for('admins_blueprint.change_site_settings') }}";
+                $.ajax({
+                    url: link,
+                    type: "GET",
+                    data: {
+                        value: value,
+                        setting: "subjects",
+                        change_action_name: "add"
+                    },
+                    success: function(result){
+                        location.reload();
+                        console.log(result)
+                    },
+                    error: function(error){
+                        console.log("didn't work")
+                    }
+                })
+            })
+        })
+</script>
+       
+{% endblock %}
