@@ -300,7 +300,7 @@ class CourseModel(db.Model):
         # depends on course state and if user has joined and number of students allowed
         if self.joinable:
             if not self.has_student(student):
-                if len(self.students) < self.max_students:
+                if len(self.students) < self.max_students: # this is a problem since in type 1 max=min
                     if student.user.is_confirmed:
                         return True
         return False
