@@ -1,4 +1,5 @@
 alembic==1.0.6
+APScheduler==3.7.0
 bcrypt==3.1.6
 blinker==1.4
 boto3==1.9.151
@@ -28,9 +29,11 @@ psycopg2==2.7.7
 pycparser==2.19
 python-dateutil==2.7.5
 python-editor==1.0.3
+pytz==2020.5
 s3transfer==0.2.0
 six==1.12.0
 SQLAlchemy==1.2.16
+tzlocal==2.1
 urllib3==1.24.3
 validators==0.12.4
 Werkzeug==0.14.1
