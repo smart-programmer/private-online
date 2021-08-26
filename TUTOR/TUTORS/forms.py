@@ -35,12 +35,22 @@ class TutorRegistrationForm(FlaskForm):
     tools_used_for_online_tutoring = wtforms.StringField("tools used for online tutoring", validators=[length(min=0, max=60)])
     password = wtforms.StringField("password", validators=[length(min=3, max=40), DataRequired()])
     confirm_password = wtforms.StringField("confirm password", validators=[length(min=3, max=40), DataRequired(), EqualTo("password")])
+    user_agreement = wtforms.BooleanField("accept user agreement", validators=[DataRequired()])
+    privacy_use_agreement = wtforms.BooleanField("privacy and use agreement", validators=[DataRequired()])
     submit = wtforms.SubmitField("Register")
 
     def validate_username(self, username):
         user = UserModel.query.filter_by(username=username.data).first()
         if user:
             raise ValidationError("username already taken")
+
+    def validate_user_agreement(self, user_agreement):
+        if not user_agreement.data:
+            raise ValidationError("you have to accept our user agreement")
+
+    def validate_privacy_use_agreement(self, privacy_use_agreement):
+        if not privacy_use_agreement.data:
+            raise ValidationError("you have to accept our privacy and use agreement")
 
     def validate_email(self, email):
         user = UserModel.query.filter_by(email=email.data).first()

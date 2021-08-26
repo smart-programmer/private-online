@@ -86,6 +86,14 @@
         <br> -->
 
         <div class="form-row my-row">
+            <div class="col-12 form-check">
+                {{ form.user_agreement(class="form-check-input") }}
+                <label class="form-check-label" for="{{ form.user_agreement.id }}">اقبل <a href="{{ url_for('main_blueprint.user_agreement_pdf') }}">باتفاقية المستخدم</a></label>
+              </div>
+              <div class="col-12 form-check">
+                {{ form.privacy_use_agreement(class="form-check-input") }}
+                <label class="form-check-label" for="{{ form.privacy_use_agreement.id }}">اقبل <a href="{{ url_for('main_blueprint.privacy_use_agreement_pdf') }}">باتفاقية الخصوصية والاستخدام</a></label>
+              </div>
             <div class='col-12'>
                 {{ form.submit(class="btn btn-primary submit", value="سجل الآن") }}
             </div>

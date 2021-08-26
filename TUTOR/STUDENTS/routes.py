@@ -38,6 +38,11 @@ def register(): # create an email and add email verification functionality
         gender = bool(int(form.gender.data))
         date_of_birth = form.date_of_birth.data
         password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
+        user_agreement = form.user_agreement.data
+        privacy_use_agreement = form.privacy_use_agreement.data
+        if not user_agreement or not privacy_use_agreement:
+            flash("يجب ان توافق على اتفاقية المستخدم واتفاقية الخصوصية والاستخدام")
+            return redirect(url_for("students_blueprint.register"))
         user_type = "student"
         
         email_confirmation_code = generate_random_digits(5)

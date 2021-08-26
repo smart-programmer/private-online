@@ -47,6 +47,11 @@ def register(): # create an email and add email verification functionality
         subjects = form.subjects.data
         years_of_experience = form.years_of_experience.data
         tools_used_for_online_tutoring = form.tools_used_for_online_tutoring.data
+        user_agreement = form.user_agreement.data
+        privacy_use_agreement = form.privacy_use_agreement.data
+        if not user_agreement or not privacy_use_agreement:
+            flash("يجب ان توافق على اتفاقية المستخدم واتفاقية الخصوصية والاستخدام")
+            return redirect(url_for("tutors_blueprint.register"))
         password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
         user_type = "tutor"
         

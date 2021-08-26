@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, make_response, current_app, request, url_for, redirect
+from flask import Blueprint, render_template, make_response, current_app, request, url_for, redirect, send_from_directory
 from flask_login import current_user
 from TUTOR.utils.utils import reverse_url_for, parse_view_name
 from TUTOR.utils.languages import LngObj
@@ -57,3 +57,18 @@ def how_to_download_zoom():
 @main_blueprint.route('/serve_test')
 def serve_test():
     return render_template("serve_test.html")
+
+@main_blueprint.route('/serve-pdf')
+def serve_pdf():
+    url1 = os.path.join(current_app.root_path, "static/pdf")
+    return send_from_directory(url1, "pdf.pdf")
+
+@main_blueprint.route('/user-agreement')
+def user_agreement_pdf():
+    url1 = os.path.join(current_app.root_path, "static/pdf")
+    return send_from_directory(url1, "user_agreement.pdf")
+
+@main_blueprint.route('/privacy-use-agreement')
+def privacy_use_agreement_pdf():
+    url1 = os.path.join(current_app.root_path, "static/pdf")
+    return send_from_directory(url1, "privacy_use_agreement.pdf")

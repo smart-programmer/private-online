@@ -23,6 +23,8 @@ class StudentRegistrationForm(FlaskForm):
     confirm_password = wtforms.StringField("confirm password", validators=[length(min=3, max=40), DataRequired(), EqualTo("password")])
     gender = wtforms.SelectField("gender", choices=genders, validators=[DataRequired()])
     date_of_birth = DateField("age", format="%Y-%m-%d", validators=[DataRequired()])
+    user_agreement = wtforms.BooleanField("accept user agreement", validators=[DataRequired()])
+    privacy_use_agreement = wtforms.BooleanField("privacy and use agreement", validators=[DataRequired()])
     submit = wtforms.SubmitField("Register")
 
     def validate_username(self, username):
