@@ -171,7 +171,8 @@ class CourseModel(db.Model):
         if not user_type == "student":
             allow_tutors_edit_course_setting = SiteSettingsModel.instance().allow_tutors_to_edit_courses["setting_value"]
             if user_type == "tutor":
-                if not allow_tutors_edit_course_setting:
+                tutor = user.tutor_data_model
+                if not allow_tutors_edit_course_setting or not course in tutor.courses:
                     return False
                 else:
                     if user == course.tutor.user:
@@ -189,7 +190,8 @@ class CourseModel(db.Model):
         if not user_type == "student":
             allow_tutors_to_create_courses = SiteSettingsModel.instance().allow_tutors_to_create_courses["setting_value"]
             if user_type == "tutor":
-                if not allow_tutors_to_create_courses:
+                tutor = user.tutor_data_model
+                if not allow_tutors_to_create_courses or not tutor.is_accepted:
                     return False
                 else:
                     return True

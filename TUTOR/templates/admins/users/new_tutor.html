@@ -43,6 +43,8 @@
                       <span class="badge bg-success">مقبول</span>
                       {% else %}
                       <span class="badge bg-secondary">تحت المراجعة</span>
+                      <br><br>
+                      <a href="{{ url_for('admins_blueprint.accept_tutor', tutor_id=user.tutor_data_model.id) }}"><button type="button" class="btn btn-success">اقبل هذا المعلم</button></a>
                       {% endif %}
                       <!-- <p class="text-secondary mb-1">Full Stack Developer</p>
                       <p class="text-muted font-size-sm">Bay Area, San Francisco, CA</p>
