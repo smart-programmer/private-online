@@ -60,14 +60,22 @@
         </div>
 
         <div class="form-row my-row">
-            <div class="form-group col-sm-6">
+            <div class="form-group col-md-4">
                 <label for="{{ form.password.id }}">الرقم السري</label>
-                {{ form.password(class="form-control") }}
+                {{ form.password(class="form-control", id="password") }}
             </div>
-            
-            <div class="form-group col-sm-6">
+
+            <div class="form-group col-md-2 align-self-end">
+                <input type="checkbox" onclick="togglePassword()">
+            </div>
+
+            <div class="form-group col-md-4">
                 <label for="{{ form.confirm_password.id }}">تأكيد الرقم السري</label>
-                {{ form.confirm_password(class="form-control") }}
+                {{ form.confirm_password(class="form-control", id="confirmPassword") }}
+            </div>
+
+            <div class="form-group col-md-2 align-self-end">
+                <input type="checkbox" onclick="toggleConfirmPassword()">
             </div>
         </div>
 
@@ -113,4 +121,25 @@
 </div>
 </div>
 </div>
+
+<script>
+     function togglePassword() {
+  var x = document.getElementById("password");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+
+function toggleConfirmPassword() {
+  var x = document.getElementById("confirmPassword");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+
+</script>
 {% endblock %}

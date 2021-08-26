@@ -38,7 +38,7 @@ class ConfirmationCodeForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     username_or_email = wtforms.StringField("username", validators=[length(max=255), DataRequired()])
-    password = wtforms.StringField("password", validators=[DataRequired()])
+    password = wtforms.PasswordField("password", validators=[DataRequired()])
     submit = wtforms.SubmitField("Login")
 
 

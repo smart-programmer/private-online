@@ -25,72 +25,72 @@
             </div>
 
             <div class="form-row my-row">
-                <div class="form-group col-sm-6 my-col">
+                <div class="form-group col-md-6 my-col">
                     <label for="{{ form.first_name.id }}">الاسم الأول</label>
                     {{ form.first_name(class="form-control") }}
                 </div>
                 
-                <div class="form-group col-sm-6 my-col">
+                <div class="form-group col-md-6 my-col">
                     <label for="{{ form.last_name.id }}">الاسم الاخير</label>
                     {{ form.last_name(class="form-control") }}
                 </div>
             </div>
     
             <div class="form-row my-row">
-                <div class="form-group col-sm-6 my-col">
+                <div class="form-group col-md-6 my-col">
                     <label for="{{ form.username.id }}">اسم المستخدم</label>
                     {{ form.username(class="form-control") }}
                 </div>
                 
-                <div class="form-group col-sm-6 my-col">
+                <div class="form-group col-md-6 my-col">
                     <label for="{{ form.email.id }}">الايميل</label>
                     {{ form.email(class="form-control") }}
                 </div>
             </div>
     
             <div class="form-row my-row">
-                <div class="form-group col-sm-6 my-col">
+                <div class="form-group col-md-6 my-col">
                     <label for="{{ form.date_of_birth.id }}">تاريخ الميلاد</label>
                     {{ form.date_of_birth(class="form-control") }}
                 </div>
                 
-                <div class="form-group col-sm-6 my-col">
+                <div class="form-group col-md-6 my-col">
                     <label for="{{ form.gender.id }}">الجنس</label>
                     {{ form.gender(class="form-control") }}
                 </div>
             </div>
 
             <div class="form-row my-row">
-                <div class="form-group col-sm-6">
+                <div class="form-group col-md-6">
                     <label for="{{ form.nationality.id }}">الجنسية</label>
                     {{ form.nationality(class="form-control") }}
                 </div>
                 
-                <div class="form-group col-sm-6">
+                <div class="form-group col-md-6">
                     <label for="{{ form.qualification.id }}">المؤهل</label>
                     {{ form.qualification(class="form-control") }}
                 </div>
             </div>
 
             <div class="form-row my-row">
-                <div class="form-group col-sm-6">
+                <div class="form-group col-md-6">
                     <label for="{{ form.major.id }}">التخصص</label>
                     {{ form.major(class="form-control") }}
                 </div>
                 
-                <div class="form-group col-sm-6">
+                <div class="form-group col-md-6">
                     <label for="{{ form.current_job.id }}">الوظيفة الحالية</label>
                     {{ form.current_job(class="form-control") }}
                 </div>
             </div>
 
             <div class="form-row my-row">
-                <div class="form-group col-sm-6">
+                <div class="form-group col-md-6">
                     <label for="{{ form.years_of_experience.id }}">سنوات الخبرة</label>
                     {{ form.years_of_experience(class="form-control") }}
                 </div>
 
-                <div class="form-group col-sm-6 my-col">
+                <div class="form-group col-md-6 my-col">
                 <label class="col my-col">المواد التي ترغب بتدريسها</label>
             <div id="list1" class="dropdown-check-list" tabindex="100">
                 <span class="anchor">المواد التي ترغب بتدريسها</span>
@@ -110,7 +110,7 @@
 
             <div class="form-row my-row">
                
-                <div class="form-group col-sm-3 my-col">
+                <div class="form-group col-md-3 my-col">
                     <ul id="tools_ul"> 
             
                     </ul>
@@ -120,27 +120,35 @@
 
             <div class="form-row my-row">
                 <label for="{{ form.tools_used_for_online_tutoring.id }}" class="col my-col">الادوات المستخدمة في التدريس</label>
-                <div class="form-group col-sm-6 my-col">
+                <div class="form-group col-md-6 my-col">
                     {{ form.tools_used_for_online_tutoring(id="tools", class="form-control") }} 
                 </div>
                 {% for error in form.tools_used_for_online_tutoring.errors %}
                     <h3 style="color: red;">error in field: {{ error }}</h3> 
                  {% endfor %}
                 
-                <div class="form-group col-sm-3 my-col">
+                <div class="form-group col-md-3 my-col">
                     <input type="button" value="أضف اداة" class="btn btn-dark" onclick="populate_list_with_text('tools', 'tools_ul')">
                 </div>
             </div>
 
             <div class="form-row my-row">
-                <div class="form-group col-sm-6">
+                <div class="form-group col-md-4">
                     <label for="{{ form.password.id }}">الرقم السري</label>
-                    {{ form.password(class="form-control") }}
+                    {{ form.password(class="form-control", id="password") }}
                 </div>
-                
-                <div class="form-group col-sm-6">
+
+                <div class="form-group col-md-2 align-self-end">
+                    <input type="checkbox" onclick="togglePassword()">
+                </div>
+
+                <div class="form-group col-md-4">
                     <label for="{{ form.confirm_password.id }}">تأكيد الرقم السري</label>
-                    {{ form.confirm_password(class="form-control") }}
+                    {{ form.confirm_password(class="form-control", id="confirmPassword") }}
+                </div>
+
+                <div class="form-group col-md-2 align-self-end">
+                    <input type="checkbox" onclick="toggleConfirmPassword()">
                 </div>
             </div>
 
@@ -200,6 +208,24 @@
         else
             checkList.classList.add('visible');
         }
+
+        function togglePassword() {
+  var x = document.getElementById("password");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+
+function toggleConfirmPassword() {
+  var x = document.getElementById("confirmPassword");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
     </script>
        
 {% endblock %}
