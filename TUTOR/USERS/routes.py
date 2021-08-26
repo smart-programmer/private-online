@@ -68,6 +68,7 @@ def login():
                 flash("معلومات تسجيل الدخول خاطئة, الرجاء المحاولة مجددا", "danger")
                 return redirect(url_for("users_blueprint.login", redirected="wrong"))
         else:
+            flash("معلومات تسجيل الدخول خاطئة, الرجاء المحاولة مجددا", "danger")
             return redirect(url_for("users_blueprint.login", redirected="wrong"))
     return render_template('users/login.html', form=form)
 
