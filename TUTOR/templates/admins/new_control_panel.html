@@ -46,13 +46,13 @@
 <div class="col-lg-8 settings-col ">
     <div class="row my-row links-bar justify-content-center">
         <div class='col-md-2 link-col mb-2 bar-button-col'>
-            <a href="{{ url_for('admins_blueprint.users_list_view') }}"><button type="button" class="btn btn-info">المستخدمين</button></a>
+            <a href="{{ url_for('admins_blueprint.users_list_view') }}"><button type="button" class="btn btn-info bar-button">المستخدمين</button></a>
         </div>
         <div class='col-md-2 link-col mb-2 bar-button-col'>
-            <a href="{{ url_for('courses_blueprint.courses') }}"><button type="button" class="btn btn-info">الدورات</button></a>
+            <a href="{{ url_for('courses_blueprint.courses') }}"><button type="button" class="btn btn-info  bar-button">الدورات</button></a>
         </div>
         <div class='col-md-2 link-col mb-2 bar-button-col'>
-            <a href="{{ url_for('admins_blueprint.add_course') }}"><button type="button" class="btn btn-info">انشئ دورة</button></a>
+            <a href="{{ url_for('admins_blueprint.add_course') }}"><button type="button" class="btn btn-info  bar-button">انشئ دورة</button></a>
     </div>
     </div>
 
@@ -104,9 +104,16 @@
                               </div>
                         </div>
                         <div class="col-md-12 mb-3">
-                            {% for subject in settings.subjects.setting_value %}
-                            <a href="{{ url_for('admins_blueprint.change_site_settings', setting='subjects', change_action_name='remove', value=subject) }}"><button class="btn btn-dark">احذف</button></a> : {{ subject }} 
-                            {% endfor %}
+                            <div class="row my-row">
+                                {% for subject in settings.subjects.setting_value %}
+                                <div class="col-xl-2 mb-3">
+                                    <a href="{{ url_for('admins_blueprint.change_site_settings', setting='subjects', change_action_name='remove', value=subject) }}"><button class="btn btn-dark">احذف</button></a>
+                                </div>
+                                <div class="col-xl-2 align-self-top mb-3">
+                                    <center>{{ subject }} </center>
+                                </div>
+                                {% endfor %}
+                            </div>
                     </div>
                 </div>
                 </div>

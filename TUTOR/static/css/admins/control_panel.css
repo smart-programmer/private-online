@@ -62,6 +62,12 @@
   margin: 5px 0px 5px 0px;
 }
 
+.bar-button {
+  -webkit-box-shadow: 0px 8px 40px 0px rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: 0px 8px 40px 0px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 8px 40px 0px rgba(0, 0, 0, 0.15);
+}
+
 .links-bar {
   border-radius: 5px;
   background-color: rgb(230, 205, 159);
