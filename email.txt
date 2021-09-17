@@ -1,2 +1,5 @@
 username: horizonlighttrainingcentre
 pass: uzfmtkngkgxsindo
+
+domain registrar website: https://dnet.sa/
+domain registrar pass: Abdullatif_11
