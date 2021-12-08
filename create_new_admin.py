@@ -16,20 +16,20 @@ server_version = int(sys.argv[1])
 
 if server_version == 1:
     app = create_app(Production_Config)
-    first_name = "Abdullatif"
-    last_name = "Alhibshi"
-    username = "abullatif"
-    email = "atefo@hotmail.com"
-    password = bcrypt.generate_password_hash("abullatif321").decode("utf-8")
+    first_name = "placeholder"
+    last_name = "placeholder"
+    username = "placeholder"
+    email = "placeholder"
+    password = bcrypt.generate_password_hash("placeholder").decode("utf-8")
     user_type = "admin1"
     gender = True
     is_confirmed = True
 elif server_version == 2:
     app = create_app()
-    first_name = "Ammar"
-    last_name = "almuwallad"
-    username = "admin"
-    email = "albrns123488@gmail.com"
+    first_name = "placeholder"
+    last_name = "placeholder"
+    username = "placeholder"
+    email = "placeholder"
     password = bcrypt.generate_password_hash("admin").decode("utf-8")
     user_type = "admin1"
     gender = True
