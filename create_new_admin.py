@@ -7,7 +7,7 @@ import sys
 import os
 
 arguments = sys.argv
-if (len(arguments) != 2) or (int(arguments[1] != 1 and int(arguments[1]) != 2)):
+if ((len(arguments) != 2) or (int(arguments[1]) != 1 and int(arguments[1]) != 2)):
     print("usage: create_first_admin.py <1 for production | 2 for local>") 
     sys.exit(2)
 
