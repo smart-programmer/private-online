@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, make_response, current_app, reques
 from flask.helpers import flash
 from flask_login import current_user
 from TUTOR import db
-from TUTOR.utils.utils import reverse_url_for, parse_view_name, login_required
+from TUTOR.utils.utils import reverse_url_for, parse_view_name, login_required, time_format_conversion
 from TUTOR.utils.languages import LngObj
 from TUTOR.settings import LANGUAGES, ADMIN_TYPES
 from TUTOR.models import CourseModel, SiteSettingsModel
@@ -15,7 +15,7 @@ courses_blueprint = Blueprint("courses_blueprint", __name__)
 
 @courses_blueprint.context_processor
 def utility_processor():
-    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.instance())
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.instance(), time_format_conversion=time_format_conversion)
 
 
 @courses_blueprint.route("/courses")

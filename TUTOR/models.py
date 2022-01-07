@@ -308,6 +308,7 @@ class CourseModel(db.Model):
     def add_student(self, student):
         student.courses.append(self)
         self.payment_model.add_student(student.id)
+        self.payment_model.pay(student, self.price, "SAR")
         send_student_course_join_email(student.user, self)
         db.session.commit()
 
@@ -338,6 +339,11 @@ class CourseModel(db.Model):
     def endable(self):
         return True if "end" in self.state["allowed_actions"] else False
 
+    def show_leave_button(self, student):
+        if self.has_student(student) and (not self.payment_model.is_paid_student(student.id)):
+            return True
+        return False
+        
 
     def show_leave_request_button(self, student_id):
         return True if AdminstrationStorageModel.instance().eligible_to_add_leave_request(student_id, self.id) else False
@@ -490,7 +496,7 @@ class PaymentModel(db.Model): # a payment class for each course to register cour
     def exists(self, student_id):
         return True if str(student_id) in self.transactions_object.keys() else False
 
-    def get_student_payments(self, student):
+    def get_student_payments(self, student): # fix
         get_dicts_with_key(self.transactions_object[str(student.id)], "payment")
 
     def get_student_refunds(self, student):

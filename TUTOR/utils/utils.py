@@ -172,6 +172,17 @@ def has_key(dictionary, key):
 def get_dicts_with_key(dict_list, key): # given a list of dicts return only dicts with specified key
 	return [i for i in dict_list if has_key(i, key) == True]
 
+
+def time_format_conversion(hour):
+	"""24-Hour to 12"""
+	hour = float(hour)
+	if hour < 13:
+		if hour == 12: return f"{hour} مساءا"
+		return f"{hour} صباحا"
+	else:
+		if hour == 24: return f"{hour - 12} صباحا"
+		return f"{hour - 12} مساءا"
+
 # def handle_new_visitor(response):
 # 	expire_date = datetime.datetime.now()
 # 	expire_date = expire_date + datetime.timedelta(days=100000)

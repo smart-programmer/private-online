@@ -73,7 +73,7 @@
             جدول الحصص
             {% for day, time_obj in course.weekly_time_table.items() %}
                     <div class="col-12 my-col">
-                        <p>{{ day }}: from {{ time_obj.from) }} to {{ time_obj.to }}</p>
+                        <p>{{ day }}: from {{ time_format_conversion(time_obj.from) }} to {{ time_format_conversion(time_obj.to) }}</p>
                     </div>
             {% endfor %}
         </div>

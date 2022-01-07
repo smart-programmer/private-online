@@ -3,7 +3,7 @@ from flask_login import current_user
 from TUTOR.utils.utils import reverse_url_for, parse_view_name
 from TUTOR.utils.languages import LngObj
 from TUTOR.settings import LANGUAGES, ADMIN_TYPES
-from TUTOR.models import SiteSettingsModel
+from TUTOR.models import SiteSettingsModel, CourseModel
 import logging
 import os
 
@@ -18,12 +18,17 @@ def utility_processor():
 
 @main_blueprint.route('/')
 def home():
-    return render_template("index2.html", admin_types=ADMIN_TYPES)
+    courses = CourseModel.query.all()[-10:]
+    return render_template("index2.html", admin_types=ADMIN_TYPES, courses=courses)
 
 
 @main_blueprint.route('/register')
 def register():
     return render_template("register.html")
+
+@main_blueprint.route('/jobs')
+def jobs():
+    return render_template("jobs.html")
 
 
 

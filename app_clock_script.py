@@ -18,7 +18,7 @@ sched = BlockingScheduler()
 def check_courses():
     print('course check job running')
     with app.app_context():
-        courses = CourseModel.query.all()
+        courses = CourseModel.query.all() # query only courses that havent ended or been cnceled
         for course in courses:
             if course.should_start():
                 course.start()

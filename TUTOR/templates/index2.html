@@ -3,6 +3,7 @@
 {% block title %} Home {% endblock %}
 {% block content %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index-courses.css') }}">
 
     <div class="container-fluid parent-container">
       <div class="row justify-content-center my-row">
@@ -43,13 +44,44 @@
                     <div class="row justify-content-center my-row">
                         <div class="col-sm-7 my-col lowest-elemnts">
                             <a href="{{ url_for('students_blueprint.register') }}" class="btn btn-outline-dark">سجل كطالب الآن</a>
-                            <a href="{{ url_for('tutors_blueprint.register') }}" class="btn btn-outline-dark">سجل كمدرس الآن</a>
+                            <!-- <a href="{{ url_for('tutors_blueprint.register') }}" class="btn btn-outline-dark">سجل كمدرس الآن</a> -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    
+    <!-- courses -->
+    <div class="container my-cont">
+
+      <div class="row my-row title">
+        <center><h2>احدث الدورات</h2></center>
+      </div>
+        
+        <div class="row my-row">
+            {% for course in courses %}
+                <div class="col-sm-4 my-col content-col">
+                    <div class="card text-white bg-dark mb-3 my-card" style="max-width: 18rem;">
+                        <div class="card-header">{{ course.subject }}</div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{ course.name }}</h5>
+                                <h5 class="card-title"><i class='fas fa-chalkboard-teacher' style='font-size:24px'></i> {{ course.tutor.user.full_name }}</h5>
+                                <p class="card-text"><i class="bi bi-person-dash"></i> {{ course.empty_seats }}</p>
+                                {% if current_user.user_type == "student" %}
+                                  <p class="card-text"><i class="bi bi-cash"></i> ${{ course.price_for_student(current_user.student_data_mode) }} {{ course.currency }}  {% if course.has_discount_for_student(current_user.student_data_mode) %}عرض خاص{% endif %}</p> 
+                                  {% else %}
+                                  <p class="card-text"><i class="bi bi-cash"></i> ${{ course.price }} {{ course.currency }}</p>
+                                  {% endif %}
+                                  <a href="{{ url_for('courses_blueprint.course', course_id=course.id) }}" class="btn btn-primary">شاهد التفاصيل</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
 
     <!-- <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
         <ol class="carousel-indicators">

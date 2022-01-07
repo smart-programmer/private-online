@@ -1,0 +1,55 @@
+
+
+.my-courses-nav {
+    border-top-right-radius: 15px;
+    border-top-left-radius: 15px;
+    background-color: white;
+    color: black;
+}
+
+.my-cont {
+    border-radius: 15px;
+    background: #D1913C;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #FFD194, #D1913C);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #FFD194, #D1913C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    /* border: 3px solid red; */
+    -webkit-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+    margin-top: 100px;
+    margin-bottom: 200px;
+}
+
+.filter-row {
+    border-radius: 15px;
+    color: black;
+    margin-bottom: 20px;
+}
+
+.my-card {
+    margin-left: auto;
+    margin-right: auto;
+    -webkit-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+}
+
+
+
+.my-row {
+    /* border: 3px solid blue; */
+    padding-top: 10px;
+}
+
+
+.my-col {
+    /* border: 1px solid black; */
+}
+
+.content-col {
+    padding: 0;
+}
+
+.title {
+    background: white;
+}
