@@ -102,7 +102,7 @@ def add_course():
         max_students = form.max_students.data if course_type == 2 else min_students
         start_date = form.start_date.data
         end_date = form.end_date.data 
-        link = form.zoom_link.data
+        links = json.dumps({"students_zoom_link" : form.students_zoom_link.data, "tutor_zoom_link": form.tutor_zoom_link.data})
         table = {
             "sunday": {"from": str(form.sunday_start.data), "to": str(form.sunday_end.data)},
             "monday": {"from": str(form.monday_start.data), "to": str(form.monday_end.data)},
@@ -124,7 +124,7 @@ def add_course():
         course = CourseModel(name=course_name, description=course_description, created_by_admin=True,
          tutor=tutor_data_model, price=price, min_students=min_students, max_students=max_students, currency=currency, 
          _period=period, course_type=course_type, subject=subject, _start_date=start_date, _end_date=end_date, 
-         weekly_time_table_json=weekly_time_table_json, links=link)
+         weekly_time_table_json=weekly_time_table_json, links=links)
         db.session.add(course)
         payment_model = PaymentModel(course=course)
         db.session.add(payment_model)

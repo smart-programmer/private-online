@@ -110,8 +110,20 @@
     border: 1px solid #ccc;
     border-top: none;
   }
+
+  .dropdown-check-list ul.items2 {
+    padding: 10px;
+    display: none;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-top: none;
+  }
   
   .dropdown-check-list ul.items li {
+    list-style: none;
+  }
+
+  .dropdown-check-list ul.items2 li {
     list-style: none;
   }
   
@@ -120,5 +132,8 @@
   }
   
   .dropdown-check-list.visible .items {
+    display: block;
+  }
+  .dropdown-check-list.visible .items2 {
     display: block;
   }

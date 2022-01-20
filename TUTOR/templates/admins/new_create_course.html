@@ -109,8 +109,15 @@
 
             <div class="form-row my-row">
                 <div class="form-group col-sm-8">
-                    <label for="{{ form.zoom_link.id }}">رابط زوم</label>
-                    {{ form.zoom_link(class="form-control") }}
+                    <label for="{{ form.tutor_zoom_link.id }}">رابط زوم للمعلم</label>
+                    {{ form.tutor_zoom_link(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-row my-row">
+                <div class="form-group col-sm-8">
+                    <label for="{{ form.students_zoom_link.id }}">رابط زوم للطلاب</label>
+                    {{ form.students_zoom_link(class="form-control") }}
                 </div>
             </div>
 

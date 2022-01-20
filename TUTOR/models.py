@@ -7,6 +7,7 @@ from TUTOR.utils.mail import send_student_pay_for_course_email, send_tutor_cours
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin, current_user
 from datetime import date, datetime, timedelta
+from TUTOR.settings import CLASSES_TIMES
 import json
 
 @login_manager.user_loader
@@ -104,7 +105,7 @@ class CourseModel(db.Model):
     _period = db.Column(db.Integer, nullable=True) # days
     _start_date = db.Column(db.DateTime, nullable=True)
     _end_date = db.Column(db.DateTime, nullable=True)
-    links = db.Column(db.String(), nullable=False) # {"zoom": "link", ....}
+    links = db.Column(db.String(), nullable=False) # {"zoom_for_tutor": "link", "zoom_for_students": "link", ...}
     weekly_time_table_json  = db.Column(db.String(1000), nullable=False) # {"saturday": {"from": ..., "to": ...}, ...}
     _state = db.Column(db.String(), nullable=False, default=json.dumps({"state_code": 1, "state_string": "لم تبدأ بعد", "allowed_actions": ["join", "view", "start", "cancel"]})) # {"state_code": 2, "state_string": "قائم", "allowed_actions": ["view", "end"]} {"state_code": 3, "state_string": "انتهى", "allowed_actions": ["delete"]} {"state_code": 4, "state_string": "ملغي", "allowed_actions": ["delete"]}
     number_of_students_paid = db.Column(db.Integer, nullable=False, default=0)
@@ -152,6 +153,9 @@ class CourseModel(db.Model):
     @property
     def empty_seats(self):
         return self.max_students - self.number_of_participants
+
+    def link(self, name):
+        return json.loads(self.links)[name]
     
     # ///////////////////////////// from here i start fixing course systems ///////////////////////////////
 
@@ -367,6 +371,9 @@ class TutorDataModel(db.Model):
     _subjects = db.Column(db.String(), nullable=False) # [subject1, subject2, ...]
     years_of_experience = db.Column(db.Integer, nullable=False)
     _tools_used_for_online_tutoring = db.Column(db.String(), nullable=False) # [tool1, tool2, ...]
+    max_classes_per_day = db.Column(db.String(), nullable=False)
+    min_classes_per_day = db.Column(db.String(), nullable=False)
+    most_convenietnt_periods = db.Column(db.String(), nullable=False) # [period1, period2, ...]
     is_accepted = db.Column(db.Boolean, nullable=False, default=False)
     courses = db.relationship('CourseModel', backref='tutor')
     user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'))
@@ -385,11 +392,24 @@ class TutorDataModel(db.Model):
         return json.loads(self._tools_used_for_online_tutoring)
         # return self._tools_used_for_online_tutoring.split(",")
 
+    @property
+    def periods(self):
+        return json.loads(self.most_convenietnt_periods)
+
+    @property
+    def classes_times(self):
+        lst = self.periods
+        times_list = []
+        for period in lst:
+            times_list.append(CLASSES_TIMES[int(period) - 1][1])
+        return times_list
+
     def add_to_tools_used_for_online_tutoring(self, tools_list):
         tools = self.tools_used_for_online_tutoring
         tools += tools_list
         self._tools_used_for_online_tutoring = json.dumps(tools)
         db.session.commit()
+
 
     # @staticmethod
     # def list_to_comma_seperated_string(ls):

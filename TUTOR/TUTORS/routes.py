@@ -6,7 +6,7 @@ from TUTOR.models import UserModel, TutorDataModel, CourseModel, SiteSettingsMod
 from TUTOR.utils.mail import send_user_confirmation_email, send_email_change_request_email
 from TUTOR.utils.utils import generate_random_digits, login_required, put_current_choice_first, list_to_select_compatable_tuple, json_list_to_select_compatable_tuple
 from TUTOR.utils.languages import LngObj
-from TUTOR.settings import LANGUAGES, ADMIN_TYPES
+from TUTOR.settings import LANGUAGES, ADMIN_TYPES, CLASSES_TIMES
 import json
 
 
@@ -15,7 +15,7 @@ tutors_blueprint = Blueprint("tutors_blueprint", __name__)
 
 @tutors_blueprint.context_processor
 def utility_processor():
-    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.instance())
+    return dict(get_language_text=LngObj.get_language_text, get_current_page_language_list=LngObj.get_current_page_language_list, languages=LANGUAGES, admin_types=ADMIN_TYPES, settings=SiteSettingsModel.instance(), classes_times=CLASSES_TIMES)
 
 
 @tutors_blueprint.route('/tutors')
@@ -47,6 +47,9 @@ def register(): # create an email and add email verification functionality
         subjects = form.subjects.data
         years_of_experience = form.years_of_experience.data
         tools_used_for_online_tutoring = form.tools_used_for_online_tutoring.data
+        max_classes_per_day = form.max_classes_per_day.data
+        min_classes_per_day = form.min_classes_per_day.data
+        peridos = form.most_convenietnt_periods.data
         user_agreement = form.user_agreement.data
         privacy_use_agreement = form.privacy_use_agreement.data
         if not user_agreement or not privacy_use_agreement:
@@ -65,7 +68,8 @@ def register(): # create an email and add email verification functionality
         db.session.commit()
         tutor_data_model = TutorDataModel(user=user, date_of_birth=date_of_birth, nationality=nationality, qualification=qualification, major=major,
         current_job=current_job, _subjects=subjects, years_of_experience=years_of_experience,
-        _tools_used_for_online_tutoring=tools_used_for_online_tutoring)
+        _tools_used_for_online_tutoring=tools_used_for_online_tutoring, max_classes_per_day=max_classes_per_day, 
+        min_classes_per_day=min_classes_per_day, most_convenietnt_periods=peridos)
         db.session.add(tutor_data_model)
         db.session.commit()
 
@@ -99,10 +103,14 @@ def edit_profile():
         current_user.tutor_data_model.major = form.major.data
         current_user.tutor_data_model.current_job = form.current_job.data
         current_user.tutor_data_model.years_of_experience = form.years_of_experience.data
+        current_user.tutor_data_model.max_classes_per_day = form.max_classes_per_day.data
+        current_user.tutor_data_model.min_classes_per_day = form.min_classes_per_day.data
         if form.subjects.data:
             current_user.tutor_data_model._subjects =  form.subjects.data 
         if form.tools_used_for_online_tutoring.data:
             current_user.tutor_data_model.add_to_tools_used_for_online_tutoring(json.loads(form.tools_used_for_online_tutoring.data))#TutorDataModel.list_to_comma_seperated_string(current_user.tutor_data_model.tools_used_for_online_tutoring + form.tools_used_for_online_tutoring.data.split(","))
+        if form.most_convenietnt_periods.data:
+            current_user.tutor_data_model.most_convenietnt_periods = form.most_convenietnt_periods.data
 
         db.session.commit()
 
@@ -126,6 +134,8 @@ def edit_profile():
         form.current_job.data = current_user.tutor_data_model.current_job
         form.years_of_experience.data = current_user.tutor_data_model.years_of_experience
         form.gender.choices = put_current_choice_first(form.gender.choices, str(int(current_user._gender)))
+        form.max_classes_per_day.data = current_user.tutor_data_model.max_classes_per_day
+        form.min_classes_per_day.data = current_user.tutor_data_model.min_classes_per_day
 
     return render_template('tutors/new_edit_profile.html', form=form)  
 

@@ -83,6 +83,12 @@
         </div>
 
         <div class="row justify-content-center my-row">
+            {% if course.has_student(current_user.student_data_model) and course.state["state_code"] == 2 %}
+                <div class="col-4 my-col">
+                    <h5>رابط زوم: {{ course.link("students_zoom_link") }}</h5>
+                </div>
+            {% endif %}
+
             <div class="col-4 my-col">
                 <h5>المدرس: {{ course.tutor.user.first_name }}</h5>
             </div>

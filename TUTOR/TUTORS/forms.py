@@ -19,6 +19,8 @@ genders = [
     ("0", "female")
 ]
 
+
+
 class TutorRegistrationForm(FlaskForm):
     first_name = wtforms.StringField("first name", validators=[length(max=128), DataRequired()])
     last_name = wtforms.StringField("last name", validators=[length(max=128), DataRequired()])
@@ -33,6 +35,9 @@ class TutorRegistrationForm(FlaskForm):
     subjects = wtforms.StringField("subjects you want to teach") # wtforms.SelectField("subjects you want to teach", choices=(()), validators=[length(min=0, max=30)])
     years_of_experience = IntegerField("years of experience", validators=[DataRequired()], render_kw={"min": 0, "max": 100})
     tools_used_for_online_tutoring = wtforms.StringField("tools used for online tutoring", validators=[length(min=0, max=60)])
+    max_classes_per_day = IntegerField("Maximum classes you can give per day", validators=[DataRequired()], render_kw={"min": 1, "max": 15})
+    min_classes_per_day = IntegerField("Minimum classes you can give per day", validators=[DataRequired()], render_kw={"min": 1, "max": 15})
+    most_convenietnt_periods = wtforms.StringField("Most convenient periods to teach")
     password = wtforms.PasswordField("password", validators=[length(min=3, max=40), DataRequired()])
     confirm_password = wtforms.PasswordField("confirm password", validators=[length(min=3, max=40), DataRequired(), EqualTo("password")])
     user_agreement = wtforms.BooleanField("accept user agreement", validators=[DataRequired()])
@@ -100,6 +105,9 @@ class TutorEditProfileForm(FlaskForm):
     subjects = wtforms.StringField("subjects you want to teach")
     years_of_experience = IntegerField("years of experience", validators=[DataRequired()], render_kw={"min": 0, "max": 100})
     tools_used_for_online_tutoring = wtforms.StringField("tools used for online tutoring", validators=[length(min=0, max=60)])
+    max_classes_per_day = IntegerField("Maximum classes you can give per day", validators=[DataRequired()], render_kw={"min": 1, "max": 15})
+    min_classes_per_day = IntegerField("Minimum classes you can give per day", validators=[DataRequired()], render_kw={"min": 1, "max": 15})
+    most_convenietnt_periods = wtforms.StringField("Most convenient periods to teach")
     submit = wtforms.SubmitField("Edit")
 
     def validate_username(self, username):

@@ -81,10 +81,16 @@
 
 
         <div class="row justify-content-center my-row">
+            {% if current_user == course.tutor.user and course.state["state_code"] == 2 %}
+                <div class="col-12 my-col mb-3">
+                    <h5>رابط زوم: {{ course.link("tutor_zoom_link") }}</h5>
+                </div>
+            {% endif %}
+
             <div class="col-12 my-col mb-3">
                 <h5>المدرس: {{ course.tutor.user.first_name }}</h5>
             </div>
-            {% if current_user == course.tutor.user %}
+            {% if current_user == course.tutor.user and course.cancelable and settings.allow_tutors_to_edit_courses %}
             <div class="col-12 my-col mb-3">
                <button type="button" class="btn btn-danger" id="cancel-course">الغي الدورة</button>
             </div>

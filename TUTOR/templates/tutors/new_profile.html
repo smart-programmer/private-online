@@ -162,6 +162,37 @@
                   </div>
                   <hr>
                   <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">اقصى عدد حصص  تستطيع تدريسها في اليوم</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ current_user.tutor_data_model.max_classes_per_day }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-3">
+                      <h6 class="mb-0">اقل عدد حصص  يناسبك تدريسها في اليوم</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{ current_user.tutor_data_model.min_classes_per_day }}
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <h6 class="mb-0">افضل الاوقات المناسبة لك للتدريس</h6>
+                    </div>
+                  </div>
+                  {% for time in current_user.tutor_data_model.classes_times %}
+                  <div class="row">
+                    <div class="col-sm-9 text-secondary">
+                      {{ time }}
+                    </div>
+                  </div>
+                  {% endfor %}
+                  <hr>
+                  <div class="row">
                     <div class="col-sm-12">
                       <a class="btn btn-info " href="{{ url_for('tutors_blueprint.edit_profile') }}">عدل</a>
                     </div>

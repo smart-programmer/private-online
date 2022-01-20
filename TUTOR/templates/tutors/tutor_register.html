@@ -131,6 +131,36 @@
                     <input type="button" value="أضف اداة" class="btn btn-dark" onclick="populate_list_with_text('tools', 'tools_ul')">
                 </div>
             </div>
+            
+            <div class="form-row my-row">
+                <div class="form-group col-md-6">
+                    <label for="{{ form.max_classes_per_day.id }}">اقصى عدد حصص  تستطيع تدريسها في اليوم</label>
+                    {{ form.max_classes_per_day(class="form-control") }}
+                </div>
+                
+                <div class="form-group col-md-6">
+                    <label for="{{ form.min_classes_per_day.id }}">اقل عدد حصص  يناسبك تدريسها في اليوم</label>
+                    {{ form.min_classes_per_day(class="form-control") }}
+                </div>
+            </div>
+
+            <div class="form-group col-md-6 my-col">
+                <label class="col my-col">افضل الاوقات المناسبة لك للتدريس</label>
+            <div id="list2" class="dropdown-check-list" tabindex="100">
+                <span class="anchor">افضل الاوقات المناسبة لك للتدريس</span>
+                <ul class="items2">
+                    {% for period in classes_times %}
+                        <li><input type="checkbox" name="{{period[0]}}" value="{{period[0]}}" id="checkbox-subject"/> {{period[1]}} </li>
+                    {% endfor %}
+                </ul>
+              </div>
+            </div>
+            {{ form.most_convenietnt_periods(hidden="True") }}
+            {% for error in form.most_convenietnt_periods.errors %}
+                    <h3 style="color: red;">error in field: {{ error }}</h3> 
+                 {% endfor %}
+            </div>
+
 
             <div class="form-row my-row">
                 <div class="form-group col-md-4">
@@ -181,6 +211,7 @@
         function DoSubmit(){
             form = document.getElementById("form")
 
+            // subjects
             subjects_array_from_database = "{% for i in settings.subjects.setting_value%}{{ i }} {% endfor %}".split(" ")
             subjects_node_list = document.querySelectorAll('.items>li>input');
             subjects_checked_list = []
@@ -190,6 +221,16 @@
                 }
             }
             form.subjects.value = JSON.stringify(subjects_checked_list)
+
+            // periods
+            periods_node_list = document.querySelectorAll('.items2>li>input');
+            periods_checked_list = []
+            for (period of periods_node_list){
+                if (period.checked){
+                    periods_checked_list.push(period.value)
+                }
+            }
+            form.most_convenietnt_periods.value = JSON.stringify(periods_checked_list)
             // subjects_array = []
             // Array.from(document.querySelectorAll('#subs>li'), li => subjects_array.push(li.textContent))
             // form.subjects.value = JSON.stringify(subjects_array)
@@ -209,13 +250,21 @@
             checkList.classList.add('visible');
         }
 
+        var checkList2 = document.getElementById('list2');
+        checkList2.getElementsByClassName('anchor')[0].onclick = function(evt) {
+        if (checkList2.classList.contains('visible'))
+            checkList2.classList.remove('visible');
+        else
+            checkList2.classList.add('visible');
+        }
+
         function togglePassword() {
-  var x = document.getElementById("password");
-  if (x.type === "password") {
-    x.type = "text";
-  } else {
-    x.type = "password";
-  }
+            var x = document.getElementById("password");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
 }
 
 function toggleConfirmPassword() {

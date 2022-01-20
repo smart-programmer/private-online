@@ -85,6 +85,18 @@
             </div>
 
             <div class="form-row my-row">
+                <div class="form-group col-md-6">
+                    <label for="{{ form.max_classes_per_day.id }}">اقصى عدد حصص  تستطيع تدريسها في اليوم</label>
+                    {{ form.max_classes_per_day(class="form-control") }}
+                </div>
+                
+                <div class="form-group col-md-6">
+                    <label for="{{ form.min_classes_per_day.id }}">اقل عدد حصص  يناسبك تدريسها في اليوم</label>
+                    {{ form.min_classes_per_day(class="form-control") }}
+                </div>
+            </div>
+            
+            <div class="form-row my-row">
                 <div class="form-group col-sm-6">
                     <label for="{{ form.years_of_experience.id }}">سنوات الخبرة</label>
                     {{ form.years_of_experience(class="form-control") }}
@@ -107,6 +119,22 @@
                  {% endfor %}
             </div>
 
+            <div class="form-group col-md-6 my-col">
+                <label class="col my-col">افضل الاوقات المناسبة لك للتدريس</label>
+            <div id="list2" class="dropdown-check-list" tabindex="100">
+                <span class="anchor">افضل الاوقات المناسبة لك للتدريس</span>
+                <ul class="items2">
+                    {% for period in classes_times %}
+                        <li><input type="checkbox" name="{{period[0]}}" value="{{period[0]}}" id="checkbox-subject"/> {{period[1]}} </li>
+                    {% endfor %}
+                </ul>
+              </div>
+            </div>
+            {{ form.most_convenietnt_periods(hidden="True") }}
+            {% for error in form.most_convenietnt_periods.errors %}
+                    <h3 style="color: red;">error in field: {{ error }}</h3> 
+                 {% endfor %}
+            </div>
 
             <div class="form-row my-row">
                
@@ -156,7 +184,8 @@
             function DoSubmit(){
                 form = document.getElementById("form")
 
-                subjects_array_from_database = "{% for i in settings.subjects.setting_value%}{{ i }} {% endfor %}".split(" ")
+                // subjects
+                // subjects_array_from_database = "{% for i in settings.subjects.setting_value%}{{ i }} {% endfor %}".split(" ")
                 subjects_node_list = document.querySelectorAll('.items>li>input');
                 subjects_checked_list = []
                 for (subject of subjects_node_list){
@@ -166,6 +195,16 @@
                 }
                 form.subjects.value = JSON.stringify(subjects_checked_list)
 
+                 // periods
+                periods_node_list = document.querySelectorAll('.items2>li>input');
+                periods_checked_list = []
+                for (period of periods_node_list){
+                    if (period.checked){
+                        periods_checked_list.push(period.value)
+                    }
+                }
+                form.most_convenietnt_periods.value = JSON.stringify(periods_checked_list)
+
                 tools_array = []
                 Array.from(document.querySelectorAll('#tools_ul>li'), li => tools_array.push(li.textContent))
                 form.tools_used_for_online_tutoring.value = JSON.stringify(tools_array)
@@ -174,25 +213,43 @@
 
                 }
 
-                tutor_subjects_array_from_database = "{% for subject in current_user.tutor_data_model.subjects %}{{ subject }} {% endfor %}".split(" ")
-                subjects_node_list = document.querySelectorAll('.items>li>input');
-                for (tutor_subject of tutor_subjects_array_from_database){
-                    // grab input with the same and check it
-                    for (input of subjects_node_list){
-                        if (input.name == tutor_subject){
-                            input.checked = true;
-                        }
+            tutor_subjects_array_from_database = "{% for subject in current_user.tutor_data_model.subjects %}{{ subject }} {% endfor %}".split(" ")
+            subjects_node_list = document.querySelectorAll('.items>li>input');
+            for (tutor_subject of tutor_subjects_array_from_database){
+                // grab input with the same and check it
+                for (input of subjects_node_list){
+                    if (input.name == tutor_subject){
+                        input.checked = true;
                     }
                 }
-            
+            }
 
-                var checkList = document.getElementById('list1');
-                checkList.getElementsByClassName('anchor')[0].onclick = function(evt) {
-                if (checkList.classList.contains('visible'))
-                    checkList.classList.remove('visible');
-                else
-                    checkList.classList.add('visible');
+            tutor_periods_from_database = "{% for period in current_user.tutor_data_model.periods %}{{ period }} {% endfor %}".split(" ")
+            periods_node_list = document.querySelectorAll('.items2>li>input');
+            for (tutor_period of tutor_periods_from_database){
+                console.log(tutor_period)
+                // grab input with the same and check it
+                for (input of periods_node_list){
+                    if (input.name == tutor_period){
+                        input.checked = true;
+                    }
+                }
+            }
+
+            var checkList = document.getElementById('list1');
+            checkList.getElementsByClassName('anchor')[0].onclick = function(evt) {
+            if (checkList.classList.contains('visible'))
+                checkList.classList.remove('visible');
+            else
+                checkList.classList.add('visible');
         }
+            var checkList2 = document.getElementById('list2');
+            checkList2.getElementsByClassName('anchor')[0].onclick = function(evt) {
+            if (checkList2.classList.contains('visible'))
+                checkList2.classList.remove('visible');
+            else
+                checkList2.classList.add('visible');
+            }
     // });
     </script>
        

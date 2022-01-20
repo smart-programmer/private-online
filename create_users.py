@@ -48,7 +48,8 @@ elif server_version == 2:
     db.session.add(user)
     db.session.commit()
     tutor_data_model = TutorDataModel(user_id=user.id, date_of_birth=datetime.date(datetime.utcnow()), nationality="dwafwf", qualification="dwafwaf",
-    major="dwadwd", current_job="dwadw", _subjects='["math"]', years_of_experience=4, _tools_used_for_online_tutoring='["zoom"]')
+    major="dwadwd", current_job="dwadw", _subjects='["math"]', years_of_experience=4, _tools_used_for_online_tutoring='["zoom"]',
+    max_classes_per_day=7, min_classes_per_day=2, most_convenietnt_periods="[16, 17, 18]")
     db.session.add(tutor_data_model)
     db.session.commit()
 
