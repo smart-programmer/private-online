@@ -8,6 +8,7 @@ from wtforms.widgets import TextArea
 from TUTOR.models import UserModel
 from flask_login import current_user
 from TUTOR import bcrypt
+from TUTOR.utils.passwords import main_password_policy
 
 class RegistrationForm(FlaskForm):
     first_name = wtforms.StringField("first name", validators=[length(max=128), DataRequired()])
@@ -41,6 +42,14 @@ class LoginForm(FlaskForm):
     password = wtforms.PasswordField("password", validators=[DataRequired()])
     submit = wtforms.SubmitField("Login")
 
+    def validate_username_or_email(self, username_or_email):
+        user_email = UserModel.query.filter_by(email=username_or_email.data).first()
+        user_username = UserModel.query.filter_by(username=username_or_email.data).first()
+        if not user_username and not user_email:
+            raise ValidationError("لا يوجد حساب يطابق المعلومات المدخلة")
+
+
+
 
 class EditProfileForm(FlaskForm):
     first_name = wtforms.StringField("first name", validators=[length(max=128), DataRequired()])
@@ -70,21 +79,29 @@ class RequestResetPasswordForm(FlaskForm):
         user_email = UserModel.query.filter_by(email=username_or_email.data).first()
         user_username = UserModel.query.filter_by(username=username_or_email.data).first()
         if not user_username and not user_email:
-            raise ValidationError("no account found with these credentials.")
+            raise ValidationError("لا يوجد حساب يطابق المعلومات المدخلة")
 
 class ResetPasswordForm(FlaskForm):
     password = wtforms.StringField("password", validators=[length(min=3, max=40), DataRequired()])
     confirm_password = wtforms.StringField("confirm password", validators=[length(min=3, max=40), DataRequired(), EqualTo("password")])
     submit = wtforms.SubmitField("reset password")
 
+    def validate_password(self, password):
+        if not main_password_policy.password_accepted(password):
+            raise ValidationError("الرقم السري لا يحتوي كل الشروط المطلوبة")
+
 class ChangePasswordForm(FlaskForm):
     old_password = wtforms.StringField("password", validators=[length(min=3, max=40), DataRequired()])
     new_password = wtforms.StringField("new password", validators=[length(min=3, max=40), DataRequired()])
-    confirm_password = wtforms.StringField("confirm password", validators=[length(min=3, max=40), DataRequired(), EqualTo("new_password")])
+    confirm_password = wtforms.StringField("confirm password", validators=[length(min=3, max=40), DataRequired(), EqualTo("new_password", message="خانة تأكيد الرقم السري لا تطابق الرقم السري")])
     submit = wtforms.SubmitField("change password")
 
     def validate_old_password(self, old_password):
         if not bcrypt.check_password_hash(current_user.password, old_password.data):
-            raise ValidationError("incorrecr password")
+            raise ValidationError("الرقم السري السابق غير صحيح")
+
+    def validate_password(self, password):
+        if not main_password_policy.password_accepted(password):
+            raise ValidationError("الرقم السري لا يحتوي كل الشروط المطلوبة")
 
 

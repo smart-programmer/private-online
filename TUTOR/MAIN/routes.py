@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, make_response, current_app, request, url_for, redirect, send_from_directory
 from flask_login import current_user
 from TUTOR.utils.utils import reverse_url_for, parse_view_name
+from TUTOR.utils.passwords import main_password_policy
 from TUTOR.utils.languages import LngObj
 from TUTOR.settings import LANGUAGES, ADMIN_TYPES
 from TUTOR.models import SiteSettingsModel, CourseModel
@@ -21,7 +22,6 @@ def home():
     courses = CourseModel.query.all()[-10:]
     return render_template("index2.html", admin_types=ADMIN_TYPES, courses=courses)
 
-
 @main_blueprint.route('/register')
 def register():
     return render_template("register.html")
@@ -29,12 +29,6 @@ def register():
 @main_blueprint.route('/jobs')
 def jobs():
     return render_template("jobs.html")
-
-
-
-
-
-
 
 @main_blueprint.route("/change_language")
 def change_language():
@@ -77,3 +71,18 @@ def user_agreement_pdf():
 def privacy_use_agreement_pdf():
     url1 = os.path.join(current_app.root_path, "static/pdf")
     return send_from_directory(url1, "privacy_use_agreement.pdf")
+
+
+@main_blueprint.route("/check_password_strength")
+def check_password_strength():
+    password = str(request.args.get("password"))
+    if not password:
+        return "ضعيف"
+        
+    strength = main_password_policy.password_strength(password)
+    if strength == 1:
+        return "ضعيف"
+    elif strength == 2:
+        return "متوسط"
+    elif strength == 3:
+        return "قوي"

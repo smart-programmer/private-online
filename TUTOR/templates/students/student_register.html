@@ -60,38 +60,68 @@
         </div>
 
         <div class="form-row my-row">
-            <div class="form-group col-md-4">
-                <label for="{{ form.password.id }}">الرقم السري</label>
-                {{ form.password(class="form-control", id="password") }}
+            <div class="form-group col-md-6 my-col">
+                <div class="container password-cont">
+                    <div class="row my-row">
+                        <div class="col-md-12 my-col">
+                            <label for="{{ form.password.id }}">الرقم السري</label>
+                        </div>
+                    </div>
+                    <div class="row my-row">
+                        <div class="col-md-10 my-col">
+                            {{ form.password(class="form-control", id="password") }}
+                        </div>
+                        <div class="col-md-2 my-col">
+                            <input type="checkbox" onclick="togglePassword()">
+                        </div>
+                    </div>
+                    <div class="row my-row">
+                        <div class="col-md-10 my-col">
+                            <p id="strength"></p>
+                        </div>
+                    </div>
+                    <div class="row my-row">
+                        <div class="col-md-12 my-col">
+                            <div class="password-conditions">
+                                <p>يجب ان تتكون كلمة السر من 8 حروف على الاقل</p>
+                                <p>يجب ان تحتوي على رقمين على الاقل</p>
+                                <p>يجب ان تحتوي على رمز واحد على الاقل</p>
+                                <p>يجب ان تحتوي على حرف كبير واحد على الاقل</p>
+                                <p>يجب ان تكون قوة الرقم متوسطة على الاقل</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group col-md-2 align-self-end">
-                <input type="checkbox" onclick="togglePassword()">
-            </div>
-
-            <div class="form-group col-md-4">
-                <label for="{{ form.confirm_password.id }}">تأكيد الرقم السري</label>
-                {{ form.confirm_password(class="form-control", id="confirmPassword") }}
-            </div>
-
-            <div class="form-group col-md-2 align-self-end">
-                <input type="checkbox" onclick="toggleConfirmPassword()">
+            <div class="form-group col-md-6 my-col">
+                <div class="container password-cont">
+                    <div class="row my-row">
+                        <div class="col-md-12 my-col">
+                            <label for="{{ form.confirm_password.id }}">تأكيد الرقم السري</label>
+                        </div>
+                    </div>
+                    <div class="row my-row">
+                        <div class="col-md-10 my-col">
+                            {{ form.confirm_password(class="form-control", id="confirmPassword") }}
+                        </div>
+                        <div class="col-md-2 my-col">
+                            <input type="checkbox" onclick="toggleConfirmPassword()">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- {{ form.username.name }}
-        {{ form.username() }}
-        {% for error in form.username.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br>
-        
-        {{ form.email.name }}
-        {{ form.email() }}
-        {% for error in form.email.errors %}
-            <h3 style="color: red;"> {{ error }}</h3> 
-        {% endfor %}
-        <br> -->
+        <div class="form-row my row">
+            <div class="col-12 my-col">
+                {% for field, error_message in form.errors.items() %}
+                    {% for error in error_message %}
+                        <h5 style="color: red;">{{ error }}</h5> 
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
 
         <div class="form-row my-row">
             <div class="col-12 form-check">
@@ -112,11 +142,6 @@
             </div>
         </div>
     </div>
-<!-- 
-        <br>
-        {% for error in form.errors %}
-            <h3 style="color: red;">error in field: {{ error }}</h3> 
-        {% endfor %} -->
     </form>
 </div>
 </div>
@@ -140,6 +165,35 @@ function toggleConfirmPassword() {
     x.type = "password";
   }
 }
+
+$(document).ready(function(){
+            $("#password").on("input", function() {
+                password = $("#password").val()
+                link = "{{ url_for('main_blueprint.check_password_strength') }}";
+            $.ajax({
+                url: link,
+                type: "GET",
+                data: {
+                    password: password,
+                },
+                success: function(result){
+                    strength_p = document.getElementById("strength")
+                    strength_p.textContent = result;
+                    if (result.localeCompare("ضعيف") == 0){
+                        strength_p.style.color = "red";
+                    } else if (result.localeCompare("متوسط") == 0){
+                        strength_p.style.color = "orange";
+                    }else if (result.localeCompare("قوي") == 0){
+                        strength_p.style.color = "green";
+                    }
+                    console.log(result)
+                },
+                error: function(error){
+                    console.log("didn't work")
+                }
+            })
+        })
+    })
 
 </script>
 {% endblock %}

@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 import wtforms
 from wtforms.fields.html5 import DateField, IntegerField, IntegerRangeField, DecimalRangeField, DecimalField
 from wtforms.validators import DataRequired, length, Email, ValidationError, EqualTo, Optional
-from wtforms_components import SelectField
+from wtforms_components import SelectField, TimeField
 from flask_wtf.file import FileField, FileAllowed 
 from wtforms.widgets import TextArea
 from TUTOR.models import UserModel
@@ -94,20 +94,20 @@ class AdminCourseCreationForm(FlaskForm):
     students_zoom_link = wtforms.StringField("students zoom link", validators=[length(max=255), DataRequired()], widget=TextArea()) 
     min_students = IntegerField("minimum number of students", validators=[DataRequired()])
     max_students = IntegerField("maximum number of students", validators=[Optional()])
-    saturday_start = DecimalField("saturday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    saturday_end = DecimalField("saturday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    sunday_start = DecimalField("sunday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    sunday_end = DecimalField("sunday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    monday_start = DecimalField("monday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    monday_end = DecimalField("monday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    tuesday_start = DecimalField("tuesday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    tuesday_end = DecimalField("tuesday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    wednesday_start = DecimalField("wednesday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    wednesday_end = DecimalField("wednesday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    thursday_start = DecimalField("thursday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    thursday_end = DecimalField("thursday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    friday_start = DecimalField("friday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    friday_end = DecimalField("friday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    saturday_start = TimeField(validators=[Optional()])
+    saturday_end = TimeField(validators=[Optional()])
+    sunday_start = TimeField(validators=[Optional()])
+    sunday_end = TimeField(validators=[Optional()])
+    monday_start = TimeField(validators=[Optional()])
+    monday_end = TimeField(validators=[Optional()])
+    tuesday_start = TimeField(validators=[Optional()])
+    tuesday_end = TimeField(validators=[Optional()])
+    wednesday_start = TimeField(validators=[Optional()])
+    wednesday_end = TimeField(validators=[Optional()])
+    thursday_start = TimeField(validators=[Optional()])
+    thursday_end = TimeField(validators=[Optional()])
+    friday_start = TimeField(validators=[Optional()])
+    friday_end = TimeField(validators=[Optional()])
     tutors = wtforms.SelectField("tutor", choices=(()), validators=[DataRequired()])
     submit = wtforms.SubmitField("create course")
 

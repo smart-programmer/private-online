@@ -54,3 +54,15 @@
     overflow: hidden;
 }
 
+.password-conditions p {
+    color: rgb(236, 136, 43);
+    margin-bottom: 2px;
+    padding-bottom: 2px;
+  }
+
+
+.password-cont {
+    padding: 0px;
+    margin: 0px;
+    /* border: 3px dotted green; */
+  }

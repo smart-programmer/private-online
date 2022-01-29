@@ -2,65 +2,70 @@ from flask_wtf import FlaskForm
 import wtforms
 from wtforms.fields.html5 import DateField, IntegerField, IntegerRangeField, DecimalRangeField, DecimalField
 from wtforms.validators import DataRequired, length, Email, ValidationError, EqualTo, Optional
-from wtforms_components import SelectField
+from wtforms_components import SelectField, TimeField
 from flask_wtf.file import FileField, FileAllowed 
 from wtforms.widgets import TextArea
 from TUTOR.models import UserModel, SiteSettingsModel
 from flask_login import current_user
 from TUTOR import bcrypt
 from TUTOR.utils.utils import dict_to_select_compatable_tuple
+from TUTOR.utils.passwords import main_password_policy
 from TUTOR.settings import CURRENCIES
 from datetime import datetime
 import json
 
 
 genders = [
-    ("1", "male"),
-    ("0", "female")
+    ("1", "ذكر"),
+    ("0", "انثى")
 ]
 
 
 
 class TutorRegistrationForm(FlaskForm):
-    first_name = wtforms.StringField("first name", validators=[length(max=128), DataRequired()])
-    last_name = wtforms.StringField("last name", validators=[length(max=128), DataRequired()])
-    username = wtforms.StringField("username", validators=[length(max=20), DataRequired()])
-    email = wtforms.StringField("email", validators=[length(min=3, max=255), DataRequired()])
-    gender = wtforms.SelectField("gender", choices=genders, validators=[DataRequired()])
-    date_of_birth = DateField("age", format="%Y-%m-%d", validators=[DataRequired()])
-    nationality = wtforms.StringField("nationality", validators=[length(max=30), DataRequired()])
-    qualification = wtforms.StringField("qualification", validators=[length(max=35), DataRequired()])
-    major = wtforms.StringField("major", validators=[length(max=35), DataRequired()])
-    current_job = wtforms.StringField("current job", validators=[length(max=50), DataRequired()])
+    first_name = wtforms.StringField("first name", validators=[length(max=128), DataRequired(message="من فضلك اخل الاسم الاول")])
+    last_name = wtforms.StringField("last name", validators=[length(max=128), DataRequired(message="من فضلك ادخل الاسم الاخير")])
+    username = wtforms.StringField("username", validators=[length(max=20), DataRequired(message="من فضلك ادخل اسم المستخدم")])
+    email = wtforms.StringField("email", validators=[length(min=3, max=255), DataRequired(message="من فضلك ادخل الايميل")])
+    gender = wtforms.SelectField("gender", choices=genders, validators=[DataRequired(message="من فضلك اختر الجنس")])
+    date_of_birth = DateField("age", format="%Y-%m-%d", validators=[DataRequired(message="من فضلك ادخل تاريخ الميلاد")])
+    nationality = wtforms.StringField("nationality", validators=[length(max=30), DataRequired(message="من فضلك ادخل الجنسية")])
+    qualification = wtforms.StringField("qualification", validators=[length(max=35), DataRequired(message="من فضلك ادخل المؤهل")])
+    major = wtforms.StringField("major", validators=[length(max=35), DataRequired(message="من فضلك ادخل التخصص")])
+    current_job = wtforms.StringField("current job", validators=[length(max=50), DataRequired(message="من فضلك ادخل خانة الوظيفة الحالية")])
     subjects = wtforms.StringField("subjects you want to teach") # wtforms.SelectField("subjects you want to teach", choices=(()), validators=[length(min=0, max=30)])
-    years_of_experience = IntegerField("years of experience", validators=[DataRequired()], render_kw={"min": 0, "max": 100})
+    years_of_experience = IntegerField("years of experience", validators=[DataRequired(message="من فضلك ادخل سنوات الخبرة")], render_kw={"min": 0, "max": 100})
     tools_used_for_online_tutoring = wtforms.StringField("tools used for online tutoring", validators=[length(min=0, max=60)])
-    max_classes_per_day = IntegerField("Maximum classes you can give per day", validators=[DataRequired()], render_kw={"min": 1, "max": 15})
-    min_classes_per_day = IntegerField("Minimum classes you can give per day", validators=[DataRequired()], render_kw={"min": 1, "max": 15})
+    max_classes_per_day = IntegerField("Maximum classes you can give per day", validators=[DataRequired(message="من فضلك ادخل اقصى عدد حصص تستطيع تدريسها في اليوم")], render_kw={"min": 1, "max": 15})
+    min_classes_per_day = IntegerField("Minimum classes you can give per day", validators=[DataRequired(message="من فضلك ادخل اقل عدد حصص يناسبك تدريسها في اليوم")], render_kw={"min": 1, "max": 15})
     most_convenietnt_periods = wtforms.StringField("Most convenient periods to teach")
-    password = wtforms.PasswordField("password", validators=[length(min=3, max=40), DataRequired()])
-    confirm_password = wtforms.PasswordField("confirm password", validators=[length(min=3, max=40), DataRequired(), EqualTo("password")])
-    user_agreement = wtforms.BooleanField("accept user agreement", validators=[DataRequired()])
-    privacy_use_agreement = wtforms.BooleanField("privacy and use agreement", validators=[DataRequired()])
+    password = wtforms.PasswordField("password", validators=[length(min=8, max=40), DataRequired(message="من فضلك أدخل الرقم السري")])
+    confirm_password = wtforms.PasswordField("confirm password", validators=[length(min=3, max=40), DataRequired(message="من فضلك أكد الرقم السري"), EqualTo("password", message="خانة تأكيد الرقم السري لا تطابق الرقم السري")])
+    user_agreement = wtforms.BooleanField("accept user agreement", validators=[DataRequired(message="يجب ان توافق على الشروط لتكمل")])
+    privacy_use_agreement = wtforms.BooleanField("privacy and use agreement", validators=[DataRequired(message="يجب ان توافق على الشروط لتكمل")])
     submit = wtforms.SubmitField("Register")
+
+    def validate_password(self, password):
+        if not main_password_policy.password_accepted(password):
+            raise ValidationError("الرقم السري لا يحتوي كل الشروط المطلوبة")
 
     def validate_username(self, username):
         user = UserModel.query.filter_by(username=username.data).first()
         if user:
-            raise ValidationError("username already taken")
+            raise ValidationError("اسم المستخدم مأخوذ")
 
     def validate_user_agreement(self, user_agreement):
         if not user_agreement.data:
-            raise ValidationError("you have to accept our user agreement")
+            raise ValidationError("يجب ان توافق على الشروط لتكمل")
 
     def validate_privacy_use_agreement(self, privacy_use_agreement):
         if not privacy_use_agreement.data:
-            raise ValidationError("you have to accept our privacy and use agreement")
+            raise ValidationError("يجب ان توافق على الشروط لتكمل")
 
     def validate_email(self, email):
         user = UserModel.query.filter_by(email=email.data).first()
         if user:
-            raise ValidationError("this email is already registered, did you forget your password?")
+            raise ValidationError("البريد الالكتروني مسجل من قبل, هل نسيت الرقم السري؟")
 
     def validate_subjects(self, subjects):
         settings_subjects = SiteSettingsModel.instance().subjects["setting_value"]
@@ -113,12 +118,12 @@ class TutorEditProfileForm(FlaskForm):
     def validate_username(self, username):
         user = UserModel.query.filter_by(username=username.data).first()
         if user and user != current_user:
-            raise ValidationError("username already taken")
+            raise ValidationError("اسم المستخدم مأخوذ")
 
     def validate_email(self, email):
         user = UserModel.query.filter_by(email=email.data).first()
         if user and user != current_user:
-            raise ValidationError("this other email is already registered, did you forget your password?")
+            raise ValidationError("البريد الالكتروني مسجل من قبل, هل نسيت الرقم السري؟")
 
 
 currencies = dict_to_select_compatable_tuple(CURRENCIES)
@@ -147,20 +152,20 @@ class CourseCreationForm(FlaskForm):
     zoom_link = wtforms.StringField("zoom link", validators=[length(max=255), DataRequired()], widget=TextArea()) 
     min_students = IntegerField("minimum number of students", validators=[DataRequired()])
     max_students = IntegerField("maximum number of students", validators=[Optional()])
-    saturday_start = DecimalField("saturday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    saturday_end = DecimalField("saturday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    sunday_start = DecimalField("sunday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    sunday_end = DecimalField("sunday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    monday_start = DecimalField("monday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    monday_end = DecimalField("monday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    tuesday_start = DecimalField("tuesday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    tuesday_end = DecimalField("tuesday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    wednesday_start = DecimalField("wednesday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    wednesday_end = DecimalField("wednesday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    thursday_start = DecimalField("thursday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    thursday_end = DecimalField("thursday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    friday_start = DecimalField("friday class start time", validators=[Optional()], render_kw={"min": 1, "max": 24})
-    friday_end = DecimalField("friday class end time", validators=[Optional()], render_kw={"min": 1, "max": 24})
+    saturday_start = TimeField(validators=[Optional()])
+    saturday_end = TimeField(validators=[Optional()])
+    sunday_start = TimeField(validators=[Optional()])
+    sunday_end = TimeField(validators=[Optional()])
+    monday_start = TimeField(validators=[Optional()])
+    monday_end = TimeField(validators=[Optional()])
+    tuesday_start = TimeField(validators=[Optional()])
+    tuesday_end = TimeField(validators=[Optional()])
+    wednesday_start = TimeField(validators=[Optional()])
+    wednesday_end = TimeField(validators=[Optional()])
+    thursday_start = TimeField(validators=[Optional()])
+    thursday_end = TimeField(validators=[Optional()])
+    friday_start = TimeField(validators=[Optional()])
+    friday_end = TimeField(validators=[Optional()])
     submit = wtforms.SubmitField("create course")
 
 
@@ -170,7 +175,7 @@ class CourseCreationForm(FlaskForm):
             return False
 
         if self.course_type == 1 and self.start_date.data and self.end_date.data:
-            raise ValidationError("لا يمكن اذافة تاريخ في هذا النوع من الدورات")
+            raise ValidationError("لا يمكن اضافة تاريخ في هذا النوع من الدورات")
 
         if self.course_type == 2 and self.period.data:
             raise ValidationError("لا يمكن اضافة مدة دورة في هذ االنوع من الدورات")
