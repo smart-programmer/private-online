@@ -5,7 +5,7 @@ from TUTOR import db
 from TUTOR.utils.utils import reverse_url_for, parse_view_name, login_required, time_format_conversion
 from TUTOR.utils.languages import LngObj
 from TUTOR.settings import LANGUAGES, ADMIN_TYPES
-from TUTOR.models import CourseModel, SiteSettingsModel
+from TUTOR.models import CourseModel, SiteSettingsModel, AdminstrationStorageModel
 from TUTOR.COURSES.forms import CourseCreationForm
 
 
@@ -35,7 +35,15 @@ def course(course_id):
     elif user_type == "tutor":
         return render_template("tutors/course.html", course=course, is_allowed=is_allowed)
     elif user_type in ADMIN_TYPES:
-        return render_template("admins/course.html", course=course, is_allowed=is_allowed)
+        # check if student has leave request for course
+        # get that leave request
+        storage = AdminstrationStorageModel.instance()
+        leave_requests = []
+        for student in course.students:
+            if storage.has_leave_request_for_course(student.id, course.id):
+                leave_request = storage.get_leave_request_for_course(student.id, course.id)
+                leave_requests.append({student: leave_request})
+        return render_template("admins/course.html", course=course, is_allowed=is_allowed, leave_requests=leave_requests)
 
 
 @courses_blueprint.route("/cancel-course/<course_id>")

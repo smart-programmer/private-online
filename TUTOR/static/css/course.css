@@ -58,3 +58,6 @@ background: linear-gradient(to right, #FFD194, #D1913C); /* W3C, IE 10+/ Edge, F
     margin-bottom: 100px;
 }
 
+.leave-request-card {
+    margin-bottom: 40px;
+}

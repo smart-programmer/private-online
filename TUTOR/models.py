@@ -311,6 +311,7 @@ class CourseModel(db.Model):
 
     def add_student(self, student):
         student.courses.append(self)
+        # automatically let student pay for testing
         self.payment_model.add_student(student.id)
         self.payment_model.pay(student, self.price, "SAR")
         send_student_course_join_email(student.user, self)
@@ -677,6 +678,17 @@ class AdminstrationStorageModel(db.Model): # in this model i'll try the other be
             for request in leave_request_list:
                 if request.get("course_id") == str(course_id):
                     return request
+
+    # def get_all_leave_requests_for_course(self, course_id): # return leave request objects [{"course_id": ...,}...]
+    #     course = CourseModel.query.get(int(course_id))
+    #     students = course.students
+    #     # check if student has leave request for course
+    #     # get that leave request 
+        
+    # @staticmethod
+    # def convert_keys_to_objects(leave_request):
+    #     student = StudentDataModel.query.get(int(leave_request["student_id"]))
+    #     course = CourseModel.query.get(int(leave_req0uest[""]))
 
     def eligible_to_add_leave_request(self, student_id, course_id): # if deosn't already has leave request for course and is joined in course and has paid for course
         course = CourseModel.query.get(course_id)
